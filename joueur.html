@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='29/10-11h20';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='29/10-11h45';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -241,6 +241,10 @@ details>summary{cursor:pointer}
 .bigcode{font-family:ui-monospace,Menlo,monospace;font-size:40px;letter-spacing:.18em;text-align:center;font-weight:700;padding:14px;border:2px dashed var(--line-2,#b8a888);border-radius:10px;margin:8px 0;user-select:all}
 .tpanel{margin-top:10px;display:flex;flex-direction:column;gap:10px}
 .rrow{display:flex;flex-wrap:wrap;gap:6px}.rchip{font-family:var(--f-display);font-size:12px;letter-spacing:.04em;padding:4px 9px;border-radius:999px;border:1px solid var(--line-2,#b8a888);opacity:.45;text-decoration:line-through}.rchip.on{opacity:1;text-decoration:none;background:#fff}
+.atabs{display:flex;border:1px solid var(--line-2,#b8a888);border-radius:9px;overflow:hidden;margin:6px 0 2px}
+.atabs button{flex:1;padding:10px 4px;border:0;border-right:1px solid var(--line-2,#b8a888);background:#fffdf8;font:inherit;font-weight:700;color:inherit;cursor:pointer}.atabs button:last-child{border-right:0}
+.atabs button.on{background:#3a2c20;color:#fff}.atabs button.used:not(.on){opacity:.5}.atabs small{font-weight:400;opacity:.75}
+.agrp h4{margin:10px 2px 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
 .alist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .ctab{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.ctab span{border:1px solid var(--line);border-radius:8px;padding:4px 9px;display:flex;flex-direction:column;background:#fffdf8}.ctab small{font-size:11px;color:var(--muted,#7a6a55)}.ctab b{font-size:15px}
 .feats{display:flex;flex-direction:column;gap:4px;margin-top:6px}.feat{border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:#fffdf8}.feat summary{display:flex;justify-content:space-between;gap:8px;cursor:pointer;list-style:none}.feat summary::-webkit-details-marker{display:none}.feat summary small{color:var(--muted,#7a6a55);white-space:nowrap}.feat .fd{white-space:pre-wrap;font-size:14px;line-height:1.45;margin-top:6px}
@@ -825,6 +829,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
       if(!done){toast('Plus d’emplacement disponible pour ce sort');return}if(/concentration/i.test(s.note))c.conc=true;break}
     case 'rest':return restModal(c,v);
     case 'pmove':return playMap({mode:'move'});
+    case 'atab':CON.atab=v;break;
     case 'pac':try{actFlow(v)}catch(err){toast('Erreur : '+(err&&err.message||err))}return;
     case 'pq':return sendReq({t:'q',q:v});
     case 'pend':return modal(`<h2>Finir ton tour ?</h2><div class="row" style="justify-content:flex-end"><button class="btn" data-x="no" type="button">Pas encore</button><button class="btn primary" data-x="ok" type="button">Fin du tour</button></div>`,el=>{el.querySelector('[data-x=no]').onclick=close;el.querySelector('[data-x=ok]').onclick=()=>{close();sendReq({t:'end'})}});
@@ -1190,7 +1195,11 @@ function sendReq(o){const N=net();if(!N||!CON.cid)return;if(o&&o.t==='act'&&CON.
 function turnPanel(){if(!myTurn())return '';const t=CON.turn,R=t.res,chip=(ok,l)=>`<span class="rchip ${ok?'on':''}">${l}</span>`;
   return `<div class="tpanel"><div class="rrow">${chip(R.a,'Action')}${chip(R.b,'Bonus')}${chip(R.r,'Réaction')}<span class="rchip on">Mouvement ${fm(R.m)}</span></div>
     <p class="sub" style="margin:0">Touche une action ci-dessous (ou dans tes attaques et sorts), puis ta cible.</p><div class="row"><button class="btn primary" data-a="pmove" type="button" ${R.m>=1.5&&t.reach.length?'':'disabled'}>Se déplacer</button><button class="btn" data-a="pend" type="button">Fin du tour</button></div>
-    <div class="alist">${t.acts.map(a=>`<div class="acw"><button type="button" class="ainfo" data-a="tinfo" data-v="${esc(a.id)}" aria-label="Infos">i</button><button type="button" class="abtn ${a.ok?'':'off'}" data-a="pac" data-v="${esc(a.id)}"><b>${esc(a.name)}</b><small>${esc(COSTN[a.cost]||a.cost)} · ${a.range?fm(a.range):'toi'}${a.area?' · zone '+fm(a.area):''}${a.dmg?' · '+esc(a.dmg)+(a.dtype?' '+esc(a.dtype):''):''}</small>${a.ok?'':`<i>${esc(a.why)}</i>`}</button></div>`).join('')}</div>
+    ${(()=>{const by={action:[],bonus:[],reaction:[]};t.acts.forEach(a=>(by[a.cost]||by.action).push(a));const K=['action','bonus','reaction'].filter(k=>by[k].length);if(!K.length)return '';
+      const okc={action:R.a,bonus:R.b,reaction:R.r},lab={action:'Actions',bonus:'Bonus',reaction:'Réactions'};const cur=K.includes(CON.atab)?CON.atab:(K.find(k=>okc[k])||K[0]);
+      const G={};by[cur].forEach(a=>{const n=a.cg||'Actions';(G[n]=G[n]||{o:a.co??5,L:[]}).L.push(a)});
+      return `<div class="atabs">${K.map(k=>`<button type="button" class="${k===cur?'on':''} ${okc[k]?'':'used'}" data-a="atab" data-v="${k}">${lab[k]} <small>${by[k].length}</small></button>`).join('')}</div>`+
+        Object.entries(G).sort((x,y)=>x[1].o-y[1].o).map(([n,g])=>`<div class="agrp"><h4>${esc(n)}</h4><div class="alist">${g.L.map(a=>`<div class="acw"><button type="button" class="ainfo" data-a="tinfo" data-v="${esc(a.id)}" aria-label="Infos">i</button><button type="button" class="abtn ${a.ok?'':'off'}" data-a="pac" data-v="${esc(a.id)}"><b>${esc(a.name)}</b><small>${a.range?fm(a.range):'toi'}${a.area?' · zone '+fm(a.area):''}${a.dmg?' · '+esc(a.dmg)+(a.dtype?' '+esc(a.dtype):''):''}</small>${a.ok?'':`<i>${esc(a.why)}</i>`}</button></div>`).join('')}</div></div>`).join('')})()}
     <div class="row">${[['dash','Foncer'],['dodge','Esquiver'],['dis','Se désengager']].map(([q,l])=>`<button class="btn sm" data-a="pq" data-v="${q}" type="button" ${R.a?'':'disabled'}>${l}</button>`).join('')}</div></div>`}
 const gapC=(a1,s1,a2,s2)=>Math.max(0,a2-(a1+s1-1),a1-(a2+s2-1));
 const cdist=(x,y,s)=>{const m=CON.turn.me;return Math.max(gapC(m[0],m[2],x,s||1),gapC(m[1],m[2],y,s||1))};
