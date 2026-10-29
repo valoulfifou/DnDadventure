@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='29/10-15h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='29/10-16h20';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -127,6 +127,84 @@ body.mode-sb .top .round{visibility:hidden}
 #tvblk{position:fixed;top:0;right:0;bottom:0;left:0;background:#000;z-index:100;opacity:0;pointer-events:none;transition:opacity .9s}
 #tvblk.on{opacity:1}
 #tvfs{z-index:101}
+
+/* ---------- Histoire : campagnes, sessions, scénario, PNJ ---------- */
+.stview{display:none}
+body.mode-st .stview{display:block}
+body.mode-st .app>:not(.top):not(.stview){display:none!important}
+body.mode-st .tools>*:not(#bTV):not(#bJour){display:none!important}
+body.mode-st .top .round{visibility:hidden}
+.stview{max-width:1180px;width:100%;box-sizing:border-box;margin:0 auto;padding:4px 2px 40px;text-align:left}
+.stview textarea,.stview input{text-align:left}
+.stbook{background:#fbf6ea;border:1px solid #d9c9a5;border-radius:14px;box-shadow:0 2px 0 #e6d7b5,0 10px 24px rgba(60,40,10,.12);padding:20px 24px 28px}
+.stcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;color:#8a7350;margin-bottom:10px}
+.stcrumb button{border:0;background:none;color:#8a5a20;font:inherit;cursor:pointer;padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
+.stcrumb span.sep{opacity:.5}
+.sthead{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:14px}
+.sthead h2{margin:0;font-family:var(--f-display);font-size:28px;color:#3a2a14;flex:1 1 auto;letter-spacing:.02em}
+.sttitle{flex:1 1 300px;font-family:var(--f-display);font-size:28px;color:#3a2a14;border:1px dashed transparent;background:transparent;border-radius:8px;padding:2px 6px;min-width:0}
+.sttitle:hover,.sttitle:focus{border-color:#cdb88c;background:#fffdf6;outline:none}
+.stgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.stcard{appearance:none;text-align:left;border:1px solid #d9c9a5;background:#fffdf7;border-radius:12px;padding:16px 16px 14px;cursor:pointer;font:inherit;color:#3a2a14;box-shadow:0 2px 0 #eadcbc;display:flex;flex-direction:column;gap:6px;position:relative;transition:transform .1s,box-shadow .2s}
+.stcard:hover{box-shadow:0 2px 0 #eadcbc,0 8px 18px rgba(60,40,10,.12)}
+.stcard:active{transform:translateY(1px)}
+.stcard h3{margin:0;font-family:var(--f-display);font-size:20px;color:#3a2a14}
+.stcard .d{font-size:14px;color:#6b5a3f;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.stcard .m{font-size:12px;color:#9a8460;margin-top:auto}
+.stcard.camp{border-top:6px solid var(--cc,#8a2a22);min-height:150px}
+.stempty{border:2px dashed #d9c9a5;border-radius:12px;padding:30px;text-align:center;color:#8a7350}
+.sttabs{display:flex;gap:4px;border-bottom:2px solid #e3d4b0;margin:6px 0 16px;overflow-x:auto}
+.sttabs button{border:0;background:none;font:700 15px var(--f-display);letter-spacing:.04em;color:#8a7350;padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;min-height:44px}
+.sttabs button.on{color:#3a2a14;border-bottom-color:#8a2a22}
+.stview label.fl{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#9a8460;margin:14px 0 5px;font-weight:700}
+.stview textarea,.stview input.in,.stview select.in{width:100%;box-sizing:border-box;border:1px solid #d9c9a5;background:#fffdf7;border-radius:10px;padding:10px 12px;font:16px/1.55 Georgia,'Times New Roman',serif;color:#2b2416}
+.stview textarea{resize:vertical;min-height:90px;overflow:hidden}
+.stview textarea:focus,.stview input.in:focus,.stview select.in:focus{outline:2px solid #c9a45c;outline-offset:0;background:#fff}
+.stview textarea.big{min-height:260px}
+.stchap{border:1px solid #e3d4b0;border-radius:12px;padding:10px 12px 12px;margin-bottom:12px;background:#fffdf7}
+.stchap .h{display:flex;align-items:center;gap:6px}
+.stchap .h input{flex:1;font:700 18px var(--f-display);border:0;background:transparent;color:#3a2a14;padding:6px 4px;min-width:0}
+.stchap .h input:focus{outline:none;border-bottom:1px solid #c9a45c}
+.stchap textarea{margin-top:6px}
+.stib{border:1px solid #d9c9a5;background:#fff;border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:15px;color:#6b5a3f;flex:none}
+.stsess{display:flex;flex-direction:column;gap:8px}
+.stsrow{appearance:none;display:flex;align-items:center;gap:14px;border:1px solid #d9c9a5;background:#fffdf7;border-radius:12px;padding:12px 16px;cursor:pointer;text-align:left;font:inherit;color:#3a2a14}
+.stsrow .n{font:700 22px var(--f-display);color:#8a2a22;min-width:44px;text-align:center}
+.stsrow .t{flex:1;min-width:0}.stsrow .t b{display:block;font-family:var(--f-display);font-size:17px}.stsrow .t small{color:#9a8460}
+.stcols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px}
+@media(max-width:900px){.stcols{grid-template-columns:1fr}}
+.stlive{background:#2a241b;border-radius:12px;padding:12px;color:#f2e6c8}
+.stlive h3{margin:0 0 8px;font:700 15px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:#e8c77a}
+.stlive form{display:flex;gap:8px}
+.stlive input{flex:1;min-width:0;border:1px solid #6b5a3a;background:#17140f;color:#f2e6c8;border-radius:10px;padding:10px 12px;font:16px Georgia,serif}
+.stlive .btn{background:#e8c77a;color:#2b2416;border-color:#e8c77a}
+.stlive ul{list-style:none;margin:10px 0 0;padding:0;max-height:52vh;overflow:auto}
+.stlive li{display:flex;gap:10px;align-items:flex-start;padding:7px 2px;border-top:1px solid rgba(255,255,255,.08);font:15px/1.45 Georgia,serif}
+.stlive li time{font:12px var(--f-mono,monospace);color:#c9a45c;white-space:nowrap;padding-top:3px}
+.stlive li span{flex:1;white-space:pre-wrap;word-break:break-word}
+.stlive li button{border:0;background:none;color:#9c8b6c;cursor:pointer;font-size:14px;padding:2px 4px}
+.stlive .qk{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.stlive .qk button{border:1px solid #6b5a3a;background:#17140f;color:#e8c77a;border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer}
+.stchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.stchip{display:inline-flex;align-items:center;gap:8px;border:1px solid #d9c9a5;background:#fffdf7;border-radius:999px;padding:3px 10px 3px 3px;cursor:pointer;font:14px var(--f-display);color:#3a2a14}
+.stchip i{width:30px;height:30px;border-radius:50%;background:#ccc center/cover;flex:none;display:grid;place-items:center;font-style:normal;font-size:12px;color:#fff}
+.stchip .x{margin-left:2px;color:#9a8460}
+.npccard{flex-direction:row;align-items:stretch;gap:12px;padding:10px}
+.npccard .pic{width:74px;height:94px;border-radius:8px;background:#3a2a14 center/cover;flex:none;display:grid;place-items:center;color:#f2e6c8;font:700 26px var(--f-display)}
+.npccard .tx{display:flex;flex-direction:column;gap:4px;min-width:0}
+.npccard h3{font-size:18px}
+.att{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:2px 8px;width:max-content}
+.att.allié{background:#dcefd8;color:#2f6b2a}.att.neutre{background:#ece6d6;color:#6b5a3f}.att.hostile{background:#f6d9d4;color:#8a2a22}
+.npcsheet{display:grid;grid-template-columns:200px minmax(0,1fr);gap:22px}
+@media(max-width:760px){.npcsheet{grid-template-columns:1fr}}
+.npcsheet .por{width:100%;aspect-ratio:3/4;border-radius:12px;background:#3a2a14 center/cover;display:grid;place-items:center;color:#f2e6c8;font:700 48px var(--f-display);position:relative;overflow:hidden;border:3px solid #c9a45c}
+.npcsheet .por label{position:absolute;left:8px;right:8px;bottom:8px;text-align:center;background:rgba(0,0,0,.6);color:#fff;border-radius:8px;padding:6px;font:13px var(--f-display);cursor:pointer}
+.npcsheet .por label input{display:none}
+.nrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0 14px}
+.secret{background:#fff4f0;border-color:#e5b9ae!important}
+.stview .seg button{min-height:40px}
+.stact{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.stsearch{max-width:320px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -630,7 +708,7 @@ body.tvmode .tvchip.cur i.framed{width:66px;height:116px;--dfc:#ffd25a;border:0;
 <div class="app">
   <header class="top">
     <h1 class="brand">Table de Combat</h1>
-    <div class="modes" role="tablist" aria-label="Mode"><button type="button" role="tab" id="tCombat" class="mode">⚔ Combat</button><button type="button" role="tab" id="tCrea" class="mode">✎ Création</button><button type="button" role="tab" id="tSb" class="mode">♫ Soundboard</button></div>
+    <div class="modes" role="tablist" aria-label="Mode"><button type="button" role="tab" id="tCombat" class="mode">⚔ Combat</button><button type="button" role="tab" id="tCrea" class="mode">✎ Création</button><button type="button" role="tab" id="tSb" class="mode">♫ Soundboard</button><button type="button" role="tab" id="tSt" class="mode">📖 Histoire</button></div>
     <span class="round" id="round"></span>
     <span class="spacer"></span>
     <div class="tools">
@@ -651,6 +729,7 @@ body.tvmode .tvchip.cur i.framed{width:66px;height:116px;--dfc:#ffd25a;border:0;
   </header>
   <nav class="init" id="init" aria-label="Ordre d'initiative"></nav>
   <section class="sbview" id="sbView" aria-label="Soundboard"></section>
+  <section class="stview" id="stView" aria-label="Histoire"></section>
   <div class="main">
     <div class="mapcol">
       <div id="banner"></div>
@@ -3600,8 +3679,9 @@ var __values = (this && this.__values) || function(o) {
     function render() { if (TVM) {
         tvRender();
         return;
-    } ensureMaps(); renderMapbar(); $('#mapwrap').style.touchAction = ui.ed && !['pan', 'pions'].includes(ui.ed.tool) ? 'none' : ''; document.body.classList.toggle('mode-ed', !!ui.ed && !ui.sb); document.body.classList.toggle('mode-sb', !!ui.sb); $('#tSb').classList.toggle('on', !!ui.sb); $('#tSb').setAttribute('aria-selected', !!ui.sb); if (ui.sb)
-        sbRender(); $('#tCombat').classList.toggle('on', !ui.ed && !ui.sb); $('#tCrea').classList.toggle('on', !!ui.ed && !ui.sb); $('#tCombat').setAttribute('aria-selected', !ui.ed && !ui.sb); $('#tCrea').setAttribute('aria-selected', !!ui.ed && !ui.sb); renderTop(); renderInit(); renderParty(); renderBoard(); renderBanner(); renderPanel(); renderLog(); renderPicker(); }
+    } ensureMaps(); renderMapbar(); $('#mapwrap').style.touchAction = ui.ed && !['pan', 'pions'].includes(ui.ed.tool) ? 'none' : ''; var side = ui.sb || ui.st; document.body.classList.toggle('mode-ed', !!ui.ed && !side); document.body.classList.toggle('mode-sb', !!ui.sb); document.body.classList.toggle('mode-st', !!ui.st); $('#tSb').classList.toggle('on', !!ui.sb); $('#tSb').setAttribute('aria-selected', !!ui.sb); $('#tSt').classList.toggle('on', !!ui.st); $('#tSt').setAttribute('aria-selected', !!ui.st); if (ui.sb)
+        sbRender(); if (ui.st && !$('#stView').childElementCount)
+        stRender(); $('#tCombat').classList.toggle('on', !ui.ed && !side); $('#tCrea').classList.toggle('on', !!ui.ed && !side); $('#tCombat').setAttribute('aria-selected', !ui.ed && !side); $('#tCrea').setAttribute('aria-selected', !!ui.ed && !side); renderTop(); renderInit(); renderParty(); renderBoard(); renderBanner(); renderPanel(); renderLog(); renderPicker(); }
     function renderTop() {
         var _c;
         {
@@ -9273,21 +9353,31 @@ var __values = (this && this.__values) || function(o) {
     $('#bJour').onclick = journalModal;
     $('#bAnim').onclick = animModal;
     /* ---------- Onglets Combat / Création ---------- */
-    $('#tCombat').onclick = function () { if (ui.sb) {
-        ui.sb = false;
-        render();
+    var leaveSide = function () { var was = ui.sb || ui.st, wasSb = ui.sb; ui.sb = false; ui.st = false; if (wasSb) {
         scheduleTV();
         tvPublishSt();
+    } return was; };
+    $('#tCombat').onclick = function () { if (leaveSide()) {
+        render();
         if (!ui.ed)
             return;
     } if (ui.ed)
         closeEditor(); };
     $('#tSb').onclick = function () { if (ui.sb)
-        return; ui.sb = true; render(); scheduleTV(); tvPublishSt(); };
-    $('#tCrea').onclick = function () { if (ui.sb) {
-        ui.sb = false;
-        render();
+        return; ui.st = false; ui.sb = true; render(); scheduleTV(); tvPublishSt(); };
+    $('#tSt').onclick = function () { if (ui.st) {
+        if (ui.stS || ui.stN || ui.stC) {
+            ui.stS = ui.stN = null;
+            ui.stC = null;
+            stRender();
+        }
+        return;
+    } var wasSb = ui.sb; ui.sb = false; ui.st = true; stRender(); render(); if (wasSb) {
+        scheduleTV();
         tvPublishSt();
+    } };
+    $('#tCrea').onclick = function () { if (leaveSide()) {
+        render();
         if (ui.ed)
             return;
     } if (ui.ed) {
@@ -11579,6 +11669,317 @@ var __values = (this && this.__values) || function(o) {
             el.querySelector('#mOk').onclick = function () { sndUI = function () { }; close(); };
         });
     }
+    /* ---------- Histoire : campagnes, sessions, scénario, PNJ, notes ---------- */
+    var STD = function () { return S.story || (S.story = { camps: [] }); };
+    var stCamp = function () { return STD().camps.find(function (c) { return c.id === ui.stC; }) || null; };
+    var stSess = function () { var c = stCamp(); return c && (c.sess || []).find(function (x) { return x.id === ui.stS; }) || null; };
+    var stNpc = function () { var c = stCamp(); return c && (c.npcs || []).find(function (x) { return x.id === ui.stN; }) || null; };
+    var STCOL = ['#8a2a22', '#2a5a8a', '#4f7a2a', '#7a2a6a', '#a8841f', '#2a7a6a', '#5a5048'];
+    function stSave() { var c = stCamp(); if (c)
+        c.upd = Date.now(); if (!saveT)
+        saveT = setTimeout(saveNow, 600); }
+    var stDate = function (t) { try {
+        return new Date(t).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+    catch (e) {
+        return '';
+    } };
+    var stTime = function (t) { try {
+        return new Date(t).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    }
+    catch (e) {
+        return '';
+    } };
+    var stToday = function () { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+    function stGrow(t) { t.style.height = 'auto'; t.style.height = (t.scrollHeight + 2) + 'px'; }
+    function stPic(n) { var u = n && n.img ? imgU(n.img) : null; return u ? "style=\"background-image:url('".concat(u, "')\"") : ''; }
+    var stInit = function (n) { return esc((n.name || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase()); };
+    // lie un champ texte à une propriété d'objet (sans re-rendre la page)
+    function stBind(el, sel, obj, key, after) { el.querySelectorAll(sel).forEach(function (i) { if (i.tagName === 'TEXTAREA') {
+        stGrow(i);
+        requestAnimationFrame(function () { return stGrow(i); });
+    } i.addEventListener('input', function () { obj[key] = i.value; if (i.tagName === 'TEXTAREA')
+        stGrow(i); stSave(); after && after(); }); }); }
+    function stRender() {
+        var _c;
+        var el = $('#stView');
+        if (!el)
+            return;
+        var D = STD();
+        var C = stCamp();
+        if (ui.stC && !C) {
+            ui.stC = ui.stS = ui.stN = null;
+        }
+        if (!stCamp()) {
+            el.innerHTML = stListHTML();
+            stListBind(el);
+            return;
+        }
+        if (ui.stN && stNpc()) {
+            el.innerHTML = stNpcHTML();
+            stNpcBind(el);
+            return;
+        }
+        ui.stN = null;
+        if (ui.stS && stSess()) {
+            el.innerHTML = stSessHTML();
+            stSessBind(el);
+            return;
+        }
+        ui.stS = null;
+        el.innerHTML = stCampHTML();
+        stCampBind(el);
+        (_c = el.scrollIntoView) === null || _c === void 0 ? void 0 : _c.call(el, { block: 'start' });
+    }
+    /* liste des campagnes */
+    function stListHTML() {
+        var L = STD().camps.slice().sort(function (a, b) { return (b.upd || 0) - (a.upd || 0); });
+        return "<div class=\"stbook\"><div class=\"sthead\"><h2>\uD83D\uDCD6 Mes campagnes</h2><button class=\"btn primary\" type=\"button\" id=\"stNew\">+ Nouvelle campagne</button></div>\n    ".concat(L.length ? "<div class=\"stgrid\">".concat(L.map(function (c) { return "<button type=\"button\" class=\"stcard camp\" data-camp=\"".concat(c.id, "\" style=\"--cc:").concat(c.col || STCOL[0], "\"><h3>").concat(esc(c.name), "</h3><span class=\"d\">").concat(esc(c.desc || 'Pas encore de description.'), "</span>\n      <span class=\"m\">").concat((c.sess || []).length, " session").concat((c.sess || []).length > 1 ? 's' : '', " \u00B7 ").concat((c.npcs || []).length, " PNJ \u00B7 modifi\u00E9e le ").concat(stDate(c.upd || c.created), "</span></button>"); }).join(''), "</div>")
+            : "<div class=\"stempty\">Aucune campagne pour l\u2019instant.<br>Cr\u00E9e ta premi\u00E8re campagne pour y \u00E9crire ton sc\u00E9nario, tes PNJ et tes notes de session.</div>", "</div>");
+    }
+    function stListBind(el) {
+        el.querySelectorAll('[data-camp]').forEach(function (b) { return b.onclick = function () { ui.stC = b.dataset.camp; ui.stTab = ui.stTab || 'sess'; stRender(); }; });
+        el.querySelector('#stNew').onclick = function () {
+            modal("<h2>Nouvelle campagne</h2><label class=\"fld\">Nom de la campagne<input type=\"text\" id=\"cN\" placeholder=\"Ex. : La Mal\u00E9diction de Strahd\" maxlength=\"80\"></label>\n      <label class=\"fld\">R\u00E9sum\u00E9 (facultatif)<textarea id=\"cD\" rows=\"3\" placeholder=\"Le pitch en quelques lignes\u2026\"></textarea></label>\n      <div class=\"fld\">Couleur<div class=\"sbcols\">".concat(STCOL.map(function (c, i) { return "<button type=\"button\" data-c=\"".concat(c, "\" class=\"").concat(i === 0 ? 'on' : '', "\" style=\"background:").concat(c, "\" aria-label=\"Couleur\"></button>"); }).join(''), "</div></div>\n      <div class=\"row\"><button class=\"btn\" id=\"mCancel\" type=\"button\">Annuler</button><button class=\"btn primary\" id=\"mOk\" type=\"button\">Cr\u00E9er</button></div>"), function (m) {
+                var col = STCOL[0];
+                m.querySelectorAll('[data-c]').forEach(function (b) { return b.onclick = function () { col = b.dataset.c; m.querySelectorAll('[data-c]').forEach(function (x) { return x.classList.toggle('on', x === b); }); }; });
+                m.querySelector('#mCancel').onclick = close;
+                setTimeout(function () { return m.querySelector('#cN').focus(); }, 50);
+                m.querySelector('#mOk').onclick = function () {
+                    var n = m.querySelector('#cN').value.trim();
+                    if (!n) {
+                        toast('Donne un nom à ta campagne');
+                        return;
+                    }
+                    var c = { id: 'c' + uid(), name: n, desc: m.querySelector('#cD').value.trim(), col: col, created: Date.now(), upd: Date.now(), scen: [{ id: 'h' + uid(), title: 'Introduction', text: '' }], npcs: [], sess: [], notes: '' };
+                    STD().camps.push(c);
+                    close();
+                    ui.stC = c.id;
+                    ui.stTab = 'sess';
+                    stSave();
+                    stRender();
+                };
+            });
+        };
+    }
+    /* une campagne */
+    function stCrumb(parts) { return "<div class=\"stcrumb\">".concat(parts.map(function (p, i) { return i < parts.length - 1 ? "<button type=\"button\" data-crumb=\"".concat(p[1], "\">").concat(esc(p[0]), "</button><span class=\"sep\">\u203A</span>") : "<span>".concat(esc(p[0]), "</span>"); }).join(''), "</div>"); }
+    function stCrumbBind(el) { el.querySelectorAll('[data-crumb]').forEach(function (b) { return b.onclick = function () { var k = b.dataset.crumb; if (k === 'list') {
+        ui.stC = null;
+    } ui.stS = null; ui.stN = null; stRender(); }; }); }
+    function stCampHTML() {
+        var c = stCamp(), T = ui.stTab || 'sess', tabs = [['sess', 'Sessions'], ['scen', 'Scénario'], ['pnj', 'PNJ'], ['notes', 'Notes & lore']];
+        var body = '';
+        if (T === 'sess') {
+            var L = (c.sess || []).slice().sort(function (a, b) { return b.n - a.n; });
+            body = "<div class=\"stact\" style=\"margin-top:0;margin-bottom:12px\"><button class=\"btn primary\" type=\"button\" id=\"sNew\">+ Nouvelle session</button></div>\n      ".concat(L.length ? "<div class=\"stsess\">".concat(L.map(function (x) { return "<button type=\"button\" class=\"stsrow\" data-sess=\"".concat(x.id, "\"><span class=\"n\">").concat(x.n, "</span><span class=\"t\"><b>").concat(esc(x.title || 'Session ' + x.n), "</b><small>").concat(x.date ? stDate(x.date + 'T12:00') : '', " \u00B7 ").concat((x.live || []).length, " note").concat((x.live || []).length > 1 ? 's' : '', " en direct").concat((x.npcs || []).length ? ' · ' + x.npcs.length + ' PNJ' : '', "</small></span><span>\u203A</span></button>"); }).join(''), "</div>")
+                : "<div class=\"stempty\">Pas encore de session. Cr\u00E9e la premi\u00E8re pour pr\u00E9parer ta partie et prendre des notes pendant le jeu.</div>");
+        }
+        if (T === 'scen') {
+            body = "<p class=\"hint\" style=\"margin-top:0\">Ton sc\u00E9nario, d\u00E9coup\u00E9 en chapitres (actes, lieux, sc\u00E8nes\u2026). Tout est enregistr\u00E9 automatiquement.</p>\n      ".concat((c.scen || []).map(function (h, i) { return "<div class=\"stchap\" data-ch=\"".concat(h.id, "\"><div class=\"h\"><input type=\"text\" value=\"").concat(esc(h.title), "\" data-cht=\"").concat(h.id, "\" placeholder=\"Titre du chapitre\" aria-label=\"Titre du chapitre\">\n        <button class=\"stib\" type=\"button\" data-up=\"").concat(h.id, "\" ").concat(i ? '' : 'disabled', " aria-label=\"Monter\">\u2191</button><button class=\"stib\" type=\"button\" data-dn=\"").concat(h.id, "\" ").concat(i < c.scen.length - 1 ? '' : 'disabled', " aria-label=\"Descendre\">\u2193</button><button class=\"stib\" type=\"button\" data-chdel=\"").concat(h.id, "\" aria-label=\"Supprimer\">\u2715</button></div>\n        <textarea data-chx=\"").concat(h.id, "\" placeholder=\"\u00C9cris ici\u2026\">").concat(esc(h.text), "</textarea></div>"); }).join(''), "\n      <button class=\"btn\" type=\"button\" id=\"chNew\">+ Ajouter un chapitre</button>");
+        }
+        if (T === 'pnj') {
+            var L = (c.npcs || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); });
+            body = "<div class=\"stact\" style=\"margin-top:0;margin-bottom:12px;align-items:center\"><button class=\"btn primary\" type=\"button\" id=\"nNew\">+ Nouveau PNJ</button>".concat(L.length > 6 ? "<input class=\"in stsearch\" type=\"search\" id=\"nQ\" placeholder=\"Rechercher un PNJ\u2026\">" : '', "</div>\n      ").concat(L.length ? "<div class=\"stgrid\" id=\"nGrid\">".concat(L.map(function (n) { return "<button type=\"button\" class=\"stcard npccard\" data-npc=\"".concat(n.id, "\" data-q=\"").concat(esc((n.name + ' ' + (n.role || '') + ' ' + (n.place || '')).toLowerCase()), "\"><span class=\"pic\" ").concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "</span><span class=\"tx\"><h3>").concat(esc(n.name), "</h3><span class=\"att ").concat(n.att || 'neutre', "\">").concat(esc(n.att || 'neutre'), "</span><span class=\"d\">").concat(esc([n.role, n.place].filter(Boolean).join(' · ') || '—'), "</span></span></button>"); }).join(''), "</div>")
+                : "<div class=\"stempty\">Aucun PNJ. Ajoute tes personnages non-joueurs : portrait, r\u00F4le, personnalit\u00E9, secrets, statistiques\u2026</div>");
+        }
+        if (T === 'notes')
+            body = "<p class=\"hint\" style=\"margin-top:0\">Lore, id\u00E9es en vrac, liens entre les personnages, rumeurs, objets\u2026</p><textarea class=\"big\" id=\"cNotes\" placeholder=\"\u00C9cris librement\u2026\">".concat(esc(c.notes || ''), "</textarea>");
+        return "<div class=\"stbook\">".concat(stCrumb([['Campagnes', 'list'], [c.name, '']]), "\n    <div class=\"sthead\"><input class=\"sttitle\" id=\"cTitle\" value=\"").concat(esc(c.name), "\" aria-label=\"Nom de la campagne\"><button class=\"btn ghost sm\" type=\"button\" id=\"cDel\">Supprimer la campagne</button></div>\n    <textarea id=\"cDesc\" placeholder=\"R\u00E9sum\u00E9 de la campagne\u2026\" style=\"min-height:60px\">").concat(esc(c.desc || ''), "</textarea>\n    <div class=\"sttabs\" role=\"tablist\">").concat(tabs.map(function (_c) {
+            var _e = __read(_c, 2), k = _e[0], v = _e[1];
+            return "<button type=\"button\" data-stt=\"".concat(k, "\" class=\"").concat(T === k ? 'on' : '', "\">").concat(v).concat(k === 'sess' && (c.sess || []).length ? " (".concat(c.sess.length, ")") : k === 'pnj' && (c.npcs || []).length ? " (".concat(c.npcs.length, ")") : '', "</button>");
+        }).join(''), "</div>\n    ").concat(body, "</div>");
+    }
+    function stCampBind(el) {
+        var c = stCamp();
+        stCrumbBind(el);
+        stBind(el, '#cTitle', c, 'name');
+        stBind(el, '#cDesc', c, 'desc');
+        el.querySelectorAll('[data-stt]').forEach(function (b) { return b.onclick = function () { ui.stTab = b.dataset.stt; stRender(); }; });
+        el.querySelector('#cDel').onclick = function (e) { var b = e.target; if (!b.dataset.ok) {
+            b.dataset.ok = 1;
+            b.textContent = 'Confirmer : tout supprimer ?';
+            return;
+        } STD().camps = STD().camps.filter(function (x) { return x.id !== c.id; }); ui.stC = null; stSave(); stRender(); toast('Campagne supprimée'); };
+        var sn = el.querySelector('#sNew');
+        if (sn)
+            sn.onclick = function () { c.sess = c.sess || []; var n = c.sess.reduce(function (m, x) { return Math.max(m, x.n || 0); }, 0) + 1; var x = { id: 's' + uid(), n: n, title: 'Session ' + n, date: stToday(), prep: '', live: [], sum: '', npcs: [] }; c.sess.push(x); ui.stS = x.id; stSave(); stRender(); };
+        el.querySelectorAll('[data-sess]').forEach(function (b) { return b.onclick = function () { ui.stS = b.dataset.sess; stRender(); }; });
+        (c.scen || []).forEach(function (h) { stBind(el, "[data-cht=\"".concat(h.id, "\"]"), h, 'title'); stBind(el, "[data-chx=\"".concat(h.id, "\"]"), h, 'text'); });
+        var mv = function (id, d) {
+            var _c;
+            var L = c.scen, i = L.findIndex(function (h) { return h.id === id; }), j = i + d;
+            if (i < 0 || j < 0 || j >= L.length)
+                return;
+            _c = __read([L[j], L[i]], 2), L[i] = _c[0], L[j] = _c[1];
+            stSave();
+            stRender();
+        };
+        el.querySelectorAll('[data-up]').forEach(function (b) { return b.onclick = function () { return mv(b.dataset.up, -1); }; });
+        el.querySelectorAll('[data-dn]').forEach(function (b) { return b.onclick = function () { return mv(b.dataset.dn, 1); }; });
+        el.querySelectorAll('[data-chdel]').forEach(function (b) { return b.onclick = function () { if (!b.dataset.ok) {
+            b.dataset.ok = 1;
+            b.textContent = '?';
+            b.title = 'Toucher encore pour supprimer';
+            return;
+        } c.scen = c.scen.filter(function (h) { return h.id !== b.dataset.chdel; }); stSave(); stRender(); }; });
+        var ch = el.querySelector('#chNew');
+        if (ch)
+            ch.onclick = function () { c.scen = c.scen || []; var h = { id: 'h' + uid(), title: 'Chapitre ' + (c.scen.length + 1), text: '' }; c.scen.push(h); stSave(); stRender(); var t = $("[data-cht=\"".concat(h.id, "\"]")); if (t) {
+                t.focus();
+                t.select();
+            } };
+        var nn = el.querySelector('#nNew');
+        if (nn)
+            nn.onclick = function () { c.npcs = c.npcs || []; var n = { id: 'n' + uid(), name: 'Nouveau PNJ', att: 'neutre', role: '', place: '', look: '', pers: '', goal: '', secret: '', notes: '', stat: '' }; c.npcs.push(n); ui.stN = n.id; stSave(); stRender(); var t = $('#npN'); if (t) {
+                t.focus();
+                t.select();
+            } };
+        el.querySelectorAll('[data-npc]').forEach(function (b) { return b.onclick = function () { ui.stN = b.dataset.npc; ui.stBack = null; stRender(); }; });
+        var q = el.querySelector('#nQ');
+        if (q)
+            q.oninput = function () { var v = q.value.trim().toLowerCase(); el.querySelectorAll('[data-npc]').forEach(function (b) { return b.hidden = v && !b.dataset.q.includes(v); }); };
+        stBind(el, '#cNotes', c, 'notes');
+    }
+    /* une session */
+    function stSessHTML() {
+        var c = stCamp(), x = stSess(), N = (x.npcs || []).map(function (id) { return (c.npcs || []).find(function (n) { return n.id === id; }); }).filter(Boolean), inCombat = S.turn >= 0;
+        return "<div class=\"stbook\">".concat(stCrumb([['Campagnes', 'list'], [c.name, 'camp'], ['Session ' + x.n, '']]), "\n    <div class=\"sthead\"><input class=\"sttitle\" id=\"sTitle\" value=\"").concat(esc(x.title || ''), "\" placeholder=\"Titre de la session\" aria-label=\"Titre de la session\"><input class=\"in\" type=\"date\" id=\"sDate\" value=\"").concat(esc(x.date || ''), "\" style=\"width:auto\"><button class=\"btn ghost sm\" type=\"button\" id=\"sDel\">Supprimer</button></div>\n    <div class=\"stcols\"><div>\n      <label class=\"fl\" for=\"sPrep\">Pr\u00E9paration / sc\u00E9nario de la session</label><textarea id=\"sPrep\" class=\"big\" placeholder=\"Ce qui doit se passer, les sc\u00E8nes pr\u00E9vues, les indices \u00E0 donner\u2026\">").concat(esc(x.prep || ''), "</textarea>\n      <label class=\"fl\">PNJ de la session</label><div class=\"stchips\">").concat(N.map(function (n) { return "<span class=\"stchip\" data-open=\"".concat(n.id, "\"><i ").concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "</i>").concat(esc(n.name), "<span class=\"x\" data-rm=\"").concat(n.id, "\" role=\"button\" aria-label=\"Retirer\">\u2715</span></span>"); }).join(''), "\n        ").concat((c.npcs || []).length > N.length ? "<select class=\"in\" id=\"sAddN\" style=\"width:auto;max-width:240px\"><option value=\"\">+ Ajouter un PNJ\u2026</option>".concat((c.npcs || []).filter(function (n) { return !(x.npcs || []).includes(n.id); }).map(function (n) { return "<option value=\"".concat(n.id, "\">").concat(esc(n.name), "</option>"); }).join(''), "</select>") : (c.npcs || []).length ? '' : '<span class="hint">Crée d’abord des PNJ dans l’onglet PNJ de la campagne.</span>', "</div>\n      <label class=\"fl\" for=\"sSum\">R\u00E9sum\u00E9 de la session (apr\u00E8s la partie)</label><textarea id=\"sSum\" placeholder=\"Ce qui s\u2019est r\u00E9ellement pass\u00E9, pour la prochaine fois\u2026\">").concat(esc(x.sum || ''), "</textarea>\n    </div><div>\n      <div class=\"stlive\"><h3>\u270E Notes en direct</h3>\n        <form id=\"lForm\"><input id=\"lIn\" placeholder=\"").concat(inCombat ? 'Note (round ' + S.round + ')…' : 'Une note rapide, puis Entrée…', "\" autocomplete=\"off\" enterkeyhint=\"send\"><button class=\"btn\" type=\"submit\">Noter</button></form>\n        <div class=\"qk\">").concat(['Butin', 'Indice trouvé', 'PNJ rencontré', 'Décision du groupe', 'À reprendre plus tard', 'Point d’XP'].map(function (t) { return "<button type=\"button\" data-qk=\"".concat(esc(t), "\">").concat(esc(t), "</button>"); }).join(''), "</div>\n        <ul id=\"lList\">").concat(stLiveItems(x), "</ul></div>\n    </div></div></div>");
+    }
+    function stLiveItems(x) { var L = (x.live || []).slice().reverse(); return L.length ? L.map(function (n) { return "<li><time>".concat(stTime(n.ts)).concat(n.r ? '<br>R' + n.r : '', "</time><span>").concat(esc(n.t), "</span><button type=\"button\" data-ldel=\"").concat(n.id, "\" aria-label=\"Supprimer la note\">\u2715</button></li>"); }).join('') : '<li style="color:#9c8b6c;border:0">Rien pour l’instant. Les notes s’affichent ici, avec l’heure.</li>'; }
+    function stSessBind(el) {
+        var c = stCamp(), x = stSess();
+        stCrumbBind(el);
+        stBind(el, '#sTitle', x, 'title');
+        stBind(el, '#sPrep', x, 'prep');
+        stBind(el, '#sSum', x, 'sum');
+        el.querySelector('#sDate').onchange = function (e) { x.date = e.target.value; stSave(); };
+        el.querySelector('#sDel').onclick = function (e) { var b = e.target; if (!b.dataset.ok) {
+            b.dataset.ok = 1;
+            b.textContent = 'Confirmer ?';
+            return;
+        } c.sess = c.sess.filter(function (s2) { return s2.id !== x.id; }); ui.stS = null; stSave(); stRender(); };
+        var list = el.querySelector('#lList'), inp = el.querySelector('#lIn');
+        var bindDel = function () { return list.querySelectorAll('[data-ldel]').forEach(function (b) { return b.onclick = function () { x.live = x.live.filter(function (n) { return n.id !== b.dataset.ldel; }); stSave(); list.innerHTML = stLiveItems(x); bindDel(); }; }); };
+        bindDel();
+        var add = function (t) { t = t.trim(); if (!t)
+            return; (x.live || (x.live = [])).push({ id: 'l' + uid(), ts: Date.now(), t: t, r: S.turn >= 0 ? S.round : 0 }); stSave(); list.innerHTML = stLiveItems(x); bindDel(); };
+        el.querySelector('#lForm').onsubmit = function (e) { e.preventDefault(); add(inp.value); inp.value = ''; inp.focus(); };
+        el.querySelectorAll('[data-qk]').forEach(function (b) { return b.onclick = function () { inp.value = b.dataset.qk + ' : '; inp.focus(); }; });
+        el.querySelectorAll('[data-open]').forEach(function (b) { return b.onclick = function (e) { if (e.target.closest('[data-rm]'))
+            return; ui.stN = b.dataset.open; ui.stBack = 'sess'; stRender(); }; });
+        el.querySelectorAll('[data-rm]').forEach(function (b) { return b.onclick = function () { x.npcs = (x.npcs || []).filter(function (id) { return id !== b.dataset.rm; }); stSave(); stRender(); }; });
+        var sa = el.querySelector('#sAddN');
+        if (sa)
+            sa.onchange = function () { if (!sa.value)
+                return; (x.npcs || (x.npcs = [])).push(sa.value); stSave(); stRender(); };
+    }
+    /* fiche PNJ */
+    function stNpcHTML() {
+        var c = stCamp(), n = stNpc(), back = ui.stBack === 'sess' && stSess();
+        var crumb = back ? [['Campagnes', 'list'], [c.name, 'camp'], ['Session ' + stSess().n, 'sessb'], [n.name, '']] : [['Campagnes', 'list'], [c.name, 'camp'], ['PNJ', 'pnj'], [n.name, '']];
+        var ta = function (k, l, ph, cls) { return "<label class=\"fl\" for=\"np_".concat(k, "\">").concat(l, "</label><textarea id=\"np_").concat(k, "\" data-nk=\"").concat(k, "\" class=\"").concat(cls || '', "\" placeholder=\"").concat(ph, "\">").concat(esc(n[k] || ''), "</textarea>"); };
+        var m = n.stat && typeof BESTIARY !== 'undefined' ? BESTIARY.find(function (b) { return b[0] === n.stat; }) : null;
+        return "<div class=\"stbook\">".concat(stCrumb(crumb), "\n    <div class=\"npcsheet\"><div><div class=\"por\" ").concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "<label>").concat(n.img ? 'Changer le portrait' : 'Ajouter un portrait', "<input type=\"file\" accept=\"image/*\" id=\"npImg\"></label></div>\n      <div class=\"stact\"><button class=\"btn primary\" type=\"button\" id=\"npMap\">Placer sur la carte</button><button class=\"btn ghost sm\" type=\"button\" id=\"npDel\">Supprimer le PNJ</button></div></div>\n    <div><input class=\"sttitle\" id=\"npN\" value=\"").concat(esc(n.name), "\" aria-label=\"Nom du PNJ\" style=\"width:100%\">\n      <div class=\"nrow\"><div><label class=\"fl\" for=\"np_role\">R\u00F4le / m\u00E9tier</label><input class=\"in\" id=\"np_role\" data-nk=\"role\" value=\"").concat(esc(n.role || ''), "\" placeholder=\"Aubergiste, chef des bandits\u2026\"></div>\n        <div><label class=\"fl\" for=\"np_place\">Lieu</label><input class=\"in\" id=\"np_place\" data-nk=\"place\" value=\"").concat(esc(n.place || ''), "\" placeholder=\"O\u00F9 le trouver\"></div></div>\n      <label class=\"fl\">Attitude envers le groupe</label><div class=\"seg\">").concat(['allié', 'neutre', 'hostile'].map(function (a) { return "<button type=\"button\" data-att=\"".concat(a, "\" class=\"").concat((n.att || 'neutre') === a ? 'on' : '', "\">").concat(a[0].toUpperCase() + a.slice(1), "</button>"); }).join(''), "</div>\n      ").concat(ta('look', 'Apparence', 'Âge, allure, voix, tics…')).concat(ta('pers', 'Personnalité', 'Traits, manières de parler…')).concat(ta('goal', 'Motivations', 'Ce qu’il veut, ce qu’il craint…'), "\n      ").concat(ta('secret', 'Secrets (MJ seulement)', 'Ce que les joueurs ne savent pas…', 'secret')).concat(ta('notes', 'Notes', 'Relations, ce que le groupe sait de lui…'), "\n      <label class=\"fl\" for=\"npStat\">Statistiques (cr\u00E9ature du bestiaire)</label><input class=\"in\" id=\"npStat\" list=\"npBest\" value=\"").concat(esc(n.stat || ''), "\" placeholder=\"Ex. : V\u00E9t\u00E9ran, Mage, Bandit\u2026 (facultatif)\"><datalist id=\"npBest\">").concat((typeof BESTIARY !== 'undefined' ? BESTIARY : []).map(function (b) { return "<option value=\"".concat(esc(b[0]), "\">"); }).join(''), "</datalist>\n      <p class=\"hint\" id=\"npStatI\">").concat(m ? "".concat(esc(m[1]), " \u00B7 CA ").concat(m[3], " \u00B7 PV ").concat(esc(m[4]), " \u00B7 FP ").concat(esc(m[11] || '?')) : 'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).', "</p>\n    </div></div></div>");
+    }
+    function stNpcBind(el) {
+        var _this = this;
+        var c = stCamp(), n = stNpc();
+        el.querySelectorAll('[data-crumb]').forEach(function (b) { return b.onclick = function () { var k = b.dataset.crumb; ui.stN = null; if (k === 'list') {
+            ui.stC = null;
+            ui.stS = null;
+        }
+        else if (k === 'camp') {
+            ui.stS = null;
+            if (ui.stBack !== 'sess')
+                ui.stTab = ui.stTab || 'pnj';
+        }
+        else if (k === 'pnj') {
+            ui.stS = null;
+            ui.stTab = 'pnj';
+        } ui.stBack = null; stRender(); }; });
+        stBind(el, '#npN', n, 'name');
+        el.querySelectorAll('[data-nk]').forEach(function (i) { return stBind(el, "#".concat(i.id), n, i.dataset.nk); });
+        el.querySelectorAll('[data-att]').forEach(function (b) { return b.onclick = function () { n.att = b.dataset.att; stSave(); el.querySelectorAll('[data-att]').forEach(function (x) { return x.classList.toggle('on', x === b); }); }; });
+        var st = el.querySelector('#npStat');
+        st.oninput = function () { n.stat = st.value.trim(); stSave(); var m = BESTIARY.find(function (b) { return b[0] === n.stat; }); el.querySelector('#npStatI').textContent = m ? "".concat(m[1], " \u00B7 CA ").concat(m[3], " \u00B7 PV ").concat(m[4], " \u00B7 FP ").concat(m[11] || '?') : n.stat ? 'Créature introuvable dans le bestiaire.' : 'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).'; };
+        el.querySelector('#npImg').onchange = function (e) { return __awaiter(_this, void 0, void 0, function () { var f, u, id, er_1; return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    f = e.target.files[0];
+                    if (!f)
+                        return [2 /*return*/];
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, processImg(f, false)];
+                case 2:
+                    u = _c.sent();
+                    id = 'p' + uid();
+                    IMGS.set(id, u);
+                    IDB.put(id, u);
+                    n.img = 'ref:' + id;
+                    stSave();
+                    stRender();
+                    return [3 /*break*/, 4];
+                case 3:
+                    er_1 = _c.sent();
+                    toast('Image illisible');
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        }); }); };
+        el.querySelector('#npDel').onclick = function (e) { var b = e.target; if (!b.dataset.ok) {
+            b.dataset.ok = 1;
+            b.textContent = 'Confirmer ?';
+            return;
+        } c.npcs = c.npcs.filter(function (x) { return x.id !== n.id; }); (c.sess || []).forEach(function (x) { return x.npcs = (x.npcs || []).filter(function (id) { return id !== n.id; }); }); ui.stN = null; stSave(); stRender(); };
+        el.querySelector('#npMap').onclick = function () {
+            var m = n.stat && BESTIARY.find(function (b) { return b[0] === n.stat; });
+            var t;
+            if (m) {
+                t = monsterChar(m, n.name);
+                applyBestTok(t, m[0]);
+            }
+            else
+                t = C({ name: n.name, side: 'ennemi', hp: 10, hpMax: 10, ac: 12, color: '#7a5a3a', actions: [] });
+            if (n.att !== 'hostile') {
+                t.side = 'pj';
+                t.petOf = 'mj';
+                t.npc = 1;
+            }
+            else
+                t.side = 'ennemi';
+            if (n.img) {
+                t.img = n.img;
+                t.por = n.img;
+            }
+            t.label = stInit(n).replace(/&[^;]+;/g, '');
+            var fr = findFree(t);
+            t.x = fr.x;
+            t.y = fr.y;
+            S.chars.push(t);
+            if (S.turn >= 0) {
+                var curId = S.order[S.turn];
+                t.initTot = rollD(20) + (+t.initB || 0);
+                t.res = { move: effSpeed(t), action: true, bonus: true, reaction: true };
+                var k = S.order.findIndex(function (id) { var _c; var o = byId(id); return o && ((_c = o.initTot) !== null && _c !== void 0 ? _c : -99) < t.initTot; });
+                if (k < 0)
+                    k = S.order.length;
+                S.order.splice(k, 0, t.id);
+                S.turn = Math.max(0, S.order.indexOf(curId));
+            }
+            log("<b>".concat(esc(n.name), "</b> (PNJ) arrive sur la carte."));
+            ui.st = false;
+            if (ui.ed)
+                closeEditor();
+            ui.sel = t.id;
+            ui.mode = 'place';
+            save();
+            render();
+            toast('Touche une case pour placer ' + n.name);
+        };
+    }
     /* ---------- Soundboard : sons et musiques perso, joués sur cet appareil ---------- */
     var SBD = function () { return S.sb || (S.sb = { pads: [], vol: .8 }); };
     var SBP = {};
@@ -11975,7 +12376,7 @@ var __values = (this && this.__values) || function(o) {
         } }; });
         el.querySelectorAll('[data-sbed]').forEach(function (b) { return b.onclick = function (e) { e.stopPropagation(); sbEdit(b.dataset.sbed); }; });
         el.querySelectorAll('[data-sbadd]').forEach(function (i) { return i.onchange = function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var k, n, _c, _e, f, id, er_1, e_25_1;
+            var k, n, _c, _e, f, id, er_2, e_25_1;
             var e_25, _f;
             return __generator(this, function (_g) {
                 switch (_g.label) {
@@ -11999,7 +12400,7 @@ var __values = (this && this.__values) || function(o) {
                         _g.sent();
                         return [3 /*break*/, 6];
                     case 5:
-                        er_1 = _g.sent();
+                        er_2 = _g.sent();
                         toast('Impossible d’enregistrer ' + f.name);
                         return [3 /*break*/, 7];
                     case 6:

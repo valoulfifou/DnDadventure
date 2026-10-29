@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='29/10-15h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='29/10-16h20';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -127,6 +127,84 @@ body.mode-sb .top .round{visibility:hidden}
 #tvblk{position:fixed;inset:0;background:#000;z-index:100;opacity:0;pointer-events:none;transition:opacity .9s}
 #tvblk.on{opacity:1}
 #tvfs{z-index:101}
+
+/* ---------- Histoire : campagnes, sessions, scénario, PNJ ---------- */
+.stview{display:none}
+body.mode-st .stview{display:block}
+body.mode-st .app>:not(.top):not(.stview){display:none!important}
+body.mode-st .tools>*:not(#bTV):not(#bJour){display:none!important}
+body.mode-st .top .round{visibility:hidden}
+.stview{max-width:1180px;width:100%;box-sizing:border-box;margin:0 auto;padding:4px 2px 40px;text-align:left}
+.stview textarea,.stview input{text-align:left}
+.stbook{background:#fbf6ea;border:1px solid #d9c9a5;border-radius:14px;box-shadow:0 2px 0 #e6d7b5,0 10px 24px rgba(60,40,10,.12);padding:20px 24px 28px}
+.stcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;color:#8a7350;margin-bottom:10px}
+.stcrumb button{border:0;background:none;color:#8a5a20;font:inherit;cursor:pointer;padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
+.stcrumb span.sep{opacity:.5}
+.sthead{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:14px}
+.sthead h2{margin:0;font-family:var(--f-display);font-size:28px;color:#3a2a14;flex:1 1 auto;letter-spacing:.02em}
+.sttitle{flex:1 1 300px;font-family:var(--f-display);font-size:28px;color:#3a2a14;border:1px dashed transparent;background:transparent;border-radius:8px;padding:2px 6px;min-width:0}
+.sttitle:hover,.sttitle:focus{border-color:#cdb88c;background:#fffdf6;outline:none}
+.stgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.stcard{appearance:none;text-align:left;border:1px solid #d9c9a5;background:#fffdf7;border-radius:12px;padding:16px 16px 14px;cursor:pointer;font:inherit;color:#3a2a14;box-shadow:0 2px 0 #eadcbc;display:flex;flex-direction:column;gap:6px;position:relative;transition:transform .1s,box-shadow .2s}
+.stcard:hover{box-shadow:0 2px 0 #eadcbc,0 8px 18px rgba(60,40,10,.12)}
+.stcard:active{transform:translateY(1px)}
+.stcard h3{margin:0;font-family:var(--f-display);font-size:20px;color:#3a2a14}
+.stcard .d{font-size:14px;color:#6b5a3f;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.stcard .m{font-size:12px;color:#9a8460;margin-top:auto}
+.stcard.camp{border-top:6px solid var(--cc,#8a2a22);min-height:150px}
+.stempty{border:2px dashed #d9c9a5;border-radius:12px;padding:30px;text-align:center;color:#8a7350}
+.sttabs{display:flex;gap:4px;border-bottom:2px solid #e3d4b0;margin:6px 0 16px;overflow-x:auto}
+.sttabs button{border:0;background:none;font:700 15px var(--f-display);letter-spacing:.04em;color:#8a7350;padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;min-height:44px}
+.sttabs button.on{color:#3a2a14;border-bottom-color:#8a2a22}
+.stview label.fl{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#9a8460;margin:14px 0 5px;font-weight:700}
+.stview textarea,.stview input.in,.stview select.in{width:100%;box-sizing:border-box;border:1px solid #d9c9a5;background:#fffdf7;border-radius:10px;padding:10px 12px;font:16px/1.55 Georgia,'Times New Roman',serif;color:#2b2416}
+.stview textarea{resize:vertical;min-height:90px;overflow:hidden}
+.stview textarea:focus,.stview input.in:focus,.stview select.in:focus{outline:2px solid #c9a45c;outline-offset:0;background:#fff}
+.stview textarea.big{min-height:260px}
+.stchap{border:1px solid #e3d4b0;border-radius:12px;padding:10px 12px 12px;margin-bottom:12px;background:#fffdf7}
+.stchap .h{display:flex;align-items:center;gap:6px}
+.stchap .h input{flex:1;font:700 18px var(--f-display);border:0;background:transparent;color:#3a2a14;padding:6px 4px;min-width:0}
+.stchap .h input:focus{outline:none;border-bottom:1px solid #c9a45c}
+.stchap textarea{margin-top:6px}
+.stib{border:1px solid #d9c9a5;background:#fff;border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:15px;color:#6b5a3f;flex:none}
+.stsess{display:flex;flex-direction:column;gap:8px}
+.stsrow{appearance:none;display:flex;align-items:center;gap:14px;border:1px solid #d9c9a5;background:#fffdf7;border-radius:12px;padding:12px 16px;cursor:pointer;text-align:left;font:inherit;color:#3a2a14}
+.stsrow .n{font:700 22px var(--f-display);color:#8a2a22;min-width:44px;text-align:center}
+.stsrow .t{flex:1;min-width:0}.stsrow .t b{display:block;font-family:var(--f-display);font-size:17px}.stsrow .t small{color:#9a8460}
+.stcols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px}
+@media(max-width:900px){.stcols{grid-template-columns:1fr}}
+.stlive{background:#2a241b;border-radius:12px;padding:12px;color:#f2e6c8}
+.stlive h3{margin:0 0 8px;font:700 15px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:#e8c77a}
+.stlive form{display:flex;gap:8px}
+.stlive input{flex:1;min-width:0;border:1px solid #6b5a3a;background:#17140f;color:#f2e6c8;border-radius:10px;padding:10px 12px;font:16px Georgia,serif}
+.stlive .btn{background:#e8c77a;color:#2b2416;border-color:#e8c77a}
+.stlive ul{list-style:none;margin:10px 0 0;padding:0;max-height:52vh;overflow:auto}
+.stlive li{display:flex;gap:10px;align-items:flex-start;padding:7px 2px;border-top:1px solid rgba(255,255,255,.08);font:15px/1.45 Georgia,serif}
+.stlive li time{font:12px var(--f-mono,monospace);color:#c9a45c;white-space:nowrap;padding-top:3px}
+.stlive li span{flex:1;white-space:pre-wrap;word-break:break-word}
+.stlive li button{border:0;background:none;color:#9c8b6c;cursor:pointer;font-size:14px;padding:2px 4px}
+.stlive .qk{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.stlive .qk button{border:1px solid #6b5a3a;background:#17140f;color:#e8c77a;border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer}
+.stchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.stchip{display:inline-flex;align-items:center;gap:8px;border:1px solid #d9c9a5;background:#fffdf7;border-radius:999px;padding:3px 10px 3px 3px;cursor:pointer;font:14px var(--f-display);color:#3a2a14}
+.stchip i{width:30px;height:30px;border-radius:50%;background:#ccc center/cover;flex:none;display:grid;place-items:center;font-style:normal;font-size:12px;color:#fff}
+.stchip .x{margin-left:2px;color:#9a8460}
+.npccard{flex-direction:row;align-items:stretch;gap:12px;padding:10px}
+.npccard .pic{width:74px;height:94px;border-radius:8px;background:#3a2a14 center/cover;flex:none;display:grid;place-items:center;color:#f2e6c8;font:700 26px var(--f-display)}
+.npccard .tx{display:flex;flex-direction:column;gap:4px;min-width:0}
+.npccard h3{font-size:18px}
+.att{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:2px 8px;width:max-content}
+.att.allié{background:#dcefd8;color:#2f6b2a}.att.neutre{background:#ece6d6;color:#6b5a3f}.att.hostile{background:#f6d9d4;color:#8a2a22}
+.npcsheet{display:grid;grid-template-columns:200px minmax(0,1fr);gap:22px}
+@media(max-width:760px){.npcsheet{grid-template-columns:1fr}}
+.npcsheet .por{width:100%;aspect-ratio:3/4;border-radius:12px;background:#3a2a14 center/cover;display:grid;place-items:center;color:#f2e6c8;font:700 48px var(--f-display);position:relative;overflow:hidden;border:3px solid #c9a45c}
+.npcsheet .por label{position:absolute;left:8px;right:8px;bottom:8px;text-align:center;background:rgba(0,0,0,.6);color:#fff;border-radius:8px;padding:6px;font:13px var(--f-display);cursor:pointer}
+.npcsheet .por label input{display:none}
+.nrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0 14px}
+.secret{background:#fff4f0;border-color:#e5b9ae!important}
+.stview .seg button{min-height:40px}
+.stact{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.stsearch{max-width:320px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -630,7 +708,7 @@ body.tvmode .tvchip.cur i.framed{width:66px;height:116px;--dfc:#ffd25a;border:0;
 <div class="app">
   <header class="top">
     <h1 class="brand">Table de Combat</h1>
-    <div class="modes" role="tablist" aria-label="Mode"><button type="button" role="tab" id="tCombat" class="mode">⚔ Combat</button><button type="button" role="tab" id="tCrea" class="mode">✎ Création</button><button type="button" role="tab" id="tSb" class="mode">♫ Soundboard</button></div>
+    <div class="modes" role="tablist" aria-label="Mode"><button type="button" role="tab" id="tCombat" class="mode">⚔ Combat</button><button type="button" role="tab" id="tCrea" class="mode">✎ Création</button><button type="button" role="tab" id="tSb" class="mode">♫ Soundboard</button><button type="button" role="tab" id="tSt" class="mode">📖 Histoire</button></div>
     <span class="round" id="round"></span>
     <span class="spacer"></span>
     <div class="tools">
@@ -651,6 +729,7 @@ body.tvmode .tvchip.cur i.framed{width:66px;height:116px;--dfc:#ffd25a;border:0;
   </header>
   <nav class="init" id="init" aria-label="Ordre d'initiative"></nav>
   <section class="sbview" id="sbView" aria-label="Soundboard"></section>
+  <section class="stview" id="stView" aria-label="Histoire"></section>
   <div class="main">
     <div class="mapcol">
       <div id="banner"></div>
@@ -1480,7 +1559,7 @@ function stabModal(h,t){const sp=(h.actions||[]).some(a=>/stabilisation|epargner
 function heal(t,n,force){if(!force&&n>0&&efHas(t,'noHeal')){log(`${esc(t.name)} ne peut pas récupérer de PV pour le moment.`);toast(t.name+' ne peut pas être soigné·e');return}if(pjDead(t)&&!force){log(`${esc(t.name)} est mort·e : un soin ne suffit plus (il faut un sort comme Retour à la vie).`);toast(t.name+' est mort·e : soin sans effet');return}n=Math.max(0,Math.round(n));const wasDown=t.side==='pj'&&t.hp<=0;t.hp=Math.min(t.hpMax,t.hp+n);if(t.hp>0){t.conds=t.conds.filter(k=>k!=='inconscient');t.death={s:0,f:0};if(wasDown)log(`<b>${esc(t.name)}</b> reprend conscience avec ${t.hp} PV (toujours à terre : se relever coûte la moitié de sa vitesse).`)}}
 
 /* ---------- Rendu ---------- */
-function render(){if(TVM){tvRender();return}ensureMaps();renderMapbar();$('#mapwrap').style.touchAction=ui.ed&&!['pan','pions'].includes(ui.ed.tool)?'none':'';document.body.classList.toggle('mode-ed',!!ui.ed&&!ui.sb);document.body.classList.toggle('mode-sb',!!ui.sb);$('#tSb').classList.toggle('on',!!ui.sb);$('#tSb').setAttribute('aria-selected',!!ui.sb);if(ui.sb)sbRender();$('#tCombat').classList.toggle('on',!ui.ed&&!ui.sb);$('#tCrea').classList.toggle('on',!!ui.ed&&!ui.sb);$('#tCombat').setAttribute('aria-selected',!ui.ed&&!ui.sb);$('#tCrea').setAttribute('aria-selected',!!ui.ed&&!ui.sb);renderTop();renderInit();renderParty();renderBoard();renderBanner();renderPanel();renderLog();renderPicker()}
+function render(){if(TVM){tvRender();return}ensureMaps();renderMapbar();$('#mapwrap').style.touchAction=ui.ed&&!['pan','pions'].includes(ui.ed.tool)?'none':'';const side=ui.sb||ui.st;document.body.classList.toggle('mode-ed',!!ui.ed&&!side);document.body.classList.toggle('mode-sb',!!ui.sb);document.body.classList.toggle('mode-st',!!ui.st);$('#tSb').classList.toggle('on',!!ui.sb);$('#tSb').setAttribute('aria-selected',!!ui.sb);$('#tSt').classList.toggle('on',!!ui.st);$('#tSt').setAttribute('aria-selected',!!ui.st);if(ui.sb)sbRender();if(ui.st&&!$('#stView').childElementCount)stRender();$('#tCombat').classList.toggle('on',!ui.ed&&!side);$('#tCrea').classList.toggle('on',!!ui.ed&&!side);$('#tCombat').setAttribute('aria-selected',!ui.ed&&!side);$('#tCrea').setAttribute('aria-selected',!!ui.ed&&!side);renderTop();renderInit();renderParty();renderBoard();renderBanner();renderPanel();renderLog();renderPicker()}
 function renderTop(){{const b=$('#bXP');if(b){const n=(S.kills||[]).length;b.textContent=n?`🏆 XP (${n})`:'🏆 XP'}}undoBtns();{const t=!!S.testing&&S.testing===S.curMap&&!ui.ed;['#bReset','#bTestEnd'].forEach(q=>{const b=$(q);if(b)b.hidden=!t});document.body.classList.toggle('testing',t)}
   if(ui.ed){$('#round').textContent=ui.pick?'Mes cartes':'Création · '+((curMapE()||{}).name||'');return}
   $('#round').textContent=S.turn>=0?('Round '+S.round+' · tour de '+(cur()?.name||'—')):'Hors combat';
@@ -3687,9 +3766,11 @@ function journalModal(){const L=S.journal||(S.journal=[]);
     el.querySelector('#mOk').onclick=close})}
 $('#bJour').onclick=journalModal;$('#bAnim').onclick=animModal;
 /* ---------- Onglets Combat / Création ---------- */
-$('#tCombat').onclick=()=>{if(ui.sb){ui.sb=false;render();scheduleTV();tvPublishSt();if(!ui.ed)return}if(ui.ed)closeEditor()};
-$('#tSb').onclick=()=>{if(ui.sb)return;ui.sb=true;render();scheduleTV();tvPublishSt()};
-$('#tCrea').onclick=()=>{if(ui.sb){ui.sb=false;render();tvPublishSt();if(ui.ed)return}if(ui.ed){if(!ui.pick){ui.pick=true;render()}return}if(!endTest(true))return;openEditor();ui.pick=true;render()};
+const leaveSide=()=>{const was=ui.sb||ui.st,wasSb=ui.sb;ui.sb=false;ui.st=false;if(wasSb){scheduleTV();tvPublishSt()}return was};
+$('#tCombat').onclick=()=>{if(leaveSide()){render();if(!ui.ed)return}if(ui.ed)closeEditor()};
+$('#tSb').onclick=()=>{if(ui.sb)return;ui.st=false;ui.sb=true;render();scheduleTV();tvPublishSt()};
+$('#tSt').onclick=()=>{if(ui.st){if(ui.stS||ui.stN||ui.stC){ui.stS=ui.stN=null;ui.stC=null;stRender()}return}const wasSb=ui.sb;ui.sb=false;ui.st=true;stRender();render();if(wasSb){scheduleTV();tvPublishSt()}};
+$('#tCrea').onclick=()=>{if(leaveSide()){render();if(ui.ed)return}if(ui.ed){if(!ui.pick){ui.pick=true;render()}return}if(!endTest(true))return;openEditor();ui.pick=true;render()};
 $('#bFoe').onclick=bestiaryModal;
 const THUMBS={};
 function mapThumb(e){const cur=e.id===S.curMap,m=cur?S.map:e.map;if(!m)return '';if(m.kind==='video')return m.poster||'';if(m.kind==='img'&&m.src&&!isRef(m.src))return m.src;
@@ -4257,6 +4338,141 @@ function sndModal(){const d=SD(),M=MD();let impMood=sndModal.mood||'exploration'
 }
 
 
+
+/* ---------- Histoire : campagnes, sessions, scénario, PNJ, notes ---------- */
+const STD=()=>S.story||(S.story={camps:[]});
+const stCamp=()=>STD().camps.find(c=>c.id===ui.stC)||null;
+const stSess=()=>{const c=stCamp();return c&&(c.sess||[]).find(x=>x.id===ui.stS)||null};
+const stNpc=()=>{const c=stCamp();return c&&(c.npcs||[]).find(x=>x.id===ui.stN)||null};
+const STCOL=['#8a2a22','#2a5a8a','#4f7a2a','#7a2a6a','#a8841f','#2a7a6a','#5a5048'];
+function stSave(){const c=stCamp();if(c)c.upd=Date.now();if(!saveT)saveT=setTimeout(saveNow,600)}
+const stDate=t=>{try{return new Date(t).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}catch(e){return ''}};
+const stTime=t=>{try{return new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}};
+const stToday=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function stGrow(t){t.style.height='auto';t.style.height=(t.scrollHeight+2)+'px'}
+function stPic(n){const u=n&&n.img?imgU(n.img):null;return u?`style="background-image:url('${u}')"`:''}
+const stInit=n=>esc((n.name||'?').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase());
+// lie un champ texte à une propriété d'objet (sans re-rendre la page)
+function stBind(el,sel,obj,key,after){el.querySelectorAll(sel).forEach(i=>{if(i.tagName==='TEXTAREA'){stGrow(i);requestAnimationFrame(()=>stGrow(i))}i.addEventListener('input',()=>{obj[key]=i.value;if(i.tagName==='TEXTAREA')stGrow(i);stSave();after&&after()})})}
+function stRender(){const el=$('#stView');if(!el)return;const D=STD();
+  const C=stCamp();if(ui.stC&&!C){ui.stC=ui.stS=ui.stN=null}
+  if(!stCamp()){el.innerHTML=stListHTML();stListBind(el);return}
+  if(ui.stN&&stNpc()){el.innerHTML=stNpcHTML();stNpcBind(el);return}ui.stN=null;
+  if(ui.stS&&stSess()){el.innerHTML=stSessHTML();stSessBind(el);return}ui.stS=null;
+  el.innerHTML=stCampHTML();stCampBind(el);el.scrollIntoView?.({block:'start'})}
+/* liste des campagnes */
+function stListHTML(){const L=STD().camps.slice().sort((a,b)=>(b.upd||0)-(a.upd||0));
+  return `<div class="stbook"><div class="sthead"><h2>📖 Mes campagnes</h2><button class="btn primary" type="button" id="stNew">+ Nouvelle campagne</button></div>
+    ${L.length?`<div class="stgrid">${L.map(c=>`<button type="button" class="stcard camp" data-camp="${c.id}" style="--cc:${c.col||STCOL[0]}"><h3>${esc(c.name)}</h3><span class="d">${esc(c.desc||'Pas encore de description.')}</span>
+      <span class="m">${(c.sess||[]).length} session${(c.sess||[]).length>1?'s':''} · ${(c.npcs||[]).length} PNJ · modifiée le ${stDate(c.upd||c.created)}</span></button>`).join('')}</div>`
+      :`<div class="stempty">Aucune campagne pour l’instant.<br>Crée ta première campagne pour y écrire ton scénario, tes PNJ et tes notes de session.</div>`}</div>`}
+function stListBind(el){el.querySelectorAll('[data-camp]').forEach(b=>b.onclick=()=>{ui.stC=b.dataset.camp;ui.stTab=ui.stTab||'sess';stRender()});
+  el.querySelector('#stNew').onclick=()=>{modal(`<h2>Nouvelle campagne</h2><label class="fld">Nom de la campagne<input type="text" id="cN" placeholder="Ex. : La Malédiction de Strahd" maxlength="80"></label>
+      <label class="fld">Résumé (facultatif)<textarea id="cD" rows="3" placeholder="Le pitch en quelques lignes…"></textarea></label>
+      <div class="fld">Couleur<div class="sbcols">${STCOL.map((c,i)=>`<button type="button" data-c="${c}" class="${i===0?'on':''}" style="background:${c}" aria-label="Couleur"></button>`).join('')}</div></div>
+      <div class="row"><button class="btn" id="mCancel" type="button">Annuler</button><button class="btn primary" id="mOk" type="button">Créer</button></div>`,m=>{let col=STCOL[0];
+      m.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{col=b.dataset.c;m.querySelectorAll('[data-c]').forEach(x=>x.classList.toggle('on',x===b))});
+      m.querySelector('#mCancel').onclick=close;setTimeout(()=>m.querySelector('#cN').focus(),50);
+      m.querySelector('#mOk').onclick=()=>{const n=m.querySelector('#cN').value.trim();if(!n){toast('Donne un nom à ta campagne');return}
+        const c={id:'c'+uid(),name:n,desc:m.querySelector('#cD').value.trim(),col,created:Date.now(),upd:Date.now(),scen:[{id:'h'+uid(),title:'Introduction',text:''}],npcs:[],sess:[],notes:''};
+        STD().camps.push(c);close();ui.stC=c.id;ui.stTab='sess';stSave();stRender()}})}}
+/* une campagne */
+function stCrumb(parts){return `<div class="stcrumb">${parts.map((p,i)=>i<parts.length-1?`<button type="button" data-crumb="${p[1]}">${esc(p[0])}</button><span class="sep">›</span>`:`<span>${esc(p[0])}</span>`).join('')}</div>`}
+function stCrumbBind(el){el.querySelectorAll('[data-crumb]').forEach(b=>b.onclick=()=>{const k=b.dataset.crumb;if(k==='list'){ui.stC=null}ui.stS=null;ui.stN=null;stRender()})}
+function stCampHTML(){const c=stCamp(),T=ui.stTab||'sess',tabs=[['sess','Sessions'],['scen','Scénario'],['pnj','PNJ'],['notes','Notes & lore']];
+  let body='';
+  if(T==='sess'){const L=(c.sess||[]).slice().sort((a,b)=>b.n-a.n);
+    body=`<div class="stact" style="margin-top:0;margin-bottom:12px"><button class="btn primary" type="button" id="sNew">+ Nouvelle session</button></div>
+      ${L.length?`<div class="stsess">${L.map(x=>`<button type="button" class="stsrow" data-sess="${x.id}"><span class="n">${x.n}</span><span class="t"><b>${esc(x.title||'Session '+x.n)}</b><small>${x.date?stDate(x.date+'T12:00'):''} · ${(x.live||[]).length} note${(x.live||[]).length>1?'s':''} en direct${(x.npcs||[]).length?' · '+x.npcs.length+' PNJ':''}</small></span><span>›</span></button>`).join('')}</div>`
+        :`<div class="stempty">Pas encore de session. Crée la première pour préparer ta partie et prendre des notes pendant le jeu.</div>`}`}
+  if(T==='scen'){body=`<p class="hint" style="margin-top:0">Ton scénario, découpé en chapitres (actes, lieux, scènes…). Tout est enregistré automatiquement.</p>
+      ${(c.scen||[]).map((h,i)=>`<div class="stchap" data-ch="${h.id}"><div class="h"><input type="text" value="${esc(h.title)}" data-cht="${h.id}" placeholder="Titre du chapitre" aria-label="Titre du chapitre">
+        <button class="stib" type="button" data-up="${h.id}" ${i?'':'disabled'} aria-label="Monter">↑</button><button class="stib" type="button" data-dn="${h.id}" ${i<c.scen.length-1?'':'disabled'} aria-label="Descendre">↓</button><button class="stib" type="button" data-chdel="${h.id}" aria-label="Supprimer">✕</button></div>
+        <textarea data-chx="${h.id}" placeholder="Écris ici…">${esc(h.text)}</textarea></div>`).join('')}
+      <button class="btn" type="button" id="chNew">+ Ajouter un chapitre</button>`}
+  if(T==='pnj'){const L=(c.npcs||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
+    body=`<div class="stact" style="margin-top:0;margin-bottom:12px;align-items:center"><button class="btn primary" type="button" id="nNew">+ Nouveau PNJ</button>${L.length>6?`<input class="in stsearch" type="search" id="nQ" placeholder="Rechercher un PNJ…">`:''}</div>
+      ${L.length?`<div class="stgrid" id="nGrid">${L.map(n=>`<button type="button" class="stcard npccard" data-npc="${n.id}" data-q="${esc((n.name+' '+(n.role||'')+' '+(n.place||'')).toLowerCase())}"><span class="pic" ${stPic(n)}>${n.img?'':stInit(n)}</span><span class="tx"><h3>${esc(n.name)}</h3><span class="att ${n.att||'neutre'}">${esc(n.att||'neutre')}</span><span class="d">${esc([n.role,n.place].filter(Boolean).join(' · ')||'—')}</span></span></button>`).join('')}</div>`
+        :`<div class="stempty">Aucun PNJ. Ajoute tes personnages non-joueurs : portrait, rôle, personnalité, secrets, statistiques…</div>`}`}
+  if(T==='notes')body=`<p class="hint" style="margin-top:0">Lore, idées en vrac, liens entre les personnages, rumeurs, objets…</p><textarea class="big" id="cNotes" placeholder="Écris librement…">${esc(c.notes||'')}</textarea>`;
+  return `<div class="stbook">${stCrumb([['Campagnes','list'],[c.name,'']])}
+    <div class="sthead"><input class="sttitle" id="cTitle" value="${esc(c.name)}" aria-label="Nom de la campagne"><button class="btn ghost sm" type="button" id="cDel">Supprimer la campagne</button></div>
+    <textarea id="cDesc" placeholder="Résumé de la campagne…" style="min-height:60px">${esc(c.desc||'')}</textarea>
+    <div class="sttabs" role="tablist">${tabs.map(([k,v])=>`<button type="button" data-stt="${k}" class="${T===k?'on':''}">${v}${k==='sess'&&(c.sess||[]).length?` (${c.sess.length})`:k==='pnj'&&(c.npcs||[]).length?` (${c.npcs.length})`:''}</button>`).join('')}</div>
+    ${body}</div>`}
+function stCampBind(el){const c=stCamp();stCrumbBind(el);
+  stBind(el,'#cTitle',c,'name');stBind(el,'#cDesc',c,'desc');
+  el.querySelectorAll('[data-stt]').forEach(b=>b.onclick=()=>{ui.stTab=b.dataset.stt;stRender()});
+  el.querySelector('#cDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer : tout supprimer ?';return}STD().camps=STD().camps.filter(x=>x.id!==c.id);ui.stC=null;stSave();stRender();toast('Campagne supprimée')};
+  const sn=el.querySelector('#sNew');if(sn)sn.onclick=()=>{c.sess=c.sess||[];const n=c.sess.reduce((m,x)=>Math.max(m,x.n||0),0)+1;const x={id:'s'+uid(),n,title:'Session '+n,date:stToday(),prep:'',live:[],sum:'',npcs:[]};c.sess.push(x);ui.stS=x.id;stSave();stRender()};
+  el.querySelectorAll('[data-sess]').forEach(b=>b.onclick=()=>{ui.stS=b.dataset.sess;stRender()});
+  (c.scen||[]).forEach(h=>{stBind(el,`[data-cht="${h.id}"]`,h,'title');stBind(el,`[data-chx="${h.id}"]`,h,'text')});
+  const mv=(id,d)=>{const L=c.scen,i=L.findIndex(h=>h.id===id),j=i+d;if(i<0||j<0||j>=L.length)return;[L[i],L[j]]=[L[j],L[i]];stSave();stRender()};
+  el.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>mv(b.dataset.up,-1));el.querySelectorAll('[data-dn]').forEach(b=>b.onclick=()=>mv(b.dataset.dn,1));
+  el.querySelectorAll('[data-chdel]').forEach(b=>b.onclick=()=>{if(!b.dataset.ok){b.dataset.ok=1;b.textContent='?';b.title='Toucher encore pour supprimer';return}c.scen=c.scen.filter(h=>h.id!==b.dataset.chdel);stSave();stRender()});
+  const ch=el.querySelector('#chNew');if(ch)ch.onclick=()=>{c.scen=c.scen||[];const h={id:'h'+uid(),title:'Chapitre '+(c.scen.length+1),text:''};c.scen.push(h);stSave();stRender();const t=$(`[data-cht="${h.id}"]`);if(t){t.focus();t.select()}};
+  const nn=el.querySelector('#nNew');if(nn)nn.onclick=()=>{c.npcs=c.npcs||[];const n={id:'n'+uid(),name:'Nouveau PNJ',att:'neutre',role:'',place:'',look:'',pers:'',goal:'',secret:'',notes:'',stat:''};c.npcs.push(n);ui.stN=n.id;stSave();stRender();const t=$('#npN');if(t){t.focus();t.select()}};
+  el.querySelectorAll('[data-npc]').forEach(b=>b.onclick=()=>{ui.stN=b.dataset.npc;ui.stBack=null;stRender()});
+  const q=el.querySelector('#nQ');if(q)q.oninput=()=>{const v=q.value.trim().toLowerCase();el.querySelectorAll('[data-npc]').forEach(b=>b.hidden=v&&!b.dataset.q.includes(v))};
+  stBind(el,'#cNotes',c,'notes')}
+/* une session */
+function stSessHTML(){const c=stCamp(),x=stSess(),N=(x.npcs||[]).map(id=>(c.npcs||[]).find(n=>n.id===id)).filter(Boolean),inCombat=S.turn>=0;
+  return `<div class="stbook">${stCrumb([['Campagnes','list'],[c.name,'camp'],['Session '+x.n,'']])}
+    <div class="sthead"><input class="sttitle" id="sTitle" value="${esc(x.title||'')}" placeholder="Titre de la session" aria-label="Titre de la session"><input class="in" type="date" id="sDate" value="${esc(x.date||'')}" style="width:auto"><button class="btn ghost sm" type="button" id="sDel">Supprimer</button></div>
+    <div class="stcols"><div>
+      <label class="fl" for="sPrep">Préparation / scénario de la session</label><textarea id="sPrep" class="big" placeholder="Ce qui doit se passer, les scènes prévues, les indices à donner…">${esc(x.prep||'')}</textarea>
+      <label class="fl">PNJ de la session</label><div class="stchips">${N.map(n=>`<span class="stchip" data-open="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}<span class="x" data-rm="${n.id}" role="button" aria-label="Retirer">✕</span></span>`).join('')}
+        ${(c.npcs||[]).length>N.length?`<select class="in" id="sAddN" style="width:auto;max-width:240px"><option value="">+ Ajouter un PNJ…</option>${(c.npcs||[]).filter(n=>!(x.npcs||[]).includes(n.id)).map(n=>`<option value="${n.id}">${esc(n.name)}</option>`).join('')}</select>`:(c.npcs||[]).length?'':'<span class="hint">Crée d’abord des PNJ dans l’onglet PNJ de la campagne.</span>'}</div>
+      <label class="fl" for="sSum">Résumé de la session (après la partie)</label><textarea id="sSum" placeholder="Ce qui s’est réellement passé, pour la prochaine fois…">${esc(x.sum||'')}</textarea>
+    </div><div>
+      <div class="stlive"><h3>✎ Notes en direct</h3>
+        <form id="lForm"><input id="lIn" placeholder="${inCombat?'Note (round '+S.round+')…':'Une note rapide, puis Entrée…'}" autocomplete="off" enterkeyhint="send"><button class="btn" type="submit">Noter</button></form>
+        <div class="qk">${['Butin','Indice trouvé','PNJ rencontré','Décision du groupe','À reprendre plus tard','Point d’XP'].map(t=>`<button type="button" data-qk="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+        <ul id="lList">${stLiveItems(x)}</ul></div>
+    </div></div></div>`}
+function stLiveItems(x){const L=(x.live||[]).slice().reverse();return L.length?L.map(n=>`<li><time>${stTime(n.ts)}${n.r?'<br>R'+n.r:''}</time><span>${esc(n.t)}</span><button type="button" data-ldel="${n.id}" aria-label="Supprimer la note">✕</button></li>`).join(''):'<li style="color:#9c8b6c;border:0">Rien pour l’instant. Les notes s’affichent ici, avec l’heure.</li>'}
+function stSessBind(el){const c=stCamp(),x=stSess();stCrumbBind(el);
+  stBind(el,'#sTitle',x,'title');stBind(el,'#sPrep',x,'prep');stBind(el,'#sSum',x,'sum');
+  el.querySelector('#sDate').onchange=e=>{x.date=e.target.value;stSave()};
+  el.querySelector('#sDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer ?';return}c.sess=c.sess.filter(s2=>s2.id!==x.id);ui.stS=null;stSave();stRender()};
+  const list=el.querySelector('#lList'),inp=el.querySelector('#lIn');
+  const bindDel=()=>list.querySelectorAll('[data-ldel]').forEach(b=>b.onclick=()=>{x.live=x.live.filter(n=>n.id!==b.dataset.ldel);stSave();list.innerHTML=stLiveItems(x);bindDel()});bindDel();
+  const add=t=>{t=t.trim();if(!t)return;(x.live||(x.live=[])).push({id:'l'+uid(),ts:Date.now(),t,r:S.turn>=0?S.round:0});stSave();list.innerHTML=stLiveItems(x);bindDel()};
+  el.querySelector('#lForm').onsubmit=e=>{e.preventDefault();add(inp.value);inp.value='';inp.focus()};
+  el.querySelectorAll('[data-qk]').forEach(b=>b.onclick=()=>{inp.value=b.dataset.qk+' : ';inp.focus()});
+  el.querySelectorAll('[data-open]').forEach(b=>b.onclick=e=>{if(e.target.closest('[data-rm]'))return;ui.stN=b.dataset.open;ui.stBack='sess';stRender()});
+  el.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{x.npcs=(x.npcs||[]).filter(id=>id!==b.dataset.rm);stSave();stRender()});
+  const sa=el.querySelector('#sAddN');if(sa)sa.onchange=()=>{if(!sa.value)return;(x.npcs||(x.npcs=[])).push(sa.value);stSave();stRender()}}
+/* fiche PNJ */
+function stNpcHTML(){const c=stCamp(),n=stNpc(),back=ui.stBack==='sess'&&stSess();
+  const crumb=back?[['Campagnes','list'],[c.name,'camp'],['Session '+stSess().n,'sessb'],[n.name,'']]:[['Campagnes','list'],[c.name,'camp'],['PNJ','pnj'],[n.name,'']];
+  const ta=(k,l,ph,cls)=>`<label class="fl" for="np_${k}">${l}</label><textarea id="np_${k}" data-nk="${k}" class="${cls||''}" placeholder="${ph}">${esc(n[k]||'')}</textarea>`;
+  const m=n.stat&&typeof BESTIARY!=='undefined'?BESTIARY.find(b=>b[0]===n.stat):null;
+  return `<div class="stbook">${stCrumb(crumb)}
+    <div class="npcsheet"><div><div class="por" ${stPic(n)}>${n.img?'':stInit(n)}<label>${n.img?'Changer le portrait':'Ajouter un portrait'}<input type="file" accept="image/*" id="npImg"></label></div>
+      <div class="stact"><button class="btn primary" type="button" id="npMap">Placer sur la carte</button><button class="btn ghost sm" type="button" id="npDel">Supprimer le PNJ</button></div></div>
+    <div><input class="sttitle" id="npN" value="${esc(n.name)}" aria-label="Nom du PNJ" style="width:100%">
+      <div class="nrow"><div><label class="fl" for="np_role">Rôle / métier</label><input class="in" id="np_role" data-nk="role" value="${esc(n.role||'')}" placeholder="Aubergiste, chef des bandits…"></div>
+        <div><label class="fl" for="np_place">Lieu</label><input class="in" id="np_place" data-nk="place" value="${esc(n.place||'')}" placeholder="Où le trouver"></div></div>
+      <label class="fl">Attitude envers le groupe</label><div class="seg">${['allié','neutre','hostile'].map(a=>`<button type="button" data-att="${a}" class="${(n.att||'neutre')===a?'on':''}">${a[0].toUpperCase()+a.slice(1)}</button>`).join('')}</div>
+      ${ta('look','Apparence','Âge, allure, voix, tics…')}${ta('pers','Personnalité','Traits, manières de parler…')}${ta('goal','Motivations','Ce qu’il veut, ce qu’il craint…')}
+      ${ta('secret','Secrets (MJ seulement)','Ce que les joueurs ne savent pas…','secret')}${ta('notes','Notes','Relations, ce que le groupe sait de lui…')}
+      <label class="fl" for="npStat">Statistiques (créature du bestiaire)</label><input class="in" id="npStat" list="npBest" value="${esc(n.stat||'')}" placeholder="Ex. : Vétéran, Mage, Bandit… (facultatif)"><datalist id="npBest">${(typeof BESTIARY!=='undefined'?BESTIARY:[]).map(b=>`<option value="${esc(b[0])}">`).join('')}</datalist>
+      <p class="hint" id="npStatI">${m?`${esc(m[1])} · CA ${m[3]} · PV ${esc(m[4])} · FP ${esc(m[11]||'?')}`:'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).'}</p>
+    </div></div></div>`}
+function stNpcBind(el){const c=stCamp(),n=stNpc();
+  el.querySelectorAll('[data-crumb]').forEach(b=>b.onclick=()=>{const k=b.dataset.crumb;ui.stN=null;if(k==='list'){ui.stC=null;ui.stS=null}else if(k==='camp'){ui.stS=null;if(ui.stBack!=='sess')ui.stTab=ui.stTab||'pnj'}else if(k==='pnj'){ui.stS=null;ui.stTab='pnj'}ui.stBack=null;stRender()});
+  stBind(el,'#npN',n,'name');el.querySelectorAll('[data-nk]').forEach(i=>stBind(el,`#${i.id}`,n,i.dataset.nk));
+  el.querySelectorAll('[data-att]').forEach(b=>b.onclick=()=>{n.att=b.dataset.att;stSave();el.querySelectorAll('[data-att]').forEach(x=>x.classList.toggle('on',x===b))});
+  const st=el.querySelector('#npStat');st.oninput=()=>{n.stat=st.value.trim();stSave();const m=BESTIARY.find(b=>b[0]===n.stat);el.querySelector('#npStatI').textContent=m?`${m[1]} · CA ${m[3]} · PV ${m[4]} · FP ${m[11]||'?'}`:n.stat?'Créature introuvable dans le bestiaire.':'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).'};
+  el.querySelector('#npImg').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const u=await processImg(f,false);const id='p'+uid();IMGS.set(id,u);IDB.put(id,u);n.img='ref:'+id;stSave();stRender()}catch(er){toast('Image illisible')}};
+  el.querySelector('#npDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer ?';return}c.npcs=c.npcs.filter(x=>x.id!==n.id);(c.sess||[]).forEach(x=>x.npcs=(x.npcs||[]).filter(id=>id!==n.id));ui.stN=null;stSave();stRender()};
+  el.querySelector('#npMap').onclick=()=>{const m=n.stat&&BESTIARY.find(b=>b[0]===n.stat);let t;
+    if(m){t=monsterChar(m,n.name);applyBestTok(t,m[0])}else t=C({name:n.name,side:'ennemi',hp:10,hpMax:10,ac:12,color:'#7a5a3a',actions:[]});
+    if(n.att!=='hostile'){t.side='pj';t.petOf='mj';t.npc=1}else t.side='ennemi';
+    if(n.img){t.img=n.img;t.por=n.img}t.label=stInit(n).replace(/&[^;]+;/g,'');const fr=findFree(t);t.x=fr.x;t.y=fr.y;S.chars.push(t);
+    if(S.turn>=0){const curId=S.order[S.turn];t.initTot=rollD(20)+(+t.initB||0);t.res={move:effSpeed(t),action:true,bonus:true,reaction:true};let k=S.order.findIndex(id=>{const o=byId(id);return o&&(o.initTot??-99)<t.initTot});if(k<0)k=S.order.length;S.order.splice(k,0,t.id);S.turn=Math.max(0,S.order.indexOf(curId))}
+    log(`<b>${esc(n.name)}</b> (PNJ) arrive sur la carte.`);ui.st=false;if(ui.ed)closeEditor();ui.sel=t.id;ui.mode='place';save();render();toast('Touche une case pour placer '+n.name)}}
 /* ---------- Soundboard : sons et musiques perso, joués sur cet appareil ---------- */
 const SBD=()=>S.sb||(S.sb={pads:[],vol:.8});
 const SBP={};let SBRAF=0;
