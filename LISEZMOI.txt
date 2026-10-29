@@ -13,7 +13,9 @@ Contenu du dossier
 Mise en route en bref
 1. Crée un projet Firebase, active la connexion anonyme et une Realtime Database.
 2. Colle le contenu de database.rules.json dans l'onglet Règles de la base.
-3. Mets ce dossier en ligne (glisser-déposer sur app.netlify.com/drop).
+3. Mets ce dossier en ligne sur GitHub Pages (dépôt valoulfifou/DnDadventure) :
+   Add file > Upload files, glisse les fichiers, puis Commit changes.
+   Le site se met à jour en 1 à 2 minutes.
 4. Ouvre l'adresse du site sur ta tablette ou ton ordi : c'est la table du MJ.
 5. Touche « Inviter », colle la configuration Firebase, crée la table,
    puis fais scanner le QR code à tes joueurs.
@@ -22,6 +24,11 @@ Le guide complet, étape par étape, t'a été donné avec ce dossier.
 
 Tester sans Firebase : ouvre index.html?test=1 puis le lien d'invitation
 dans un autre onglet du même navigateur (les onglets se parlent entre eux).
+
+Adresses
+- MJ : https://valoulfifou.github.io/DnDadventure/
+- Joueurs : https://valoulfifou.github.io/DnDadventure/joueur.html
+- TV : https://valoulfifou.github.io/DnDadventure/tv.html
 
 Écran TV
 - Après une mise à jour, recolle database.rules.json dans l'onglet Règles de la base (ajout de « tv »).

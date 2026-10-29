@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='28/10-21h55';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='29/10-11h20';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -469,7 +469,7 @@ body.mode-ed .app{background:repeating-linear-gradient(135deg,rgba(40,90,90,.035
 body.mode-ed .top{background:#2f5552;color:#f2efe6;border-radius:10px;padding:8px 12px;box-shadow:0 2px 0 rgba(0,0,0,.15)}
 body.mode-ed .top .brand,body.mode-ed .top .round{color:#f2efe6}
 body.mode-ed .top .round{background:#e0c060;color:#2b2416;padding:3px 10px;border-radius:999px;font-weight:700;letter-spacing:.1em}
-body.mode-ed #bInit,body.mode-ed #bEnd,body.mode-ed #bInvite,body.mode-ed #bTV,body.mode-ed #bData,body.mode-ed #init{display:none!important}
+body.mode-ed #bInit,body.mode-ed #bEnd,body.mode-ed #bInvite,body.mode-ed #bTV,body.mode-ed #init{display:none!important}
 body.mode-ed .top .btn{background:rgba(255,255,255,.1);color:#f2efe6;border-color:rgba(255,255,255,.35);box-shadow:none}
 body.mode-ed .top #bEdit{box-shadow:none;background:#e0c060;border-color:#e0c060;color:#2b2416}
 body.mode-ed .mapwrap{box-shadow:0 0 0 5px #dfe6e4,0 0 0 8px #2f5552!important;outline:none}
@@ -2917,6 +2917,32 @@ function wsPick(c,a){const L=wsList(c,a),R=wsRules(c,a);if(!L.length){toast('Auc
       el.querySelectorAll('[data-ws]').forEach(b=>b.onclick=()=>{close();wsStart(c,a,b.dataset.ws)})};
     el.querySelector('#wsQ').oninput=draw;el.querySelector('#wsNo').onclick=close;draw()})}
 function wsEnd(c,a){const e=(c.ef||[]).find(x=>x.m&&x.m.poly);if(a)spendX(c,a);if(e){c.ef=c.ef.filter(x=>x!==e)}polyEnd(c);save();render();if(a)endAction()}
+
+/* ----- Carte de test des sorts (magicien, druide, clerc contre un troll) ----- */
+function tstSpell(name,L,mod,dc,atk){const r=(window.SORTS||[]).find(x=>x[0]===name);if(!r)return null;const k=r[2]==='autre'?'auto':r[2];
+  let d=r[2]==='autre'?'0':String(r[7]||'0').replace(/mod/g,String(mod));if(r[1]===0&&/^\d*d\d+/.test(d)&&!['Décharge occulte','Pierre magique'].includes(r[0])){const m=1+(L>=5)+(L>=11)+(L>=17);d=d.replace(/^(\d*)d/,(x,n)=>((+n||1)*m)+'d')}
+  return A({name:r[0],kind:k,cost:r[3],range:+r[4]||0,area:+r[5]||0,bonus:atk,dc,save:r[6]||'DEX',dmg:d,dtype:r[8],half:!!r[9],slot:r[1],note:[r[10]||'',r[11]&&!/concentration/i.test(r[10]||'')?'Concentration':''].filter(Boolean).join(' · ')})}
+function tstPJ(o){const c=C({name:o.name,side:'pj',color:o.col,hp:o.hp,hpMax:o.hp,ac:o.ac,speed:9,initB:o.init,saves:o.saves,slots:o.slots,
+  actions:o.wpn.map(w=>A(w)).concat(o.extra||[],o.sp.map(n=>tstSpell(n,o.lvl,o.mod,o.dc,o.atk)).filter(Boolean))});
+  Object.assign(c,{lvl:o.lvl,prof:o.prof,mods:o.mods,cls:o.cls,tst:1,label:o.lab});c.res={move:9,action:true,bonus:true,reaction:true};return c}
+function makeTestMap(){if(!S.maps)ensureMaps();const cols=24,rows=16;
+  const e={id:uid(),name:'Test des sorts',objs:[],foes:[],map:{cols,rows,cell:S.map.cell||60,kind:'tiles',src:null,grid:true,walls:[],surf:{},tiles:makeTiles(cols,rows,'p',false)}};
+  const sl=(...n)=>{const o={};n.forEach((v,i)=>o[i+1]=[v,0]);return o};
+  const mage=tstPJ({name:'Elmira (magicienne niv. 9)',lab:'Ma',col:'#3b5bd6',hp:58,ac:12,init:2,lvl:9,prof:4,mod:4,dc:16,atk:8,cls:'magicien',mods:{FOR:-1,DEX:2,CON:2,INT:4,SAG:1,CHA:0},saves:{FOR:-1,DEX:2,CON:2,INT:8,SAG:5,CHA:0},slots:sl(4,3,3,3,1),
+    wpn:[{name:'Dague',kind:'attaque',bonus:6,dmg:'1d4+2',dtype:'perforant',range:1.5}],
+    sp:['Trait de feu','Rayon de givre','Poigne électrique','Projectile magique','Bouclier','Sommeil','Couleurs dansantes','Mains brûlantes','Armure de mage','Toile d\'araignée','Foulée brumeuse','Image miroir','Immobilisation de personne','Rayon ardent','Invisibilité','Boule de feu','Éclair','Contresort','Lenteur','Hâte','Dissipation de la magie','Métamorphose','Bannissement','Porte dimensionnelle','Tentacules noirs d\'Evard','Sphère résiliente d\'Otiluke','Cône de froid','Immobilisation de monstre','Mur de force']});
+  const dru=tstPJ({name:'Sylas (druide niv. 8, Lune)',lab:'Dr',col:'#3e7d3a',hp:60,ac:14,init:1,lvl:8,prof:3,mod:4,dc:15,atk:7,cls:'druide',mods:{FOR:0,DEX:1,CON:2,INT:0,SAG:4,CHA:0},saves:{FOR:0,DEX:1,CON:2,INT:3,SAG:7,CHA:0},slots:sl(4,3,3,2),
+    wpn:[{name:'Cimeterre',kind:'attaque',bonus:4,dmg:'1d6+1',dtype:'tranchant',range:1.5}],
+    extra:[A({name:'Forme sauvage',kind:'auto',cost:'bonus',range:0,dmg:'0',ws:{L:8,moon:true},note:'Deux utilisations par repos court.'})],
+    sp:['Gourdin magique','Flammes','Fouet épineux','Soins','Mot de guérison','Enchevêtrement','Lueurs féeriques','Vague tonnante','Peau d\'écorce','Rayon de lune','Sphère de feu','Croissance d\'épines','Appel de la foudre','Convocation de bête','Tempête de neige','Métamorphose','Peau de pierre','Mur de feu','Confusion','Liberté de mouvement']});
+  const clr=tstPJ({name:'Brunhild (clerc niv. 7)',lab:'Cl',col:'#b8892b',hp:52,ac:18,init:0,lvl:7,prof:3,mod:4,dc:15,atk:7,cls:'clerc',mods:{FOR:2,DEX:0,CON:2,INT:0,SAG:4,CHA:1},saves:{FOR:2,DEX:0,CON:2,INT:0,SAG:7,CHA:4},slots:sl(4,3,3,1),
+    wpn:[{name:'Masse d’armes',kind:'attaque',bonus:5,dmg:'1d6+2',dtype:'contondant',range:1.5}],
+    sp:['Flamme sacrée','Glas','Bénédiction','Fléau','Soins','Mot de guérison','Bouclier de la foi','Sanctuaire','Injonction','Aide','Arme spirituelle','Immobilisation de personne','Restauration partielle','Esprits gardiens','Mot de guérison de groupe','Retour à la vie','Malédiction','Gardien de la foi','Bannissement','Protection contre la mort']});
+  const P=[[mage,3,6],[dru,3,8],[clr,3,10]];P.forEach(([c,x,y])=>{c.x=x;c.y=y;e.foes.push(c)});
+  const add=(n,x,y,lab)=>{const m=BESTIARY.find(b=>b[0]===n);if(!m)return;const c=monsterChar(m,lab||n);applyBestTok(c,n);c.x=x;c.y=y;e.foes.push(c)};
+  add('Troll',16,7,'Troll');add('Ogre',18,10,'Ogre');add('Orc',13,5,'Orc');add('Gobelin',13,11,'Gobelin 1');add('Gobelin',14,12,'Gobelin 2');add('Mage',20,4,'Mage ennemi');
+  e.pos={};S.chars.filter(c=>c.side==='pj').forEach((c,i)=>{e.pos[c.id]=[1,2+i*2]});
+  const i=S.maps.findIndex(m=>m.id===S.curMap);S.maps.splice(i+1,0,e);switchMap(e.id,()=>{toast('Carte « Test des sorts » prête : lance le combat !');log('<b>Carte de test des sorts</b> : magicienne, druide et clerc (pilotés depuis la table) contre un troll, un ogre, un orc, deux gobelins et un mage.')})}
 /* ---------- Repousser / attirer (automatique, façon BG3) ---------- */
 const PUSHS={'vague tonnante':{d:3,on:'save'},'bourrasque':{d:4.5,on:'save'},'fouet epineux':{d:-3,on:'hit'},'ferrage foudroyant':{d:-3,on:'save'},'tourbillon de poussiere':{d:3,on:'save'},
   'raz-de-maree':{d:0,prone:1,on:'save'},'saute de vent':{d:1.5,on:'save'},'liane avide':{d:-6,on:'save'},'maelstrom':{d:-3,on:'save'},'tentacules de hadar':{d:0,on:'save'},'vague destructrice':{d:0,prone:1,on:'save'},'tsunami':{d:0,on:'save'}};
@@ -3338,10 +3364,10 @@ function ensureMaps(){if(!Array.isArray(S.maps)||!S.maps.length){S.maps=[{id:uid
   S.maps.forEach(m=>{if(m.id===S.curMap){delete m.map;delete m.objs;delete m.foes}})}
 const curMapE=()=>S.maps.find(m=>m.id===S.curMap);
 const blankMap=()=>({cols:20,rows:14,cell:S.map?.cell||60,kind:'tiles',src:null,grid:true,walls:[],surf:{},tiles:makeTiles(20,14,'p',true)});
-function stashMap(){const e=curMapE();e.map=S.map;e.objs=S.objs;e.foes=S.chars.filter(c=>c.side!=='pj');e.pos={};S.chars.forEach(c=>{if(c.side==='pj')e.pos[c.id]=[c.x,c.y]});S.chars=S.chars.filter(c=>c.side==='pj')}
-function loadMap(e){S.curMap=e.id;S.map=e.map||blankMap();S.objs=e.objs||[];if(!S.map.surf)S.map.surf={};S.chars=S.chars.concat((e.foes||[]).filter(c=>c.hp>0));delete e.map;delete e.objs;delete e.foes;
+function stashMap(){const e=curMapE();e.map=S.map;e.objs=S.objs;e.foes=S.chars.filter(c=>c.side!=='pj'||c.tst||c.sumOf);e.pos={};S.chars.forEach(c=>{if(c.side==='pj'&&!c.tst)e.pos[c.id]=[c.x,c.y]});S.chars=S.chars.filter(c=>c.side==='pj'&&!c.tst&&!c.sumOf)}
+function loadMap(e){S.curMap=e.id;S.map=e.map||blankMap();S.objs=e.objs||[];if(!S.map.surf)S.map.surf={};S.chars=S.chars.concat((e.foes||[]).filter(c=>c.hp>0||c.tst));delete e.map;delete e.objs;delete e.foes;
   tileCv=null;sampleURL=null;dirty();
-  S.chars.filter(c=>c.side==='pj').forEach(c=>{const p=e.pos&&e.pos[c.id];if(p){c.x=p[0];c.y=p[1]}else{const sp=spawnFor(c);if(sp){c.x=sp.x;c.y=sp.y}}
+  S.chars.filter(c=>c.side==='pj'&&!c.tst).forEach(c=>{const p=e.pos&&e.pos[c.id];if(p){c.x=p[0];c.y=p[1]}else{const sp=spawnFor(c);if(sp){c.x=sp.x;c.y=sp.y}}
     if(c.x<0||c.y<0||c.x+sz(c)>S.map.cols||c.y+sz(c)>S.map.rows||!fits(c,c.x,c.y,'end')){const f=findFree(c);c.x=f.x;c.y=f.y}})}
 function switchMap(id,after,cancel){const e=S.maps.find(m=>m.id===id);if(!e||id===S.curMap){after&&after();return}
   const go=()=>{if(S.testing){restorePlan();S.testing=null}stashMap();loadMap(e);if(S.turn>=0){S.order=[];S.turn=-1;log('Changement de carte : le combat est terminé.')}
@@ -4462,6 +4488,7 @@ function groupRest(kind){
 }
 function gmModal(){
   modal(`<h2>Outils du MJ</h2>
+    <div class="sect"><h3>Test des sorts</h3><div class="row" style="justify-content:flex-start"><button class="btn" id="gTest" type="button">Créer une carte de test</button></div><p class="hint">Nouvelle carte avec une magicienne, un druide (Forme sauvage) et un clerc que tu pilotes depuis la table, contre un troll, un ogre, un orc, deux gobelins et un mage.</p></div>
     <div class="sect"><h3>Repos du groupe</h3><div class="row" style="justify-content:flex-start"><button class="btn" id="gShort" type="button">Repos court</button><button class="btn primary" id="gLong" type="button">Repos long</button></div>
       <p class="hint">Repos long : PV et emplacements de sorts des PJ restaurés sur la table. Les joueurs connectés reçoivent le repos sur leur téléphone (ressources de classe et dés de vie compris).</p></div>
     <div class="sect"><h3>Joueurs</h3><label class="check"><input type="checkbox" id="gAuto" ${S.autoRoll===false?'':'checked'}> Valider automatiquement les jets envoyés depuis les téléphones</label>
@@ -4482,6 +4509,7 @@ function gmModal(){
     el.querySelector('#gRoll').onclick=()=>go(el.querySelector('#gF').value||'1d20');
     el.querySelector('#gF').onkeydown=e=>{if(e.key==='Enter')go(e.target.value||'1d20')};
     el.querySelector('#gN').oninput=e=>{S.gmNotes=e.target.value;clearTimeout(window.__gn);window.__gn=setTimeout(save,400)};
+    {const tb=el.querySelector('#gTest');if(tb)tb.onclick=()=>{close();makeTestMap()}}
     const sb=el.querySelector('#gShort'),lb=el.querySelector('#gLong');
     sb.onclick=()=>{close();groupRest('court')};
     lb.onclick=()=>{if(!lb.dataset.ok){lb.dataset.ok=1;lb.textContent='Confirmer le repos long';return}close();groupRest('long')};
