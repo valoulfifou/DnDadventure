@@ -1,0 +1,54 @@
+{
+  "rules": {
+    "tables": {
+      "$tid": {
+        ".read": "auth != null",
+        "meta": {
+          ".write": "auth != null && (!data.exists() || data.child('gm').val() === auth.uid)",
+          ".validate": "newData.child('gm').val() === auth.uid"
+        },
+        "view": {
+          ".write": "auth != null && root.child('tables').child($tid).child('meta/gm').val() === auth.uid"
+        },
+        "owners": {
+          ".write": "auth != null && root.child('tables').child($tid).child('meta/gm').val() === auth.uid"
+        },
+        "players": {
+          "$uid": {
+            ".write": "auth != null && (auth.uid === $uid || root.child('tables').child($tid).child('meta/gm').val() === auth.uid)"
+          }
+        },
+        "live": {
+          "$cid": {
+            ".write": "auth != null && (root.child('tables').child($tid).child('meta/gm').val() === auth.uid || root.child('tables').child($tid).child('owners').child($cid).val() === auth.uid)"
+          }
+        },
+        "rolls": {
+          "$cid": {
+            ".write": "auth != null && (root.child('tables').child($tid).child('meta/gm').val() === auth.uid || root.child('tables').child($tid).child('owners').child($cid).val() === auth.uid)"
+          }
+        },
+        "tv": {
+          ".write": "auth != null && root.child('tables').child($tid).child('meta/gm').val() === auth.uid"
+        },
+        "turn": {
+          ".write": "auth != null && root.child('tables').child($tid).child('meta/gm').val() === auth.uid"
+        },
+        "pmap": {
+          ".write": "auth != null && root.child('tables').child($tid).child('meta/gm').val() === auth.uid"
+        },
+        "req": {
+          "$cid": {
+            ".write": "auth != null && (root.child('tables').child($tid).child('meta/gm').val() === auth.uid || root.child('tables').child($tid).child('owners').child($cid).val() === auth.uid)"
+          }
+        }
+      }
+    },
+    "share": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.child('u').val() === auth.uid)"
+      }
+    }
+  }
+}

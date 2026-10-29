@@ -1,0 +1,32 @@
+TABLE DE COMBAT EN LIGNE
+========================
+
+Contenu du dossier
+- index.html ........... la table du MJ (battle map, initiative, éditeur, invitations)
+- joueur.html .......... l'appli des joueurs (fiches 5e, mode combat connecté)
+- tv.html .............. l'écran TV : tape le code de la table pour afficher la carte en plein écran
+- tv-app.html, net-legacy.js : version de l'écran TV compatible avec les navigateurs de TV (ne pas modifier)
+- net.js ............... la connexion en direct (ne pas modifier)
+- firebase-config.js ... ta configuration Firebase (facultatif, voir le guide)
+- database.rules.json .. les règles de sécurité à coller dans Firebase
+
+Mise en route en bref
+1. Crée un projet Firebase, active la connexion anonyme et une Realtime Database.
+2. Colle le contenu de database.rules.json dans l'onglet Règles de la base.
+3. Mets ce dossier en ligne (glisser-déposer sur app.netlify.com/drop).
+4. Ouvre l'adresse du site sur ta tablette ou ton ordi : c'est la table du MJ.
+5. Touche « Inviter », colle la configuration Firebase, crée la table,
+   puis fais scanner le QR code à tes joueurs.
+
+Le guide complet, étape par étape, t'a été donné avec ce dossier.
+
+Tester sans Firebase : ouvre index.html?test=1 puis le lien d'invitation
+dans un autre onglet du même navigateur (les onglets se parlent entre eux).
+
+Écran TV
+- Après une mise à jour, recolle database.rules.json dans l'onglet Règles de la base (ajout de « tv »).
+- Sur la tablette : bouton « Écran TV », coche « Diffuser ».
+- Sur la TV : ouvre l'adresse du site suivie de /tv.html et tape le code de la table.
+
+Crédits sons
+- Effets sonores : Kenney (www.kenney.nl), licence CC0 (domaine public).
