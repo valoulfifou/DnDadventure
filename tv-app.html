@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='29/10-14h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='29/10-15h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -79,6 +79,51 @@ body.tvmode #tvhud.b3h .b3bar{--b3w:52px}
 body.tvmode #tvhud.b3h .b3cap b{font-size:20px}
 body.tvmode #tvhud.b3h .b3cap span{width:340px;height:15px}
 body.tvmode #tvhud.b3h .b3cap span em{font-size:11px;line-height:14px}
+
+/* ---------- Soundboard ---------- */
+.sbview{display:none}
+body.mode-sb .sbview{display:block}
+body.mode-sb .app>:not(.top):not(.sbview){display:none!important}
+body.mode-sb .tools>*:not(#bTV){display:none!important}
+body.mode-sb .top .round{visibility:hidden}
+.modes .mode#tSb{position:relative}
+.modes .mode#tSb.live::after{content:"";position:absolute;right:7px;top:8px;width:8px;height:8px;border-radius:50%;background:#3fbf6a;box-shadow:0 0 6px #3fbf6a}
+.sbview{background:linear-gradient(180deg,#17140f,#0e0c09);border:1px solid #5a4a30;border-radius:14px;padding:16px 18px 22px;color:#f2e6c8;box-shadow:0 6px 18px rgba(0,0,0,.35);min-height:calc(100vh - 140px)}
+.sbhead{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:6px}
+.sbhead h2{margin:0;font-family:var(--f-display);font-size:24px;letter-spacing:.06em;color:#e8c77a;flex:1 1 auto}
+.sbhead .btn{background:#2a241b;color:#f2e6c8;border-color:#6b5a3a}
+.sbhead .btn.stop{background:#7a1f18;border-color:#a2302a;color:#fff}
+.sbhead label.btn{position:relative;overflow:hidden}
+.sbhead label.btn input{position:absolute;top:0;right:0;bottom:0;left:0;opacity:0;cursor:pointer}
+.sbvol{display:flex;align-items:center;gap:8px;font-size:13px;color:#c9b38a}
+.sbvol input{width:130px;accent-color:#e8c77a}
+.sbtv{font-size:13px;color:#9c8b6c;margin:2px 0 14px}
+.sbtv b{color:#e8c77a}
+.sbsec{margin-top:16px}
+.sbsec h3{margin:0 0 10px;font-family:var(--f-display);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#c9a45c;display:flex;align-items:center;gap:10px}
+.sbsec h3::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,#5a4a30,transparent)}
+.sbgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sbpad{--pc:#6b4a2a;position:relative;appearance:none;border:0;border-radius:12px;min-height:104px;padding:12px 12px 16px;text-align:left;cursor:pointer;color:#fff;font:inherit;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--pc) 85%,#fff 8%),color-mix(in srgb,var(--pc) 70%,#000 45%));box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 3px 0 color-mix(in srgb,var(--pc) 55%,#000 60%),0 6px 12px rgba(0,0,0,.35);transition:transform .08s,box-shadow .2s;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;user-select:none;-webkit-user-select:none}
+.sbpad:active{transform:translateY(2px)}
+.sbpad .nm{font-family:var(--f-display);font-size:16px;line-height:1.2;text-shadow:0 1px 3px rgba(0,0,0,.6);word-break:break-word;padding-right:26px}
+.sbpad .meta{display:flex;align-items:center;gap:8px;font-size:12px;opacity:.85}
+.sbpad .st{font-size:22px;line-height:1}
+.sbpad .ed{position:absolute;right:6px;top:6px;width:30px;height:30px;border-radius:8px;border:0;background:rgba(0,0,0,.28);color:#fff;font-size:16px;cursor:pointer;display:grid;place-items:center}
+.sbpad .pg{position:absolute;left:0;bottom:0;height:5px;width:0;background:rgba(255,255,255,.85)}
+.sbpad.on{box-shadow:inset 0 0 0 3px #fff,0 0 18px color-mix(in srgb,var(--pc) 70%,#fff 30%),0 6px 12px rgba(0,0,0,.35)}
+.sbpad .eq{display:none;gap:2px;align-items:flex-end;height:16px}
+.sbpad.on .eq{display:inline-flex}
+.sbpad .eq i{width:3px;background:#fff;border-radius:1px;animation:sbeq .9s ease-in-out infinite alternate}
+.sbpad .eq i:nth-child(2){animation-delay:-.3s}.sbpad .eq i:nth-child(3){animation-delay:-.6s}.sbpad .eq i:nth-child(4){animation-delay:-.15s}
+@keyframes sbeq{from{height:3px}to{height:16px}}
+.sbempty{border:2px dashed #4a3e2a;border-radius:12px;padding:22px;text-align:center;color:#9c8b6c;font-size:14px}
+.sbcols{display:flex;flex-wrap:wrap;gap:8px}
+.sbcols button{width:38px;height:38px;border-radius:10px;border:2px solid transparent;cursor:pointer}
+.sbcols button.on{border-color:#2b2416;box-shadow:0 0 0 2px #fff inset}
+#tvblk{position:fixed;top:0;right:0;bottom:0;left:0;background:#000;z-index:100;opacity:0;pointer-events:none;transition:opacity .9s}
+#tvblk.on{opacity:1}
+#tvfs{z-index:101}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -582,7 +627,7 @@ body.tvmode .tvchip.cur i.framed{width:66px;height:116px;--dfc:#ffd25a;border:0;
 <div class="app">
   <header class="top">
     <h1 class="brand">Table de Combat</h1>
-    <div class="modes" role="tablist" aria-label="Mode"><button type="button" role="tab" id="tCombat" class="mode">⚔ Combat</button><button type="button" role="tab" id="tCrea" class="mode">✎ Création</button></div>
+    <div class="modes" role="tablist" aria-label="Mode"><button type="button" role="tab" id="tCombat" class="mode">⚔ Combat</button><button type="button" role="tab" id="tCrea" class="mode">✎ Création</button><button type="button" role="tab" id="tSb" class="mode">♫ Soundboard</button></div>
     <span class="round" id="round"></span>
     <span class="spacer"></span>
     <div class="tools">
@@ -602,6 +647,7 @@ body.tvmode .tvchip.cur i.framed{width:66px;height:116px;--dfc:#ffd25a;border:0;
     </div>
   </header>
   <nav class="init" id="init" aria-label="Ordre d'initiative"></nav>
+  <section class="sbview" id="sbView" aria-label="Soundboard"></section>
   <div class="main">
     <div class="mapcol">
       <div id="banner"></div>
@@ -3551,7 +3597,8 @@ var __values = (this && this.__values) || function(o) {
     function render() { if (TVM) {
         tvRender();
         return;
-    } ensureMaps(); renderMapbar(); $('#mapwrap').style.touchAction = ui.ed && !['pan', 'pions'].includes(ui.ed.tool) ? 'none' : ''; document.body.classList.toggle('mode-ed', !!ui.ed); $('#tCombat').classList.toggle('on', !ui.ed); $('#tCrea').classList.toggle('on', !!ui.ed); $('#tCombat').setAttribute('aria-selected', !ui.ed); $('#tCrea').setAttribute('aria-selected', !!ui.ed); renderTop(); renderInit(); renderParty(); renderBoard(); renderBanner(); renderPanel(); renderLog(); renderPicker(); }
+    } ensureMaps(); renderMapbar(); $('#mapwrap').style.touchAction = ui.ed && !['pan', 'pions'].includes(ui.ed.tool) ? 'none' : ''; document.body.classList.toggle('mode-ed', !!ui.ed && !ui.sb); document.body.classList.toggle('mode-sb', !!ui.sb); $('#tSb').classList.toggle('on', !!ui.sb); $('#tSb').setAttribute('aria-selected', !!ui.sb); if (ui.sb)
+        sbRender(); $('#tCombat').classList.toggle('on', !ui.ed && !ui.sb); $('#tCrea').classList.toggle('on', !!ui.ed && !ui.sb); $('#tCombat').setAttribute('aria-selected', !ui.ed && !ui.sb); $('#tCrea').setAttribute('aria-selected', !!ui.ed && !ui.sb); renderTop(); renderInit(); renderParty(); renderBoard(); renderBanner(); renderPanel(); renderLog(); renderPicker(); }
     function renderTop() {
         var _c;
         {
@@ -9223,9 +9270,24 @@ var __values = (this && this.__values) || function(o) {
     $('#bJour').onclick = journalModal;
     $('#bAnim').onclick = animModal;
     /* ---------- Onglets Combat / Création ---------- */
-    $('#tCombat').onclick = function () { if (ui.ed)
+    $('#tCombat').onclick = function () { if (ui.sb) {
+        ui.sb = false;
+        render();
+        scheduleTV();
+        tvPublishSt();
+        if (!ui.ed)
+            return;
+    } if (ui.ed)
         closeEditor(); };
-    $('#tCrea').onclick = function () { if (ui.ed) {
+    $('#tSb').onclick = function () { if (ui.sb)
+        return; ui.sb = true; render(); scheduleTV(); tvPublishSt(); };
+    $('#tCrea').onclick = function () { if (ui.sb) {
+        ui.sb = false;
+        render();
+        tvPublishSt();
+        if (ui.ed)
+            return;
+    } if (ui.ed) {
         if (!ui.pick) {
             ui.pick = true;
             render();
@@ -9994,7 +10056,7 @@ var __values = (this && this.__values) || function(o) {
             return;
         var a = ui.act, sel = byId(ui.sel);
         var area = ui.mode === 'target' && sel && a && a.area > 0 && ui.center ? { x: ui.center.x, y: ui.center.y, r: Math.floor(a.area / CELL_M + 1e-9), col: dcol(a), k: shapeOf(a) ? areaKeys(sel, a, ui.center).join(';') : '' } : null;
-        var st = { an: S.anims || {}, ak: S.animKw || null, round: S.round || 0, cur: (S.turn >= 0 && cur()) ? cur().id : '', order: S.turn >= 0 ? S.order.filter(function (id) { var c = byId(id); return c && !c.hid && (c.hp > 0 || c.side === 'pj'); }) : [], sel: ui.sel || '', area: area, cam: (S.turn >= 0 && S.tvAuto !== false && cur()) ? autoCam(cur()) : S.tvFollow ? tvCam() : null, snd: SD() };
+        var st = { an: S.anims || {}, ak: S.animKw || null, round: S.round || 0, cur: (S.turn >= 0 && cur()) ? cur().id : '', order: S.turn >= 0 ? S.order.filter(function (id) { var c = byId(id); return c && !c.hid && (c.hp > 0 || c.side === 'pj'); }) : [], sel: ui.sel || '', area: area, cam: (S.turn >= 0 && S.tvAuto !== false && cur()) ? autoCam(cur()) : S.tvFollow ? tvCam() : null, snd: SD(), blk: ui.sb ? 1 : 0 };
         var j = JSON.stringify(st);
         if (TVS.cache.st === j)
             return;
@@ -10207,6 +10269,7 @@ var __values = (this && this.__values) || function(o) {
         }
         if (k === 'st') {
             TVS.st = v;
+            tvBlack(!!v.blk);
             if (v.an)
                 S.anims = v.an;
             if (v.ak)
@@ -11510,6 +11573,252 @@ var __values = (this && this.__values) || function(o) {
             el.querySelector('#mOk').onclick = function () { sndUI = function () { }; close(); };
         });
     }
+    /* ---------- Soundboard : sons et musiques perso, joués sur cet appareil ---------- */
+    var SBD = function () { return S.sb || (S.sb = { pads: [], vol: .8 }); };
+    var SBP = {};
+    var SBRAF = 0;
+    var SBCOL = ['#8a2a22', '#b0562a', '#a8841f', '#4f7a2a', '#2a7a6a', '#2a5a8a', '#4a3a8a', '#7a2a6a', '#5a5048', '#2b2b30'];
+    function tvBlack(on) { if (!TVM)
+        return; var d = $('#tvblk'); if (!d) {
+        d = document.createElement('div');
+        d.id = 'tvblk';
+        document.body.appendChild(d);
+    } d.classList.toggle('on', on); }
+    function sbPlaying() { return Object.keys(SBP).length > 0; }
+    function sbLive() { var b = $('#tSb'); if (b)
+        b.classList.toggle('live', sbPlaying()); }
+    function sbGainOut(el, vol) {
+        var x = sndInit();
+        var g = null;
+        if (x) {
+            try {
+                var n = x.createMediaElementSource(el);
+                g = x.createGain();
+                g.gain.value = .0001;
+                n.connect(g);
+                g.connect(x.destination);
+            }
+            catch (e) {
+                g = null;
+            }
+        }
+        if (!g)
+            el.volume = Math.min(1, vol);
+        return g;
+    }
+    function sbVolOf(p) { var _c, _e; return Math.max(0, Math.min(1, ((_c = p.vol) !== null && _c !== void 0 ? _c : 1) * ((_e = SBD().vol) !== null && _e !== void 0 ? _e : .8))); }
+    function sbPlay(id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var D, p, blob, url, el, h, x, v, fade;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        D = SBD(), p = D.pads.find(function (z) { return z.id === id; });
+                        if (!p)
+                            return [2 /*return*/];
+                        sndUnlock();
+                        if (SBP[id]) {
+                            sbStop(id);
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, IDB.get('sb_' + id, 'snd')];
+                    case 1:
+                        blob = _c.sent();
+                        if (!blob) {
+                            toast('Fichier introuvable sur cet appareil');
+                            return [2 /*return*/];
+                        }
+                        if (p.kind === 'mus')
+                            D.pads.filter(function (z) { return z.kind === 'mus' && z.id !== id && SBP[z.id]; }).forEach(function (z) { return sbStop(z.id); });
+                        url = URL.createObjectURL(blob), el = new Audio();
+                        el.setAttribute('playsinline', '');
+                        el.preload = 'auto';
+                        el.src = url;
+                        el.loop = p.loop != null ? !!p.loop : p.kind === 'mus';
+                        h = { el: el, url: url, g: null, p: p };
+                        SBP[id] = h;
+                        h.g = sbGainOut(el, sbVolOf(p));
+                        x = SND.ctx, v = sbVolOf(p), fade = p.kind === 'mus' ? 1.2 : .02;
+                        if (h.g)
+                            h.g.gain.setTargetAtTime(v, x.currentTime, fade / 3);
+                        el.onended = function () { if (SBP[id] === h)
+                            sbKill(id); };
+                        el.onerror = function () { toast('Fichier audio illisible : ' + (p.name || '')); sbKill(id); };
+                        el.play().catch(function () { toast('Touche l’écran puis relance le son'); sbKill(id); });
+                        sbLive();
+                        sbPadUI(id);
+                        sbTick();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    }
+    function sbFree(h) { try {
+        h.el.pause();
+        h.el.removeAttribute('src');
+        h.el.load();
+    }
+    catch (e) { } try {
+        h.g && h.g.disconnect();
+    }
+    catch (e) { } setTimeout(function () { return URL.revokeObjectURL(h.url); }, 500); }
+    function sbKill(id) { var h = SBP[id]; if (!h)
+        return; delete SBP[id]; sbFree(h); sbLive(); sbPadUI(id); }
+    function sbStop(id) {
+        var h = SBP[id];
+        if (!h)
+            return;
+        var x = SND.ctx, ms = h.p.kind === 'mus' ? 900 : 150;
+        delete SBP[id];
+        h.el.onended = null;
+        h.el.onerror = null;
+        sbLive();
+        sbPadUI(id);
+        if (h.g && x) {
+            h.g.gain.setTargetAtTime(.0001, x.currentTime, ms / 3000);
+        }
+        else {
+            try {
+                h.el.volume = 0;
+            }
+            catch (e) { }
+        }
+        setTimeout(function () { return sbFree(h); }, ms + 60);
+    }
+    function sbStopAll() { Object.keys(SBP).forEach(sbStop); }
+    function sbVolApply() { var x = SND.ctx; Object.values(SBP).forEach(function (h) { var v = sbVolOf(h.p); if (h.g && x)
+        h.g.gain.setTargetAtTime(v, x.currentTime, .05);
+    else
+        h.el.volume = Math.min(1, v); }); }
+    function sbPadUI(id) { var b = document.querySelector(".sbpad[data-sb=\"".concat(id, "\"]")); if (!b)
+        return; var on = !!SBP[id]; b.classList.toggle('on', on); var st = b.querySelector('.st'); if (st)
+        st.textContent = on ? '■' : '▶'; if (!on) {
+        var pg = b.querySelector('.pg');
+        if (pg)
+            pg.style.width = '0';
+    } }
+    function sbTick() { if (SBRAF)
+        return; var f = function () { SBRAF = 0; if (!sbPlaying())
+        return; Object.entries(SBP).forEach(function (_c) {
+        var _e = __read(_c, 2), id = _e[0], h = _e[1];
+        var pg = document.querySelector(".sbpad[data-sb=\"".concat(id, "\"] .pg"));
+        if (pg && h.el.duration > 0)
+            pg.style.width = (100 * h.el.currentTime / h.el.duration).toFixed(1) + '%';
+    }); SBRAF = requestAnimationFrame(f); }; SBRAF = requestAnimationFrame(f); }
+    var SB_ACC = 'audio/*,audio/mpeg,audio/mp3,audio/mp4,audio/x-m4a,audio/wav,audio/ogg,.mp3,.m4a,.aac,.wav,.ogg,.flac';
+    function sbRender() {
+        var _this = this;
+        var _c, _e;
+        var el = $('#sbView');
+        if (!el)
+            return;
+        var D = SBD();
+        var pad = function (p) { return "<div class=\"sbpad ".concat(SBP[p.id] ? 'on' : '', "\" role=\"button\" tabindex=\"0\" data-sb=\"").concat(p.id, "\" style=\"--pc:").concat(p.col || '#6b4a2a', "\" aria-label=\"").concat(esc(p.name), "\">\n      <span class=\"nm\">").concat(esc(p.name), "</span>\n      <span class=\"meta\"><span class=\"st\">").concat(SBP[p.id] ? '■' : '▶', "</span>").concat((p.loop != null ? p.loop : p.kind === 'mus') ? '<span title="En boucle">⟳ boucle</span>' : '', "<span class=\"eq\"><i></i><i></i><i></i><i></i></span></span>\n      <button type=\"button\" class=\"ed\" data-sbed=\"").concat(p.id, "\" aria-label=\"Modifier ").concat(esc(p.name), "\">\u22EF</button><span class=\"pg\"></span></div>"); };
+        var sec = function (k, t, emp) { var L = D.pads.filter(function (p) { return p.kind === k; }); return "<div class=\"sbsec\"><h3>".concat(t, "</h3>").concat(L.length ? "<div class=\"sbgrid\">".concat(L.map(pad).join(''), "</div>") : "<div class=\"sbempty\">".concat(emp, "</div>"), "</div>"); };
+        el.innerHTML = "<div class=\"sbhead\"><h2>\u266B Soundboard</h2>\n      <label class=\"btn\">+ Musiques<input type=\"file\" accept=\"".concat(SB_ACC, "\" multiple data-sbadd=\"mus\"></label>\n      <label class=\"btn\">+ Effets sonores<input type=\"file\" accept=\"").concat(SB_ACC, "\" multiple data-sbadd=\"sfx\"></label>\n      <span class=\"sbvol\">Volume <input type=\"range\" id=\"sbVol\" min=\"0\" max=\"100\" value=\"").concat(Math.round(((_c = D.vol) !== null && _c !== void 0 ? _c : .8) * 100), "\"><output>").concat(Math.round(((_e = D.vol) !== null && _e !== void 0 ? _e : .8) * 100), " %</output></span>\n      <button type=\"button\" class=\"btn stop\" id=\"sbStopAll\">\u25A0 Tout arr\u00EAter</button></div>\n    <p class=\"sbtv\">").concat(S.tvOn ? 'La TV affiche un <b>écran noir</b> tant que tu es sur cet onglet. ' : '', "Les sons jouent sur cet appareil : branche-le \u00E0 une enceinte (Bluetooth, c\u00E2ble ou AirPlay). Touche une case pour lancer, touche-la encore pour arr\u00EAter.</p>\n    ").concat(sec('mus', 'Musiques', 'Aucune musique. « + Musiques » pour importer tes MP3.<br><small>Une seule musique à la fois : en lancer une autre fait un fondu.</small>'), "\n    ").concat(sec('sfx', 'Effets sonores', 'Aucun effet. « + Effets sonores » pour importer tes sons.<br><small>Les effets peuvent se superposer.</small>'));
+        el.querySelectorAll('[data-sb]').forEach(function (b) { b.onclick = function (e) { if (e.target.closest('[data-sbed]'))
+            return; sbPlay(b.dataset.sb); }; b.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            sbPlay(b.dataset.sb);
+        } }; });
+        el.querySelectorAll('[data-sbed]').forEach(function (b) { return b.onclick = function (e) { e.stopPropagation(); sbEdit(b.dataset.sbed); }; });
+        el.querySelectorAll('[data-sbadd]').forEach(function (i) { return i.onchange = function (e) { return __awaiter(_this, void 0, void 0, function () {
+            var k, n, _c, _e, f, id, er_1, e_21_1;
+            var e_21, _f;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0:
+                        k = i.dataset.sbadd;
+                        n = 0;
+                        _g.label = 1;
+                    case 1:
+                        _g.trys.push([1, 9, 10, 11]);
+                        _c = __values(e.target.files), _e = _c.next();
+                        _g.label = 2;
+                    case 2:
+                        if (!!_e.done) return [3 /*break*/, 8];
+                        f = _e.value;
+                        id = 's' + uid();
+                        _g.label = 3;
+                    case 3:
+                        _g.trys.push([3, 5, , 6]);
+                        return [4 /*yield*/, IDB.put('sb_' + id, f, 'snd')];
+                    case 4:
+                        _g.sent();
+                        return [3 /*break*/, 6];
+                    case 5:
+                        er_1 = _g.sent();
+                        toast('Impossible d’enregistrer ' + f.name);
+                        return [3 /*break*/, 7];
+                    case 6:
+                        D.pads.push({ id: id, name: f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim() || 'Son', kind: k, col: SBCOL[(D.pads.length) % SBCOL.length], vol: 1 });
+                        n++;
+                        _g.label = 7;
+                    case 7:
+                        _e = _c.next();
+                        return [3 /*break*/, 2];
+                    case 8: return [3 /*break*/, 11];
+                    case 9:
+                        e_21_1 = _g.sent();
+                        e_21 = { error: e_21_1 };
+                        return [3 /*break*/, 11];
+                    case 10:
+                        try {
+                            if (_e && !_e.done && (_f = _c.return)) _f.call(_c);
+                        }
+                        finally { if (e_21) throw e_21.error; }
+                        return [7 /*endfinally*/];
+                    case 11:
+                        save();
+                        toast(n + (k === 'mus' ? ' musique(s)' : ' effet(s)') + ' ajouté(s)');
+                        sbRender();
+                        return [2 /*return*/];
+                }
+            });
+        }); }; });
+        var v = el.querySelector('#sbVol');
+        v.oninput = function () { D.vol = +v.value / 100; v.nextElementSibling.textContent = v.value + ' %'; sbVolApply(); };
+        v.onchange = function () { return save(); };
+        el.querySelector('#sbStopAll').onclick = sbStopAll;
+        Object.keys(SBP).forEach(sbPadUI);
+        sbTick();
+    }
+    function sbEdit(id) {
+        var _c, _e;
+        var D = SBD(), p = D.pads.find(function (z) { return z.id === id; });
+        if (!p)
+            return;
+        var col = p.col || SBCOL[0];
+        modal("<h2>Modifier le son</h2>\n    <label class=\"fld\">Nom<input type=\"text\" id=\"sbN\" value=\"".concat(esc(p.name), "\" maxlength=\"40\"></label>\n    <div class=\"fld\">Type<div class=\"seg\"><button type=\"button\" data-k=\"mus\" class=\"").concat(p.kind === 'mus' ? 'on' : '', "\">Musique</button><button type=\"button\" data-k=\"sfx\" class=\"").concat(p.kind === 'sfx' ? 'on' : '', "\">Effet sonore</button></div></div>\n    <label class=\"check\"><input type=\"checkbox\" id=\"sbL\" ").concat((p.loop != null ? p.loop : p.kind === 'mus') ? 'checked' : '', "> Jouer en boucle</label>\n    <label class=\"fld lrow\">Volume de ce son <output>").concat(Math.round(((_c = p.vol) !== null && _c !== void 0 ? _c : 1) * 100), " %</output><input type=\"range\" id=\"sbV\" min=\"0\" max=\"100\" value=\"").concat(Math.round(((_e = p.vol) !== null && _e !== void 0 ? _e : 1) * 100), "\"></label>\n    <div class=\"fld\">Couleur<div class=\"sbcols\">").concat(SBCOL.map(function (c) { return "<button type=\"button\" data-c=\"".concat(c, "\" class=\"").concat(c === col ? 'on' : '', "\" style=\"background:").concat(c, "\" aria-label=\"Couleur\"></button>"); }).join(''), "</div></div>\n    <div class=\"row\"><button class=\"btn ghost\" id=\"sbDel\" type=\"button\">Supprimer</button><span class=\"spacer\"></span><button class=\"btn\" id=\"mCancel\" type=\"button\">Annuler</button><button class=\"btn primary\" id=\"mOk\" type=\"button\">Enregistrer</button></div>"), function (el) {
+            var kind = p.kind;
+            el.querySelectorAll('[data-k]').forEach(function (b) { return b.onclick = function () { kind = b.dataset.k; el.querySelectorAll('[data-k]').forEach(function (x) { return x.classList.toggle('on', x === b); }); el.querySelector('#sbL').checked = kind === 'mus'; }; });
+            el.querySelectorAll('[data-c]').forEach(function (b) { return b.onclick = function () { col = b.dataset.c; el.querySelectorAll('[data-c]').forEach(function (x) { return x.classList.toggle('on', x === b); }); }; });
+            var r = el.querySelector('#sbV');
+            r.oninput = function () { r.previousElementSibling.textContent = r.value + ' %'; };
+            el.querySelector('#mCancel').onclick = close;
+            el.querySelector('#sbDel').onclick = function (e) { var b = e.target; if (!b.dataset.ok) {
+                b.dataset.ok = 1;
+                b.textContent = 'Confirmer la suppression';
+                return;
+            } if (SBP[id])
+                sbKill(id); D.pads = D.pads.filter(function (z) { return z.id !== id; }); IDB.del('sb_' + id, 'snd'); save(); close(); sbRender(); };
+            el.querySelector('#mOk').onclick = function () {
+                p.name = el.querySelector('#sbN').value.trim() || p.name;
+                p.kind = kind;
+                p.loop = el.querySelector('#sbL').checked;
+                p.vol = +r.value / 100;
+                p.col = col;
+                if (SBP[id]) {
+                    SBP[id].el.loop = p.loop;
+                    SBP[id].p = p;
+                    sbVolApply();
+                }
+                save();
+                close();
+                sbRender();
+            };
+        });
+    }
     /* ---------- Attaques d'opportunité ---------- */
     var AOO_CB = null;
     var aooWeapons = function (f) { return (f.actions || []).filter(function (a) { return a.kind === 'attaque' && a.range > 0 && a.range <= 3 + 1e-6; }); };
@@ -11609,7 +11918,7 @@ var __values = (this && this.__values) || function(o) {
     var ambCustom = function () { return SD().ambc || (SD().ambc = []); };
     var AMBFAIL = new Set();
     function ambLoad(id) {
-        return __awaiter(this, void 0, void 0, function () { var b, e_21; return __generator(this, function (_c) {
+        return __awaiter(this, void 0, void 0, function () { var b, e_22; return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
                     if (AMBBUF[id])
@@ -11625,7 +11934,7 @@ var __values = (this && this.__values) || function(o) {
                     b = _c.sent();
                     return [3 /*break*/, 4];
                 case 3:
-                    e_21 = _c.sent();
+                    e_22 = _c.sent();
                     return [3 /*break*/, 4];
                 case 4:
                     if (!b) {
@@ -11717,8 +12026,8 @@ var __values = (this && this.__values) || function(o) {
     }
     function tvPublishAmb() {
         return __awaiter(this, void 0, void 0, function () {
-            var T, _loop_11, _c, _e, a, e_22_1;
-            var e_22, _f;
+            var T, _loop_11, _c, _e, a, e_23_1;
+            var e_23, _f;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -11767,14 +12076,14 @@ var __values = (this && this.__values) || function(o) {
                         return [3 /*break*/, 2];
                     case 5: return [3 /*break*/, 8];
                     case 6:
-                        e_22_1 = _g.sent();
-                        e_22 = { error: e_22_1 };
+                        e_23_1 = _g.sent();
+                        e_23 = { error: e_23_1 };
                         return [3 /*break*/, 8];
                     case 7:
                         try {
                             if (_e && !_e.done && (_f = _c.return)) _f.call(_c);
                         }
-                        finally { if (e_22) throw e_22.error; }
+                        finally { if (e_23) throw e_23.error; }
                         return [7 /*endfinally*/];
                     case 8: return [2 /*return*/];
                 }
@@ -12430,7 +12739,7 @@ var __values = (this && this.__values) || function(o) {
     }
     /* ---------- Emplacements de départ des joueurs ---------- */
     function spawnFor(c) {
-        var e_23, _c;
+        var e_24, _c;
         var L = (S.map.spawns || []).map(function (k) { return k.split(',').map(Number); });
         try {
             for (var L_2 = __values(L), L_2_1 = L_2.next(); !L_2_1.done; L_2_1 = L_2.next()) {
@@ -12439,12 +12748,12 @@ var __values = (this && this.__values) || function(o) {
                     return { x: x, y: y };
             }
         }
-        catch (e_23_1) { e_23 = { error: e_23_1 }; }
+        catch (e_24_1) { e_24 = { error: e_24_1 }; }
         finally {
             try {
                 if (L_2_1 && !L_2_1.done && (_c = L_2.return)) _c.call(L_2);
             }
-            finally { if (e_23) throw e_23.error; }
+            finally { if (e_24) throw e_24.error; }
         }
         return null;
     }
@@ -12597,7 +12906,7 @@ var __values = (this && this.__values) || function(o) {
             el.querySelector('#mCancel').onclick = close;
             list.forEach(function (c) { var i = el.querySelector("[data-i=\"".concat(c.id, "\"]")); askRoll(c, { kind: 'init', label: 'Initiative', detail: 'Lance 1d20 et saisis le dé : la table ajoute ton bonus.' }, function (v) { i.value = v; flash(i); }); });
             el.querySelector('#mGo').onclick = function () {
-                var e_24, _c;
+                var e_25, _c;
                 var auto = el.querySelector('#autoFoe').checked;
                 try {
                     for (var list_1 = __values(list), list_1_1 = list_1.next(); !list_1_1.done; list_1_1 = list_1.next()) {
@@ -12619,12 +12928,12 @@ var __values = (this && this.__values) || function(o) {
                         c.initTot = d + (+c.initB);
                     }
                 }
-                catch (e_24_1) { e_24 = { error: e_24_1 }; }
+                catch (e_25_1) { e_25 = { error: e_25_1 }; }
                 finally {
                     try {
                         if (list_1_1 && !list_1_1.done && (_c = list_1.return)) _c.call(list_1);
                     }
-                    finally { if (e_24) throw e_24.error; }
+                    finally { if (e_25) throw e_25.error; }
                 }
                 S.chars.forEach(function (c) { if (!list.includes(c))
                     c.initTot = null; });
@@ -12646,10 +12955,10 @@ var __values = (this && this.__values) || function(o) {
         if (!S.order.length)
             return;
         {
-            var e_25 = S.turn >= 0 ? cur() : null;
-            if (e_25)
-                endTurnFx(e_25);
-            var lg_1 = S.chars.filter(function (m) { var _c; return m !== e_25 && m.hp > 0 && legMax(m) && ((_c = m.legLeft) !== null && _c !== void 0 ? _c : legMax(m)) > 0; });
+            var e_26 = S.turn >= 0 ? cur() : null;
+            if (e_26)
+                endTurnFx(e_26);
+            var lg_1 = S.chars.filter(function (m) { var _c; return m !== e_26 && m.hp > 0 && legMax(m) && ((_c = m.legLeft) !== null && _c !== void 0 ? _c : legMax(m)) > 0; });
             if (lg_1.length && S.turn >= 0)
                 setTimeout(function () { return toast(lg_1.map(function (m) { return m.name; }).join(', ') + ' : action légendaire possible (fiche du monstre)'); }, 900);
         }
@@ -13682,7 +13991,7 @@ var __values = (this && this.__values) || function(o) {
             modal("<h2>Cr\u00E9er la table en ligne</h2><div class=\"sub\">Donne un nom \u00E0 ta partie : tes joueurs le verront en rejoignant.</div>\n      <label class=\"fld\">Nom de la partie<input id=\"tn\" value=\"La Crypte des Gobelins\"></label>\n      <div class=\"row\"><button class=\"btn\" id=\"mCancel\" type=\"button\">Annuler</button><button class=\"btn primary\" id=\"mOk\" type=\"button\">Cr\u00E9er et inviter</button></div>", function (el) {
                 el.querySelector('#mCancel').onclick = close;
                 el.querySelector('#mOk').onclick = function () { return __awaiter(_this, void 0, void 0, function () {
-                    var name, tid, e_26;
+                    var name, tid, e_27;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
                             case 0:
@@ -13696,7 +14005,7 @@ var __values = (this && this.__values) || function(o) {
                                 _c.sent();
                                 return [3 /*break*/, 4];
                             case 3:
-                                e_26 = _c.sent();
+                                e_27 = _c.sent();
                                 toast('Impossible de créer la table : vérifie les règles de la base (guide, étape 4)');
                                 return [2 /*return*/];
                             case 4:
@@ -13755,7 +14064,7 @@ var __values = (this && this.__values) || function(o) {
     }
     function newCode() {
         return __awaiter(this, void 0, void 0, function () {
-            var N, old, name, tid, e_27, nb, P, del, e_28;
+            var N, old, name, tid, e_28, nb, P, del, e_29;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -13772,8 +14081,8 @@ var __values = (this && this.__values) || function(o) {
                         _c.sent();
                         return [3 /*break*/, 4];
                     case 3:
-                        e_27 = _c.sent();
-                        toast('Impossible de créer le nouveau code : ' + (e_27 && e_27.message || e_27));
+                        e_28 = _c.sent();
+                        toast('Impossible de créer le nouveau code : ' + (e_28 && e_28.message || e_28));
                         nb = $('#iNew');
                         if (nb) {
                             nb.disabled = false;
@@ -13793,7 +14102,7 @@ var __values = (this && this.__values) || function(o) {
                         _c.sent();
                         return [3 /*break*/, 8];
                     case 7:
-                        e_28 = _c.sent();
+                        e_29 = _c.sent();
                         return [3 /*break*/, 8];
                     case 8:
                         N.remove("tables/".concat(old, "/meta")).catch(function () { });
