@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='29/10-12h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='29/10-13h00';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -2056,7 +2056,7 @@ const SPX0={
 'Murmures dissonants':{x:'flee'},
 'Nappe de brouillard':{t:'p',k:'zone',area:6,z:{surf:'brume',ed:H1}},
 'Orbe chromatique':{pk:'el6'},
-'Projectile magique':{t:'f',x:'darts'},
+'Projectile magique':{t:'f',x:'darts',n:3},
 'Protection contre le mal et le bien':{t:'a',k:'buff',e:{ic:'☩',vsD:1,vsT:['aberration','celeste','elementaire','fee','fielon','mort-vivant'],ed:M10}},
 "Purification de nourriture et d'eau":{u:'Purifie nourriture et eau.'},
 'Rayon empoisonné':{fx:{sv:'CON',c:['empoisonné'],ex:'se',cd:1}},
@@ -2764,7 +2764,18 @@ const SPXX={
     const q=L.slice();const next=()=>{const e=q.shift();if(!e){save();render();endAction();return}const lv=+e.lvl||1;if(lv<=Math.max(3,lastLvl||3)){efDel(t,e,'dissipé');next();return}
       dieAsk(att,`Dissipation : ${e.n} (niv. ${lv}) · test DD ${10+lv}`,'1d20',v=>{if(v+mod>=10+lv)efDel(t,e,'dissipé');else log(`${esc(e.n)} résiste à la dissipation (${v}+${mod}).`);next()},'d20')};
     log(`${esc(att.name)} lance <b>Dissipation de la magie</b> sur ${esc(t.name)}.`);next()},
-  darts(att,a,X,tg){const t=tg[0];if(!t){endAction();return}spendX(att,a);const n=3+Math.max(0,(lastLvl||1)-1);dieAsk(att,`Projectile magique : ${n} × 1d4+1`,`${n}d4+${n}`,v=>{curDT='force';damage(t,v);curDT='';log(`${esc(t.name)} subit <b>${v}</b> dégâts de force (${n} projectiles).`);queueFx({att,a,hits:[{c:t,dm:v,kind:'hit',kill:t.hp===0}]});endAction()})},
+  darts(att,a,X,tg){tg=tg.filter(Boolean);if(!tg.length){endAction();return}const n=Math.max(1,X.n||3);
+    const go=cnt=>{spendX(att,a);dieAsk(att,`Projectile magique : 1d4 (chaque projectile fait 1d4+1)`,'1d4',d=>{const per=d+1,hits=[];
+      tg.forEach((t,i)=>{const k=cnt[i]||0;if(!k)return;if((t.ef||[]).some(e=>/^bouclier$/i.test(e.n))){log(`${esc(t.name)} : <b>Bouclier</b> absorbe ${k} projectile${k>1?'s':''}.`);return}
+        const v=k*per;curDT='force';damage(t,v);curDT='';log(`${esc(t.name)} : ${k} projectile${k>1?'s':''} → <b>${v}</b> dégâts de force.`);hits.push({c:t,dm:v,kind:'hit',kill:t.hp===0})});
+      queueFx({att,a,hits});endAction()})};
+    const cnt=tg.map((_,i)=>Math.floor(n/tg.length)+(i<n%tg.length?1:0));
+    if(tg.length===1||n%tg.length===0){go(cnt);return}
+    const draw=el=>{el.querySelector('#dRows').innerHTML=tg.map((t,i)=>`<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><b style="flex:1">${esc(t.name)}</b><button class="btn sm" type="button" data-dm="${i}">−</button><b style="min-width:26px;text-align:center">${cnt[i]}</b><button class="btn sm" type="button" data-dp="${i}">+</button></div>`).join('');
+      const tot=cnt.reduce((x,y)=>x+y,0);el.querySelector('#dTot').textContent=`${tot} / ${n} projectiles`;el.querySelector('#mGo').disabled=tot!==n;
+      el.querySelectorAll('[data-dm]').forEach(b=>b.onclick=()=>{const i=+b.dataset.dm;if(cnt[i]>0)cnt[i]--;draw(el)});
+      el.querySelectorAll('[data-dp]').forEach(b=>b.onclick=()=>{const i=+b.dataset.dp;if(cnt.reduce((x,y)=>x+y,0)<n)cnt[i]++;draw(el)})};
+    modal(`<h2>Projectile magique</h2><div class="sub">${esc(att.name)} · répartis les ${n} projectiles</div><div id="dRows"></div><div class="how" id="dTot"></div><div class="row"><button class="btn" type="button" id="dX">Annuler</button><button class="btn primary" type="button" id="mGo">Lancer</button></div>`,el=>{draw(el);el.querySelector('#dX').onclick=()=>{close();endAction()};el.querySelector('#mGo').onclick=()=>{close();go(cnt)}})},
   lifeT(att,a,X,tg){const t=tg[0];if(!t){endAction();return}spendX(att,a);const fT=addD('4d8',a.upD||'');dieAsk(att,'Transfert de vie : '+fT,fT,v=>{att.hp=Math.max(0,att.hp-v);if(att.hp===0)damage(att,0);heal(t,2*v);log(`${esc(att.name)} perd ${v} PV ; <b>${esc(t.name)}</b> en récupère ${2*v}.`);queueFx({att,a,hits:[{c:t,dm:2*v,kind:'heal'}]});endAction()})},
   massheal(att,a,X,tg){spendX(att,a);let pool=700;tg.sort((x,y)=>x.hp/x.hpMax-y.hp/y.hpMax).forEach(t=>{const n=Math.min(pool,t.hpMax-t.hp);if(n>0){heal(t,n,true);pool-=n}['aveuglé','assourdi'].forEach(k=>removeCond(t,k))});log(`${esc(att.name)} · Guérison de groupe : ${tg.map(t=>esc(t.name)).join(', ')} sont soigné·e·s.`);queueFx({att,a,hits:tg.map(t=>({c:t,kind:'heal',dm:0}))});endAction()},
   pwkill(att,a,X,tg){const t=tg[0];spendX(att,a);if(t.hp<=100){if(t.side==='pj'){t.hp=0;t.death={s:0,f:3};if(!has(t,'inconscient'))t.conds.push('inconscient')}else damage(t,t.hp);log(`<b>${esc(t.name)}</b> meurt sur le coup (Mot de pouvoir mortel).`)}else log(`${esc(t.name)} a plus de 100 PV : Mot de pouvoir mortel échoue.`);queueFx({att,a,hits:[{c:t,dm:0,kind:t.hp===0?'hit':'saved',kill:t.hp===0}]});endAction()},
@@ -2867,7 +2878,7 @@ function spCombatEnd(){S.chars.forEach(c=>{(c.ef||[]).slice().forEach(e=>{if(e.l
 
 
 /* ----- Lancer à un niveau supérieur : effet par niveau au-delà du niveau de base ----- */
-const UP0={'Absorption des éléments':{d:'1d6'},'Bénédiction':{n:1},'Blessure':{d:'1d10'},'Catapulte':{d:'1d8'},'Charme-personne':{n:1},'Couleurs dansantes':{pool:'2d10'},'Couteau de glace':{burst:'1d6'},
+const UP0={'Projectile magique':{n:1,pj:1},'Absorption des éléments':{d:'1d6'},'Bénédiction':{n:1},'Blessure':{d:'1d10'},'Catapulte':{d:'1d8'},'Charme-personne':{n:1},'Couleurs dansantes':{pool:'2d10'},'Couteau de glace':{burst:'1d6'},
  'Éclair traçant':{d:'1d6'},'Fléau':{n:1},'Grande foulée':{n:1},'Injonction':{n:1},'Mains brûlantes':{d:'1d6'},'Mot de guérison':{d:'1d4'},'Orbe chromatique':{d:'1d8'},'Représailles infernales':{d:'1d10'},
  'Simulacre de vie':{thp:5},'Soins':{d:'1d8'},'Sommeil':{pool:'2d8'},'Vague tonnante':{d:'1d8'},'Rayon empoisonné':{d:'1d8'},'Tentacules de Hadar':{d:'1d6'},'Trait ensorcelé':{d:'1d12',noG:1},'Frayeur':{n:1},
  'Châtiment calcinant':{d:'1d6'},'Frappe piégeuse':{d:'1d6'},"Grêle d'épines":{burst:'1d10'},'Secousse sismique':{d:'1d6'},'Mixture caustique de Tasha':{d:'2d4'},'Amitié avec les animaux':{n:1},'Murmures dissonants':{d:'1d6'},
@@ -2888,7 +2899,7 @@ const diceMul=(f,k)=>String(f).replace(/^(\d*)d(\d+)$/,(m,n,d)=>((+n||1)*k)+'d'+
 const addD=(f,x)=>!x?f:(!f||f==='0'?x:f+'+'+x);
 function upInfo(c,a){if(!a||a.gr||!(+a.slot>0))return null;const U=UP[nkS(a.name)];const base=+a.slot,L=Object.keys(c.slots||{}).map(Number).filter(l=>l>base&&c.slots[l][1]<c.slots[l][0]).sort((x,y)=>x-y);
   if(!U)return null;const ok=c.slots&&c.slots[base]&&c.slots[base][1]<c.slots[base][0];return L.length?{U,base,levels:(ok?[base]:[]).concat(L)}:null}
-const upTxt=(U,k)=>{if(!U)return 'aucun effet en plus';const t=[];if(U.d){const m=U.per?Math.floor(k/U.per):k;if(m)t.push('+'+diceMul(U.d,m))}if(U.n)t.push('+'+U.n*k+' cible'+(U.n*k>1?'s':''));if(U.pool)t.push('+'+diceMul(U.pool,k)+' PV affectés');if(U.thp)t.push('+'+U.thp*k+' PV temp.');if(U.hp)t.push('+'+U.hp*k+' PV max');if(U.rep)t.push('+'+U.rep*k+' rayon'+(k>1?'s':''));if(U.heal)t.push('+'+U.heal*k+' PV');if(U.sum)t.push('+'+U.sum*k+' créatures');if(U.burst&&!U.d)t.push('+'+diceMul(U.burst,k)+' éclats');return t.join(', ')||'aucun effet en plus'};
+const upTxt=(U,k)=>{if(!U)return 'aucun effet en plus';const t=[];if(U.d){const m=U.per?Math.floor(k/U.per):k;if(m)t.push('+'+diceMul(U.d,m))}if(U.n)t.push('+'+U.n*k+(U.pj?' projectile':' cible')+(U.n*k>1?'s':''));if(U.pool)t.push('+'+diceMul(U.pool,k)+' PV affectés');if(U.thp)t.push('+'+U.thp*k+' PV temp.');if(U.hp)t.push('+'+U.hp*k+' PV max');if(U.rep)t.push('+'+U.rep*k+' rayon'+(k>1?'s':''));if(U.heal)t.push('+'+U.heal*k+' PV');if(U.sum)t.push('+'+U.sum*k+' créatures');if(U.burst&&!U.d)t.push('+'+diceMul(U.burst,k)+' éclats');return t.join(', ')||'aucun effet en plus'};
 function upApply(c,a,L){const base=+a.slot,k=L-base,U=UP[nkS(a.name)]||{},X0=a.sx||spx(a)||{};const X=JSON.parse(JSON.stringify(X0));
   const b=Object.assign({},a,{upL:L,upK:k});if(k<=0)return b;
   const m=U.d?(U.per?Math.floor(k/U.per):k):0,add=m?diceMul(U.d,m):'';b.upD=add;
