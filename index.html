@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='29/10-15h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='29/10-15h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -121,6 +121,9 @@ body.mode-sb .top .round{visibility:hidden}
 .sbcols{display:flex;flex-wrap:wrap;gap:8px}
 .sbcols button{width:38px;height:38px;border-radius:10px;border:2px solid transparent;cursor:pointer}
 .sbcols button.on{border-color:#2b2416;box-shadow:0 0 0 2px #fff inset}
+
+.sbpad .tvb{position:absolute;right:8px;bottom:10px;font-size:11px;background:rgba(0,0,0,.4);border-radius:6px;padding:1px 6px}
+.sbout{display:flex;align-items:center;gap:8px;font-size:13px;color:#c9b38a}.sbout .seg button{background:#2a241b;color:#f2e6c8;border-color:#6b5a3a}.sbout .seg button.on{background:#e8c77a;color:#2b2416}
 #tvblk{position:fixed;inset:0;background:#000;z-index:100;opacity:0;pointer-events:none;transition:opacity .9s}
 #tvblk.on{opacity:1}
 #tvfs{z-index:101}
@@ -3884,7 +3887,7 @@ function tvPublish(){const T=tvTarget();if(!T||!S.tvOn||TVM)return;tvPublishSfx(
 function tvPublishSt(T){if(TVM||!S.tvOn)return;T=T||tvTarget();if(!T)return;const a=ui.act,sel=byId(ui.sel);
   const area=ui.mode==='target'&&sel&&a&&a.area>0&&ui.center?{x:ui.center.x,y:ui.center.y,r:Math.floor(a.area/CELL_M+1e-9),col:dcol(a),k:shapeOf(a)?areaKeys(sel,a,ui.center).join(';'):''}:null;
   const st={an:S.anims||{},ak:S.animKw||null,round:S.round||0,cur:(S.turn>=0&&cur())?cur().id:'',order:S.turn>=0?S.order.filter(id=>{const c=byId(id);return c&&!c.hid&&(c.hp>0||c.side==='pj')}):[],sel:ui.sel||'',area,cam:(S.turn>=0&&S.tvAuto!==false&&cur())?autoCam(cur()):S.tvFollow?tvCam():null,snd:SD(),blk:ui.sb?1:0};
-  const j=JSON.stringify(st);if(TVS.cache.st===j)return;TVS.cache.st=j;Promise.resolve(T.set('st',st)).catch(()=>{delete TVS.cache.st})}
+  sbSync();const j=JSON.stringify(st);if(TVS.cache.st===j)return;TVS.cache.st=j;Promise.resolve(T.set('st',st)).catch(()=>{delete TVS.cache.st})}
 function autoCam(c){const m=S.map,w=Math.min(m.cols,Math.max(10,S.tvZoom||14)),h=Math.min(m.rows,Math.max(7,Math.round(w*9/16)));
   const s=sz(c);let x=c.x+s/2-w/2,y=c.y+s/2-h/2;x=Math.max(0,Math.min(m.cols-w,x));y=Math.max(0,Math.min(m.rows-h,y));return {x:Math.round(x*2)/2,y:Math.round(y*2)/2,w,h}}
 function tvCam(){const mw=$('#mapwrap'),cs=S.map.cell,f=v=>Math.round(v*4)/4;return {x:f(mw.scrollLeft/cs),y:f(mw.scrollTop/cs),w:f(mw.clientWidth/cs),h:f(mw.clientHeight/cs)}}
@@ -3940,7 +3943,8 @@ function tvNetStart(){const N=net();if(!N){tvMsg('<div class="tvbox"><h2>Connexi
   const P=p=>`tables/${TVM}/tv/${p}`;
   N.on(P('imgs'),v=>{Object.entries(v||{}).forEach(([k,d])=>IMGS.set(k,d));tvRender()});
   N.on(P('vidm'),v=>{if(v&&v.ok&&S.map&&S.map.vid===v.k&&!VIDS.has(v.k))tvVidFetch()});
-  ['map','objs','toks','st'].forEach(k=>N.on(P(k),v=>tvApply(k,v)));N.on(P('fx'),v=>tvFxIn(v||{}));N.on(P('ambc'),v=>{Object.entries(v||{}).forEach(([k,o])=>{if(o&&!AMBBUF[k]&&!TVS['am'+k]){TVS['am'+k]=1;tvAmbIn(k,o)}})});N.on(P('sfx'),v=>{const V=v||{};Object.keys(SCUS).forEach(k=>{if(!V[k])delete SCUS[k]});Object.entries(V).forEach(([k,o])=>{if(o&&TVS['sv'+k]!==o.v){TVS['sv'+k]=o.v;tvSfxIn(k,o)}})})}
+  ['map','objs','toks','st'].forEach(k=>N.on(P(k),v=>tvApply(k,v)));
+  N.on(P('sbm'),v=>{SBTV.m=v||{};sbTvPrefetch();sbTvSync()});N.on(P('sbp'),v=>{SBTV.p=v||{};sbTvSync()});N.on(P('fx'),v=>tvFxIn(v||{}));N.on(P('ambc'),v=>{Object.entries(v||{}).forEach(([k,o])=>{if(o&&!AMBBUF[k]&&!TVS['am'+k]){TVS['am'+k]=1;tvAmbIn(k,o)}})});N.on(P('sfx'),v=>{const V=v||{};Object.keys(SCUS).forEach(k=>{if(!V[k])delete SCUS[k]});Object.entries(V).forEach(([k,o])=>{if(o&&TVS['sv'+k]!==o.v){TVS['sv'+k]=o.v;tvSfxIn(k,o)}})})}
 function tvApply(k,v){if(v==null)return;
   if(k==='map'){const old=S.map;if(v.tiles!==old.tiles||v.cols!==old.cols||v.rows!==old.rows)tileCv=null;
     FOGCK='';S.map={fog:!!v.fog,seen:v.seen||'',vis:v.vis||'',cols:v.cols,rows:v.rows,cell:old.cell||60,kind:v.kind,tiles:v.tiles||null,grid:!!v.grid,surf:v.surf||{},light:v.light,wx:v.wx||'',wxI:v.wxI??.6,tone:v.tone||null,walls:[],src:v.bg?(IMGS.get(v.bg)||null):null,bgk:v.bg||null,id:v.id};
@@ -4263,24 +4267,61 @@ function sbLive(){const b=$('#tSb');if(b)b.classList.toggle('live',sbPlaying())}
 function sbGainOut(el,vol){const x=sndInit();let g=null;if(x){try{const n=x.createMediaElementSource(el);g=x.createGain();g.gain.value=.0001;n.connect(g);g.connect(x.destination)}catch(e){g=null}}
   if(!g)el.volume=Math.min(1,vol);return g}
 function sbVolOf(p){return Math.max(0,Math.min(1,(p.vol??1)*(SBD().vol??.8)))}
+/* où sort le son : sur la TV (si diffusée en ligne) ou sur cet appareil */
+function sbWhere(){if(TVM)return 'ici';const T=S.tvOn&&tvTarget();return T&&!T.local&&SBD().where!=='ici'?'tv':'ici'}
+function sbStartBlob(id,blob,o){const url=URL.createObjectURL(blob),el=new Audio();el.setAttribute('playsinline','');el.preload='auto';el.src=url;el.loop=!!o.loop;el.muted=!!o.muted;
+  const h={el,url,g:null,p:{kind:o.kind},pad:o.pad||null,v:o.v,s:o.s||Date.now(),muted:!!o.muted};SBP[id]=h;h.g=sbGainOut(el,o.muted?0:o.v);
+  const x=SND.ctx;if(h.g&&x)h.g.gain.setTargetAtTime(o.muted?0:o.v,x.currentTime,(o.kind==='mus'?1.2:.02)/3);
+  el.onended=()=>{if(SBP[id]===h){sbKill(id);sbSync()}};
+  el.onerror=()=>{if(!TVM)toast('Fichier audio illisible : '+((o.pad&&o.pad.name)||''));sbKill(id);sbSync()};
+  el.play().catch(()=>{if(!TVM)toast('Touche l’écran puis relance le son');sbKill(id);sbSync()});return h}
 async function sbPlay(id){const D=SBD(),p=D.pads.find(z=>z.id===id);if(!p)return;sndUnlock();
   if(SBP[id]){sbStop(id);return}
   const blob=await IDB.get('sb_'+id,'snd');if(!blob){toast('Fichier introuvable sur cet appareil');return}
-  if(p.kind==='mus')D.pads.filter(z=>z.kind==='mus'&&z.id!==id&&SBP[z.id]).forEach(z=>sbStop(z.id));
-  const url=URL.createObjectURL(blob),el=new Audio();el.setAttribute('playsinline','');el.preload='auto';el.src=url;el.loop=p.loop!=null?!!p.loop:p.kind==='mus';
-  const h={el,url,g:null,p};SBP[id]=h;h.g=sbGainOut(el,sbVolOf(p));
-  const x=SND.ctx,v=sbVolOf(p),fade=p.kind==='mus'?1.2:.02;if(h.g)h.g.gain.setTargetAtTime(v,x.currentTime,fade/3);
-  el.onended=()=>{if(SBP[id]===h)sbKill(id)};
-  el.onerror=()=>{toast('Fichier audio illisible : '+(p.name||''));sbKill(id)};
-  el.play().catch(()=>{toast('Touche l’écran puis relance le son');sbKill(id)});
-  sbLive();sbPadUI(id);sbTick()}
+  if(p.kind==='mus')D.pads.filter(z=>z.kind==='mus'&&z.id!==id&&SBP[z.id]).forEach(z=>sbStop(z.id,true));
+  const tv=sbWhere()==='tv';if(tv&&sbUpState(id)!=='ok'){sbUpload(p,true);toast('Envoi du son à la TV… il démarrera dès qu’il sera arrivé')}
+  sbStartBlob(id,blob,{kind:p.kind,loop:p.loop!=null?!!p.loop:p.kind==='mus',v:sbVolOf(p),muted:tv,pad:p});
+  sbLive();sbPadUI(id);sbTick();sbSync()}
 function sbFree(h){try{h.el.pause();h.el.removeAttribute('src');h.el.load()}catch(e){}try{h.g&&h.g.disconnect()}catch(e){}setTimeout(()=>URL.revokeObjectURL(h.url),500)}
 function sbKill(id){const h=SBP[id];if(!h)return;delete SBP[id];sbFree(h);sbLive();sbPadUI(id)}
-function sbStop(id){const h=SBP[id];if(!h)return;const x=SND.ctx,ms=h.p.kind==='mus'?900:150;delete SBP[id];h.el.onended=null;h.el.onerror=null;sbLive();sbPadUI(id);
+function sbStop(id,noSync){const h=SBP[id];if(!h)return;const x=SND.ctx,ms=h.p.kind==='mus'?900:150;delete SBP[id];h.el.onended=null;h.el.onerror=null;sbLive();sbPadUI(id);
   if(h.g&&x){h.g.gain.setTargetAtTime(.0001,x.currentTime,ms/3000)}else{try{h.el.volume=0}catch(e){}}
-  setTimeout(()=>sbFree(h),ms+60)}
-function sbStopAll(){Object.keys(SBP).forEach(sbStop)}
-function sbVolApply(){const x=SND.ctx;Object.values(SBP).forEach(h=>{const v=sbVolOf(h.p);if(h.g&&x)h.g.gain.setTargetAtTime(v,x.currentTime,.05);else h.el.volume=Math.min(1,v)})}
+  setTimeout(()=>sbFree(h),ms+60);if(!noSync)sbSync()}
+function sbStopAll(){Object.keys(SBP).forEach(id=>sbStop(id,true));sbSync()}
+function sbVolApply(){const x=SND.ctx;Object.values(SBP).forEach(h=>{if(h.pad)h.v=sbVolOf(h.pad);const v=h.muted?0:h.v;if(h.g&&x)h.g.gain.setTargetAtTime(v,x.currentTime,.05);else h.el.volume=Math.min(1,v)});sbSync()}
+/* état publié vers la TV : quels sons jouent */
+function sbSync(){if(TVM)return;const T=S.tvOn&&tvTarget();if(!T||T.local)return;const o={};
+  if(sbWhere()==='tv')Object.entries(SBP).forEach(([id,h])=>{o[id]={s:h.s,l:h.el.loop?1:0,v:Math.round(h.v*100)/100,k:h.p.kind}});
+  const j=JSON.stringify(o);if(TVS.sbpJ===j)return;TVS.sbpJ=j;Promise.resolve(T.set('sbp',Object.keys(o).length?o:null)).catch(()=>{TVS.sbpJ=''})}
+/* envoi des fichiers à la TV (une fois ; la TV les garde en mémoire) */
+TVS.sbUp=TVS.sbUp||{};let SBQ=Promise.resolve();
+const sbUpState=id=>TVS.sbUp[id];
+function sbUpBadge(id){const b=document.querySelector(`.sbpad[data-sb="${id}"] .tvb`);if(!b)return;const st=TVS.sbUp[id];b.textContent=st==='ok'?'TV ✓':typeof st==='number'?'TV '+st+' %':st==='err'?'TV ✕':st==='big'?'trop lourd':'';b.hidden=!st||sbWhere()!=='tv'}
+function sbUpload(p,prio){if(TVM||sbWhere()!=='tv')return;const id=p.id;if(TVS.sbUp[id]==='ok'||typeof TVS.sbUp[id]==='number'||TVS.sbUp[id]==='q')return;TVS.sbUp[id]='q';
+  const job=async()=>{const N=net();if(!N||!NETS.tid){delete TVS.sbUp[id];return}const base=`tables/${NETS.tid}/tv/`,v=p.v||(p.v=1);
+    try{const m=await N.get(base+'sbm/'+id);if(m&&m.ok&&m.v===v){TVS.sbUp[id]='ok';sbUpBadge(id);return}
+      const blob=await IDB.get('sb_'+id,'snd');if(!blob){delete TVS.sbUp[id];return}if(blob.size>40e6){TVS.sbUp[id]='big';sbUpBadge(id);toast('« '+p.name+' » est trop lourd pour la TV (40 Mo max)');return}
+      const d=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.onerror=()=>r(null);f.readAsDataURL(blob)});if(!d)throw 0;
+      const C=800000,n=Math.ceil(d.length/C);TVS.sbUp[id]=0;sbUpBadge(id);
+      await N.set(base+'sbm/'+id,{n,ok:0,v,k:p.kind});await N.set(base+'sbc/'+id,null);
+      for(let i=0;i<n;i++){await N.set(base+'sbc/'+id+'/'+i,d.slice(i*C,(i+1)*C));TVS.sbUp[id]=Math.round(100*(i+1)/n);sbUpBadge(id)}
+      await N.set(base+'sbm/'+id,{n,ok:1,v,k:p.kind});TVS.sbUp[id]='ok';sbUpBadge(id)}
+    catch(e){TVS.sbUp[id]='err';sbUpBadge(id)}};
+  const prev=SBQ;SBQ=prio?Promise.resolve().then(job).then(()=>prev):prev.then(job)}
+function sbUploadAll(){if(sbWhere()!=='tv')return;SBD().pads.forEach(p=>sbUpload(p))}
+function sbUnpublish(id){const N=net();if(!N||!NETS.tid)return;const base=`tables/${NETS.tid}/tv/`;N.set(base+'sbm/'+id,null);N.set(base+'sbc/'+id,null);delete TVS.sbUp[id]}
+/* côté TV : télécharge, garde en cache, joue ce que demande la tablette */
+const SBTV={m:{},p:{},busy:{}};
+async function sbTvBlob(id){const m=SBTV.m[id];if(!m||!m.ok)return null;let c=null;try{c=await IDB.get('sbtv_'+id,'snd')}catch(e){}if(c&&c.v===m.v&&c.b)return c.b;
+  if(SBTV.busy[id])return SBTV.busy[id];const N=net();if(!N)return null;
+  return SBTV.busy[id]=N.get(`tables/${TVM}/tv/sbc/${id}`).then(async o=>{const L=Array.isArray(o)?o:Object.keys(o||{}).sort((a,b)=>a-b).map(i=>o[i]);if(L.length<m.n||L.some(x=>!x))return null;
+    const b=await (await fetch(L.join(''))).blob();try{await IDB.put('sbtv_'+id,{v:m.v,b},'snd')}catch(e){}return b}).catch(()=>null).finally(()=>{delete SBTV.busy[id]})}
+async function sbTvSync(){const P=SBTV.p||{};
+  Object.keys(SBP).forEach(id=>{const e=P[id];if(!e||e.s!==SBP[id].s)sbStop(id,true)});
+  for(const [id,e] of Object.entries(P)){const h=SBP[id];if(h&&h.s===e.s){h.v=e.v;h.el.loop=!!e.l;const x=SND.ctx;if(h.g&&x)h.g.gain.setTargetAtTime(e.v,x.currentTime,.05);else h.el.volume=Math.min(1,e.v);continue}
+    if(SBTV.start&&SBTV.start[id]===e.s)continue;(SBTV.start||(SBTV.start={}))[id]=e.s;
+    sbTvBlob(id).then(b=>{const cur=(SBTV.p||{})[id];if(!b||!cur||cur.s!==e.s||SBP[id])return;sbStartBlob(id,b,{kind:e.k,loop:!!e.l,v:e.v,s:e.s})})}}
+function sbTvPrefetch(){Object.keys(SBTV.m).reduce((pr,id)=>pr.then(()=>sbTvBlob(id)),Promise.resolve())}
 function sbPadUI(id){const b=document.querySelector(`.sbpad[data-sb="${id}"]`);if(!b)return;const on=!!SBP[id];b.classList.toggle('on',on);const st=b.querySelector('.st');if(st)st.textContent=on?'■':'▶';if(!on){const pg=b.querySelector('.pg');if(pg)pg.style.width='0'}}
 function sbTick(){if(SBRAF)return;const f=()=>{SBRAF=0;if(!sbPlaying())return;Object.entries(SBP).forEach(([id,h])=>{const pg=document.querySelector(`.sbpad[data-sb="${id}"] .pg`);if(pg&&h.el.duration>0)pg.style.width=(100*h.el.currentTime/h.el.duration).toFixed(1)+'%'});SBRAF=requestAnimationFrame(f)};SBRAF=requestAnimationFrame(f)}
 const SB_ACC='audio/*,audio/mpeg,audio/mp3,audio/mp4,audio/x-m4a,audio/wav,audio/ogg,.mp3,.m4a,.aac,.wav,.ogg,.flac';
@@ -4288,24 +4329,26 @@ function sbRender(){const el=$('#sbView');if(!el)return;const D=SBD();
   const pad=p=>`<div class="sbpad ${SBP[p.id]?'on':''}" role="button" tabindex="0" data-sb="${p.id}" style="--pc:${p.col||'#6b4a2a'}" aria-label="${esc(p.name)}">
       <span class="nm">${esc(p.name)}</span>
       <span class="meta"><span class="st">${SBP[p.id]?'■':'▶'}</span>${(p.loop!=null?p.loop:p.kind==='mus')?'<span title="En boucle">⟳ boucle</span>':''}<span class="eq"><i></i><i></i><i></i><i></i></span></span>
-      <button type="button" class="ed" data-sbed="${p.id}" aria-label="Modifier ${esc(p.name)}">⋯</button><span class="pg"></span></div>`;
+      <button type="button" class="ed" data-sbed="${p.id}" aria-label="Modifier ${esc(p.name)}">⋯</button><span class="tvb" hidden></span><span class="pg"></span></div>`;
   const sec=(k,t,emp)=>{const L=D.pads.filter(p=>p.kind===k);return `<div class="sbsec"><h3>${t}</h3>${L.length?`<div class="sbgrid">${L.map(pad).join('')}</div>`:`<div class="sbempty">${emp}</div>`}</div>`};
   el.innerHTML=`<div class="sbhead"><h2>♫ Soundboard</h2>
       <label class="btn">+ Musiques<input type="file" accept="${SB_ACC}" multiple data-sbadd="mus"></label>
       <label class="btn">+ Effets sonores<input type="file" accept="${SB_ACC}" multiple data-sbadd="sfx"></label>
       <span class="sbvol">Volume <input type="range" id="sbVol" min="0" max="100" value="${Math.round((D.vol??.8)*100)}"><output>${Math.round((D.vol??.8)*100)} %</output></span>
+      ${S.tvOn&&tvTarget()&&!tvTarget().local?`<span class="sbout">Son sur <span class="seg">${[['tv','La TV'],['ici','Cet appareil']].map(([k,v])=>`<button type="button" data-sbw="${k}" class="${(D.where||'tv')===k?'on':''}">${v}</button>`).join('')}</span></span>`:''}
       <button type="button" class="btn stop" id="sbStopAll">■ Tout arrêter</button></div>
-    <p class="sbtv">${S.tvOn?'La TV affiche un <b>écran noir</b> tant que tu es sur cet onglet. ':''}Les sons jouent sur cet appareil : branche-le à une enceinte (Bluetooth, câble ou AirPlay). Touche une case pour lancer, touche-la encore pour arrêter.</p>
+    <p class="sbtv">${S.tvOn?'La TV affiche un <b>écran noir</b> tant que tu es sur cet onglet. ':''}${sbWhere()==='tv'?'Le son sort de <b>la TV</b> : chaque fichier y est envoyé une seule fois (« TV ✓ » sur la case quand il est prêt). Sur la TV, touche « Plein écran et son » une fois pour autoriser le son.':S.tvOn&&tvTarget()&&tvTarget().local?'Le son sort de cet appareil.':'Le son sort de cet appareil. Pour qu’il sorte de la TV, active la diffusion (bouton « Écran TV »).'} Touche une case pour lancer, touche-la encore pour arrêter.</p>
     ${sec('mus','Musiques','Aucune musique. « + Musiques » pour importer tes MP3.<br><small>Une seule musique à la fois : en lancer une autre fait un fondu.</small>')}
     ${sec('sfx','Effets sonores','Aucun effet. « + Effets sonores » pour importer tes sons.<br><small>Les effets peuvent se superposer.</small>')}`;
   el.querySelectorAll('[data-sb]').forEach(b=>{b.onclick=e=>{if(e.target.closest('[data-sbed]'))return;sbPlay(b.dataset.sb)};b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sbPlay(b.dataset.sb)}}});
   el.querySelectorAll('[data-sbed]').forEach(b=>b.onclick=e=>{e.stopPropagation();sbEdit(b.dataset.sbed)});
   el.querySelectorAll('[data-sbadd]').forEach(i=>i.onchange=async e=>{const k=i.dataset.sbadd;let n=0;for(const f of e.target.files){const id='s'+uid();try{await IDB.put('sb_'+id,f,'snd')}catch(er){toast('Impossible d’enregistrer '+f.name);continue}
-      D.pads.push({id,name:f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim()||'Son',kind:k,col:SBCOL[(D.pads.length)%SBCOL.length],vol:1});n++}
+      D.pads.push({id,name:f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim()||'Son',kind:k,col:SBCOL[(D.pads.length)%SBCOL.length],vol:1,v:Date.now()});n++}
     save();toast(n+(k==='mus'?' musique(s)':' effet(s)')+' ajouté(s)');sbRender()});
   const v=el.querySelector('#sbVol');v.oninput=()=>{D.vol=+v.value/100;v.nextElementSibling.textContent=v.value+' %';sbVolApply()};v.onchange=()=>save();
   el.querySelector('#sbStopAll').onclick=sbStopAll;
-  Object.keys(SBP).forEach(sbPadUI);sbTick()}
+  el.querySelectorAll('[data-sbw]').forEach(b=>b.onclick=()=>{if((D.where||'tv')===b.dataset.sbw)return;sbStopAll();D.where=b.dataset.sbw;save();sbRender()});
+  Object.keys(SBP).forEach(sbPadUI);sbTick();sbUploadAll();D.pads.forEach(p=>sbUpBadge(p.id))}
 function sbEdit(id){const D=SBD(),p=D.pads.find(z=>z.id===id);if(!p)return;let col=p.col||SBCOL[0];
   modal(`<h2>Modifier le son</h2>
     <label class="fld">Nom<input type="text" id="sbN" value="${esc(p.name)}" maxlength="40"></label>
@@ -4318,9 +4361,9 @@ function sbEdit(id){const D=SBD(),p=D.pads.find(z=>z.id===id);if(!p)return;let c
     el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{col=b.dataset.c;el.querySelectorAll('[data-c]').forEach(x=>x.classList.toggle('on',x===b))});
     const r=el.querySelector('#sbV');r.oninput=()=>{r.previousElementSibling.textContent=r.value+' %'};
     el.querySelector('#mCancel').onclick=close;
-    el.querySelector('#sbDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer la suppression';return}if(SBP[id])sbKill(id);D.pads=D.pads.filter(z=>z.id!==id);IDB.del('sb_'+id,'snd');save();close();sbRender()};
+    el.querySelector('#sbDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer la suppression';return}if(SBP[id])sbStop(id);D.pads=D.pads.filter(z=>z.id!==id);IDB.del('sb_'+id,'snd');sbUnpublish(id);save();close();sbRender()};
     el.querySelector('#mOk').onclick=()=>{p.name=el.querySelector('#sbN').value.trim()||p.name;p.kind=kind;p.loop=el.querySelector('#sbL').checked;p.vol=+r.value/100;p.col=col;
-      if(SBP[id]){SBP[id].el.loop=p.loop;SBP[id].p=p;sbVolApply()}save();close();sbRender()}})}
+      if(SBP[id]){SBP[id].el.loop=p.loop;SBP[id].p.kind=p.kind;sbVolApply()}save();close();sbRender()}})}
 /* ---------- Attaques d'opportunité ---------- */
 let AOO_CB=null;
 const aooWeapons=f=>(f.actions||[]).filter(a=>a.kind==='attaque'&&a.range>0&&a.range<=3+1e-6);

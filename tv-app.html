@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='29/10-15h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='29/10-15h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -121,6 +121,9 @@ body.mode-sb .top .round{visibility:hidden}
 .sbcols{display:flex;flex-wrap:wrap;gap:8px}
 .sbcols button{width:38px;height:38px;border-radius:10px;border:2px solid transparent;cursor:pointer}
 .sbcols button.on{border-color:#2b2416;box-shadow:0 0 0 2px #fff inset}
+
+.sbpad .tvb{position:absolute;right:8px;bottom:10px;font-size:11px;background:rgba(0,0,0,.4);border-radius:6px;padding:1px 6px}
+.sbout{display:flex;align-items:center;gap:8px;font-size:13px;color:#c9b38a}.sbout .seg button{background:#2a241b;color:#f2e6c8;border-color:#6b5a3a}.sbout .seg button.on{background:#e8c77a;color:#2b2416}
 #tvblk{position:fixed;top:0;right:0;bottom:0;left:0;background:#000;z-index:100;opacity:0;pointer-events:none;transition:opacity .9s}
 #tvblk.on{opacity:1}
 #tvfs{z-index:101}
@@ -10057,6 +10060,7 @@ var __values = (this && this.__values) || function(o) {
         var a = ui.act, sel = byId(ui.sel);
         var area = ui.mode === 'target' && sel && a && a.area > 0 && ui.center ? { x: ui.center.x, y: ui.center.y, r: Math.floor(a.area / CELL_M + 1e-9), col: dcol(a), k: shapeOf(a) ? areaKeys(sel, a, ui.center).join(';') : '' } : null;
         var st = { an: S.anims || {}, ak: S.animKw || null, round: S.round || 0, cur: (S.turn >= 0 && cur()) ? cur().id : '', order: S.turn >= 0 ? S.order.filter(function (id) { var c = byId(id); return c && !c.hid && (c.hp > 0 || c.side === 'pj'); }) : [], sel: ui.sel || '', area: area, cam: (S.turn >= 0 && S.tvAuto !== false && cur()) ? autoCam(cur()) : S.tvFollow ? tvCam() : null, snd: SD(), blk: ui.sb ? 1 : 0 };
+        sbSync();
         var j = JSON.stringify(st);
         if (TVS.cache.st === j)
             return;
@@ -10217,6 +10221,8 @@ var __values = (this && this.__values) || function(o) {
         N.on(P('vidm'), function (v) { if (v && v.ok && S.map && S.map.vid === v.k && !VIDS.has(v.k))
             tvVidFetch(); });
         ['map', 'objs', 'toks', 'st'].forEach(function (k) { return N.on(P(k), function (v) { return tvApply(k, v); }); });
+        N.on(P('sbm'), function (v) { SBTV.m = v || {}; sbTvPrefetch(); sbTvSync(); });
+        N.on(P('sbp'), function (v) { SBTV.p = v || {}; sbTvSync(); });
         N.on(P('fx'), function (v) { return tvFxIn(v || {}); });
         N.on(P('ambc'), function (v) { Object.entries(v || {}).forEach(function (_c) {
             var _e = __read(_c, 2), k = _e[0], o = _e[1];
@@ -11607,9 +11613,35 @@ var __values = (this && this.__values) || function(o) {
         return g;
     }
     function sbVolOf(p) { var _c, _e; return Math.max(0, Math.min(1, ((_c = p.vol) !== null && _c !== void 0 ? _c : 1) * ((_e = SBD().vol) !== null && _e !== void 0 ? _e : .8))); }
+    /* où sort le son : sur la TV (si diffusée en ligne) ou sur cet appareil */
+    function sbWhere() { if (TVM)
+        return 'ici'; var T = S.tvOn && tvTarget(); return T && !T.local && SBD().where !== 'ici' ? 'tv' : 'ici'; }
+    function sbStartBlob(id, blob, o) {
+        var url = URL.createObjectURL(blob), el = new Audio();
+        el.setAttribute('playsinline', '');
+        el.preload = 'auto';
+        el.src = url;
+        el.loop = !!o.loop;
+        el.muted = !!o.muted;
+        var h = { el: el, url: url, g: null, p: { kind: o.kind }, pad: o.pad || null, v: o.v, s: o.s || Date.now(), muted: !!o.muted };
+        SBP[id] = h;
+        h.g = sbGainOut(el, o.muted ? 0 : o.v);
+        var x = SND.ctx;
+        if (h.g && x)
+            h.g.gain.setTargetAtTime(o.muted ? 0 : o.v, x.currentTime, (o.kind === 'mus' ? 1.2 : .02) / 3);
+        el.onended = function () { if (SBP[id] === h) {
+            sbKill(id);
+            sbSync();
+        } };
+        el.onerror = function () { if (!TVM)
+            toast('Fichier audio illisible : ' + ((o.pad && o.pad.name) || '')); sbKill(id); sbSync(); };
+        el.play().catch(function () { if (!TVM)
+            toast('Touche l’écran puis relance le son'); sbKill(id); sbSync(); });
+        return h;
+    }
     function sbPlay(id) {
         return __awaiter(this, void 0, void 0, function () {
-            var D, p, blob, url, el, h, x, v, fade;
+            var D, p, blob, tv;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -11629,25 +11661,17 @@ var __values = (this && this.__values) || function(o) {
                             return [2 /*return*/];
                         }
                         if (p.kind === 'mus')
-                            D.pads.filter(function (z) { return z.kind === 'mus' && z.id !== id && SBP[z.id]; }).forEach(function (z) { return sbStop(z.id); });
-                        url = URL.createObjectURL(blob), el = new Audio();
-                        el.setAttribute('playsinline', '');
-                        el.preload = 'auto';
-                        el.src = url;
-                        el.loop = p.loop != null ? !!p.loop : p.kind === 'mus';
-                        h = { el: el, url: url, g: null, p: p };
-                        SBP[id] = h;
-                        h.g = sbGainOut(el, sbVolOf(p));
-                        x = SND.ctx, v = sbVolOf(p), fade = p.kind === 'mus' ? 1.2 : .02;
-                        if (h.g)
-                            h.g.gain.setTargetAtTime(v, x.currentTime, fade / 3);
-                        el.onended = function () { if (SBP[id] === h)
-                            sbKill(id); };
-                        el.onerror = function () { toast('Fichier audio illisible : ' + (p.name || '')); sbKill(id); };
-                        el.play().catch(function () { toast('Touche l’écran puis relance le son'); sbKill(id); });
+                            D.pads.filter(function (z) { return z.kind === 'mus' && z.id !== id && SBP[z.id]; }).forEach(function (z) { return sbStop(z.id, true); });
+                        tv = sbWhere() === 'tv';
+                        if (tv && sbUpState(id) !== 'ok') {
+                            sbUpload(p, true);
+                            toast('Envoi du son à la TV… il démarrera dès qu’il sera arrivé');
+                        }
+                        sbStartBlob(id, blob, { kind: p.kind, loop: p.loop != null ? !!p.loop : p.kind === 'mus', v: sbVolOf(p), muted: tv, pad: p });
                         sbLive();
                         sbPadUI(id);
                         sbTick();
+                        sbSync();
                         return [2 /*return*/];
                 }
             });
@@ -11664,7 +11688,7 @@ var __values = (this && this.__values) || function(o) {
     catch (e) { } setTimeout(function () { return URL.revokeObjectURL(h.url); }, 500); }
     function sbKill(id) { var h = SBP[id]; if (!h)
         return; delete SBP[id]; sbFree(h); sbLive(); sbPadUI(id); }
-    function sbStop(id) {
+    function sbStop(id, noSync) {
         var h = SBP[id];
         if (!h)
             return;
@@ -11684,12 +11708,237 @@ var __values = (this && this.__values) || function(o) {
             catch (e) { }
         }
         setTimeout(function () { return sbFree(h); }, ms + 60);
+        if (!noSync)
+            sbSync();
     }
-    function sbStopAll() { Object.keys(SBP).forEach(sbStop); }
-    function sbVolApply() { var x = SND.ctx; Object.values(SBP).forEach(function (h) { var v = sbVolOf(h.p); if (h.g && x)
+    function sbStopAll() { Object.keys(SBP).forEach(function (id) { return sbStop(id, true); }); sbSync(); }
+    function sbVolApply() { var x = SND.ctx; Object.values(SBP).forEach(function (h) { if (h.pad)
+        h.v = sbVolOf(h.pad); var v = h.muted ? 0 : h.v; if (h.g && x)
         h.g.gain.setTargetAtTime(v, x.currentTime, .05);
     else
-        h.el.volume = Math.min(1, v); }); }
+        h.el.volume = Math.min(1, v); }); sbSync(); }
+    /* état publié vers la TV : quels sons jouent */
+    function sbSync() {
+        if (TVM)
+            return;
+        var T = S.tvOn && tvTarget();
+        if (!T || T.local)
+            return;
+        var o = {};
+        if (sbWhere() === 'tv')
+            Object.entries(SBP).forEach(function (_c) {
+                var _e = __read(_c, 2), id = _e[0], h = _e[1];
+                o[id] = { s: h.s, l: h.el.loop ? 1 : 0, v: Math.round(h.v * 100) / 100, k: h.p.kind };
+            });
+        var j = JSON.stringify(o);
+        if (TVS.sbpJ === j)
+            return;
+        TVS.sbpJ = j;
+        Promise.resolve(T.set('sbp', Object.keys(o).length ? o : null)).catch(function () { TVS.sbpJ = ''; });
+    }
+    /* envoi des fichiers à la TV (une fois ; la TV les garde en mémoire) */
+    TVS.sbUp = TVS.sbUp || {};
+    var SBQ = Promise.resolve();
+    var sbUpState = function (id) { return TVS.sbUp[id]; };
+    function sbUpBadge(id) { var b = document.querySelector(".sbpad[data-sb=\"".concat(id, "\"] .tvb")); if (!b)
+        return; var st = TVS.sbUp[id]; b.textContent = st === 'ok' ? 'TV ✓' : typeof st === 'number' ? 'TV ' + st + ' %' : st === 'err' ? 'TV ✕' : st === 'big' ? 'trop lourd' : ''; b.hidden = !st || sbWhere() !== 'tv'; }
+    function sbUpload(p, prio) {
+        var _this = this;
+        if (TVM || sbWhere() !== 'tv')
+            return;
+        var id = p.id;
+        if (TVS.sbUp[id] === 'ok' || typeof TVS.sbUp[id] === 'number' || TVS.sbUp[id] === 'q')
+            return;
+        TVS.sbUp[id] = 'q';
+        var job = function () { return __awaiter(_this, void 0, void 0, function () {
+            var N, base, v, m, blob_1, d, C_5, n, i, e_21;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        N = net();
+                        if (!N || !NETS.tid) {
+                            delete TVS.sbUp[id];
+                            return [2 /*return*/];
+                        }
+                        base = "tables/".concat(NETS.tid, "/tv/"), v = p.v || (p.v = 1);
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 12, , 13]);
+                        return [4 /*yield*/, N.get(base + 'sbm/' + id)];
+                    case 2:
+                        m = _c.sent();
+                        if (m && m.ok && m.v === v) {
+                            TVS.sbUp[id] = 'ok';
+                            sbUpBadge(id);
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, IDB.get('sb_' + id, 'snd')];
+                    case 3:
+                        blob_1 = _c.sent();
+                        if (!blob_1) {
+                            delete TVS.sbUp[id];
+                            return [2 /*return*/];
+                        }
+                        if (blob_1.size > 40e6) {
+                            TVS.sbUp[id] = 'big';
+                            sbUpBadge(id);
+                            toast('« ' + p.name + ' » est trop lourd pour la TV (40 Mo max)');
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, new Promise(function (r) { var f = new FileReader(); f.onload = function () { return r(f.result); }; f.onerror = function () { return r(null); }; f.readAsDataURL(blob_1); })];
+                    case 4:
+                        d = _c.sent();
+                        if (!d)
+                            throw 0;
+                        C_5 = 800000, n = Math.ceil(d.length / C_5);
+                        TVS.sbUp[id] = 0;
+                        sbUpBadge(id);
+                        return [4 /*yield*/, N.set(base + 'sbm/' + id, { n: n, ok: 0, v: v, k: p.kind })];
+                    case 5:
+                        _c.sent();
+                        return [4 /*yield*/, N.set(base + 'sbc/' + id, null)];
+                    case 6:
+                        _c.sent();
+                        i = 0;
+                        _c.label = 7;
+                    case 7:
+                        if (!(i < n)) return [3 /*break*/, 10];
+                        return [4 /*yield*/, N.set(base + 'sbc/' + id + '/' + i, d.slice(i * C_5, (i + 1) * C_5))];
+                    case 8:
+                        _c.sent();
+                        TVS.sbUp[id] = Math.round(100 * (i + 1) / n);
+                        sbUpBadge(id);
+                        _c.label = 9;
+                    case 9:
+                        i++;
+                        return [3 /*break*/, 7];
+                    case 10: return [4 /*yield*/, N.set(base + 'sbm/' + id, { n: n, ok: 1, v: v, k: p.kind })];
+                    case 11:
+                        _c.sent();
+                        TVS.sbUp[id] = 'ok';
+                        sbUpBadge(id);
+                        return [3 /*break*/, 13];
+                    case 12:
+                        e_21 = _c.sent();
+                        TVS.sbUp[id] = 'err';
+                        sbUpBadge(id);
+                        return [3 /*break*/, 13];
+                    case 13: return [2 /*return*/];
+                }
+            });
+        }); };
+        var prev = SBQ;
+        SBQ = prio ? Promise.resolve().then(job).then(function () { return prev; }) : prev.then(job);
+    }
+    function sbUploadAll() { if (sbWhere() !== 'tv')
+        return; SBD().pads.forEach(function (p) { return sbUpload(p); }); }
+    function sbUnpublish(id) { var N = net(); if (!N || !NETS.tid)
+        return; var base = "tables/".concat(NETS.tid, "/tv/"); N.set(base + 'sbm/' + id, null); N.set(base + 'sbc/' + id, null); delete TVS.sbUp[id]; }
+    /* côté TV : télécharge, garde en cache, joue ce que demande la tablette */
+    var SBTV = { m: {}, p: {}, busy: {} };
+    function sbTvBlob(id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var m, c, e_22, N;
+            var _this = this;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        m = SBTV.m[id];
+                        if (!m || !m.ok)
+                            return [2 /*return*/, null];
+                        c = null;
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, IDB.get('sbtv_' + id, 'snd')];
+                    case 2:
+                        c = _c.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        e_22 = _c.sent();
+                        return [3 /*break*/, 4];
+                    case 4:
+                        if (c && c.v === m.v && c.b)
+                            return [2 /*return*/, c.b];
+                        if (SBTV.busy[id])
+                            return [2 /*return*/, SBTV.busy[id]];
+                        N = net();
+                        if (!N)
+                            return [2 /*return*/, null];
+                        return [2 /*return*/, SBTV.busy[id] = N.get("tables/".concat(TVM, "/tv/sbc/").concat(id)).then(function (o) { return __awaiter(_this, void 0, void 0, function () {
+                                var L, b, e_23;
+                                return __generator(this, function (_c) {
+                                    switch (_c.label) {
+                                        case 0:
+                                            L = Array.isArray(o) ? o : Object.keys(o || {}).sort(function (a, b) { return a - b; }).map(function (i) { return o[i]; });
+                                            if (L.length < m.n || L.some(function (x) { return !x; }))
+                                                return [2 /*return*/, null];
+                                            return [4 /*yield*/, fetch(L.join(''))];
+                                        case 1: return [4 /*yield*/, (_c.sent()).blob()];
+                                        case 2:
+                                            b = _c.sent();
+                                            _c.label = 3;
+                                        case 3:
+                                            _c.trys.push([3, 5, , 6]);
+                                            return [4 /*yield*/, IDB.put('sbtv_' + id, { v: m.v, b: b }, 'snd')];
+                                        case 4:
+                                            _c.sent();
+                                            return [3 /*break*/, 6];
+                                        case 5:
+                                            e_23 = _c.sent();
+                                            return [3 /*break*/, 6];
+                                        case 6: return [2 /*return*/, b];
+                                    }
+                                });
+                            }); }).catch(function () { return null; }).finally(function () { delete SBTV.busy[id]; })];
+                }
+            });
+        });
+    }
+    function sbTvSync() {
+        return __awaiter(this, void 0, void 0, function () {
+            var P, _loop_11, _c, _e, _f, id, e;
+            var e_24, _g;
+            return __generator(this, function (_h) {
+                P = SBTV.p || {};
+                Object.keys(SBP).forEach(function (id) { var e = P[id]; if (!e || e.s !== SBP[id].s)
+                    sbStop(id, true); });
+                _loop_11 = function (id, e) {
+                    var h = SBP[id];
+                    if (h && h.s === e.s) {
+                        h.v = e.v;
+                        h.el.loop = !!e.l;
+                        var x = SND.ctx;
+                        if (h.g && x)
+                            h.g.gain.setTargetAtTime(e.v, x.currentTime, .05);
+                        else
+                            h.el.volume = Math.min(1, e.v);
+                        return "continue";
+                    }
+                    if (SBTV.start && SBTV.start[id] === e.s)
+                        return "continue";
+                    (SBTV.start || (SBTV.start = {}))[id] = e.s;
+                    sbTvBlob(id).then(function (b) { var cur = (SBTV.p || {})[id]; if (!b || !cur || cur.s !== e.s || SBP[id])
+                        return; sbStartBlob(id, b, { kind: e.k, loop: !!e.l, v: e.v, s: e.s }); });
+                };
+                try {
+                    for (_c = __values(Object.entries(P)), _e = _c.next(); !_e.done; _e = _c.next()) {
+                        _f = __read(_e.value, 2), id = _f[0], e = _f[1];
+                        _loop_11(id, e);
+                    }
+                }
+                catch (e_24_1) { e_24 = { error: e_24_1 }; }
+                finally {
+                    try {
+                        if (_e && !_e.done && (_g = _c.return)) _g.call(_c);
+                    }
+                    finally { if (e_24) throw e_24.error; }
+                }
+                return [2 /*return*/];
+            });
+        });
+    }
+    function sbTvPrefetch() { Object.keys(SBTV.m).reduce(function (pr, id) { return pr.then(function () { return sbTvBlob(id); }); }, Promise.resolve()); }
     function sbPadUI(id) { var b = document.querySelector(".sbpad[data-sb=\"".concat(id, "\"]")); if (!b)
         return; var on = !!SBP[id]; b.classList.toggle('on', on); var st = b.querySelector('.st'); if (st)
         st.textContent = on ? '■' : '▶'; if (!on) {
@@ -11713,9 +11962,12 @@ var __values = (this && this.__values) || function(o) {
         if (!el)
             return;
         var D = SBD();
-        var pad = function (p) { return "<div class=\"sbpad ".concat(SBP[p.id] ? 'on' : '', "\" role=\"button\" tabindex=\"0\" data-sb=\"").concat(p.id, "\" style=\"--pc:").concat(p.col || '#6b4a2a', "\" aria-label=\"").concat(esc(p.name), "\">\n      <span class=\"nm\">").concat(esc(p.name), "</span>\n      <span class=\"meta\"><span class=\"st\">").concat(SBP[p.id] ? '■' : '▶', "</span>").concat((p.loop != null ? p.loop : p.kind === 'mus') ? '<span title="En boucle">⟳ boucle</span>' : '', "<span class=\"eq\"><i></i><i></i><i></i><i></i></span></span>\n      <button type=\"button\" class=\"ed\" data-sbed=\"").concat(p.id, "\" aria-label=\"Modifier ").concat(esc(p.name), "\">\u22EF</button><span class=\"pg\"></span></div>"); };
+        var pad = function (p) { return "<div class=\"sbpad ".concat(SBP[p.id] ? 'on' : '', "\" role=\"button\" tabindex=\"0\" data-sb=\"").concat(p.id, "\" style=\"--pc:").concat(p.col || '#6b4a2a', "\" aria-label=\"").concat(esc(p.name), "\">\n      <span class=\"nm\">").concat(esc(p.name), "</span>\n      <span class=\"meta\"><span class=\"st\">").concat(SBP[p.id] ? '■' : '▶', "</span>").concat((p.loop != null ? p.loop : p.kind === 'mus') ? '<span title="En boucle">⟳ boucle</span>' : '', "<span class=\"eq\"><i></i><i></i><i></i><i></i></span></span>\n      <button type=\"button\" class=\"ed\" data-sbed=\"").concat(p.id, "\" aria-label=\"Modifier ").concat(esc(p.name), "\">\u22EF</button><span class=\"tvb\" hidden></span><span class=\"pg\"></span></div>"); };
         var sec = function (k, t, emp) { var L = D.pads.filter(function (p) { return p.kind === k; }); return "<div class=\"sbsec\"><h3>".concat(t, "</h3>").concat(L.length ? "<div class=\"sbgrid\">".concat(L.map(pad).join(''), "</div>") : "<div class=\"sbempty\">".concat(emp, "</div>"), "</div>"); };
-        el.innerHTML = "<div class=\"sbhead\"><h2>\u266B Soundboard</h2>\n      <label class=\"btn\">+ Musiques<input type=\"file\" accept=\"".concat(SB_ACC, "\" multiple data-sbadd=\"mus\"></label>\n      <label class=\"btn\">+ Effets sonores<input type=\"file\" accept=\"").concat(SB_ACC, "\" multiple data-sbadd=\"sfx\"></label>\n      <span class=\"sbvol\">Volume <input type=\"range\" id=\"sbVol\" min=\"0\" max=\"100\" value=\"").concat(Math.round(((_c = D.vol) !== null && _c !== void 0 ? _c : .8) * 100), "\"><output>").concat(Math.round(((_e = D.vol) !== null && _e !== void 0 ? _e : .8) * 100), " %</output></span>\n      <button type=\"button\" class=\"btn stop\" id=\"sbStopAll\">\u25A0 Tout arr\u00EAter</button></div>\n    <p class=\"sbtv\">").concat(S.tvOn ? 'La TV affiche un <b>écran noir</b> tant que tu es sur cet onglet. ' : '', "Les sons jouent sur cet appareil : branche-le \u00E0 une enceinte (Bluetooth, c\u00E2ble ou AirPlay). Touche une case pour lancer, touche-la encore pour arr\u00EAter.</p>\n    ").concat(sec('mus', 'Musiques', 'Aucune musique. « + Musiques » pour importer tes MP3.<br><small>Une seule musique à la fois : en lancer une autre fait un fondu.</small>'), "\n    ").concat(sec('sfx', 'Effets sonores', 'Aucun effet. « + Effets sonores » pour importer tes sons.<br><small>Les effets peuvent se superposer.</small>'));
+        el.innerHTML = "<div class=\"sbhead\"><h2>\u266B Soundboard</h2>\n      <label class=\"btn\">+ Musiques<input type=\"file\" accept=\"".concat(SB_ACC, "\" multiple data-sbadd=\"mus\"></label>\n      <label class=\"btn\">+ Effets sonores<input type=\"file\" accept=\"").concat(SB_ACC, "\" multiple data-sbadd=\"sfx\"></label>\n      <span class=\"sbvol\">Volume <input type=\"range\" id=\"sbVol\" min=\"0\" max=\"100\" value=\"").concat(Math.round(((_c = D.vol) !== null && _c !== void 0 ? _c : .8) * 100), "\"><output>").concat(Math.round(((_e = D.vol) !== null && _e !== void 0 ? _e : .8) * 100), " %</output></span>\n      ").concat(S.tvOn && tvTarget() && !tvTarget().local ? "<span class=\"sbout\">Son sur <span class=\"seg\">".concat([['tv', 'La TV'], ['ici', 'Cet appareil']].map(function (_c) {
+            var _e = __read(_c, 2), k = _e[0], v = _e[1];
+            return "<button type=\"button\" data-sbw=\"".concat(k, "\" class=\"").concat((D.where || 'tv') === k ? 'on' : '', "\">").concat(v, "</button>");
+        }).join(''), "</span></span>") : '', "\n      <button type=\"button\" class=\"btn stop\" id=\"sbStopAll\">\u25A0 Tout arr\u00EAter</button></div>\n    <p class=\"sbtv\">").concat(S.tvOn ? 'La TV affiche un <b>écran noir</b> tant que tu es sur cet onglet. ' : '').concat(sbWhere() === 'tv' ? 'Le son sort de <b>la TV</b> : chaque fichier y est envoyé une seule fois (« TV ✓ » sur la case quand il est prêt). Sur la TV, touche « Plein écran et son » une fois pour autoriser le son.' : S.tvOn && tvTarget() && tvTarget().local ? 'Le son sort de cet appareil.' : 'Le son sort de cet appareil. Pour qu’il sorte de la TV, active la diffusion (bouton « Écran TV »).', " Touche une case pour lancer, touche-la encore pour arr\u00EAter.</p>\n    ").concat(sec('mus', 'Musiques', 'Aucune musique. « + Musiques » pour importer tes MP3.<br><small>Une seule musique à la fois : en lancer une autre fait un fondu.</small>'), "\n    ").concat(sec('sfx', 'Effets sonores', 'Aucun effet. « + Effets sonores » pour importer tes sons.<br><small>Les effets peuvent se superposer.</small>'));
         el.querySelectorAll('[data-sb]').forEach(function (b) { b.onclick = function (e) { if (e.target.closest('[data-sbed]'))
             return; sbPlay(b.dataset.sb); }; b.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -11723,8 +11975,8 @@ var __values = (this && this.__values) || function(o) {
         } }; });
         el.querySelectorAll('[data-sbed]').forEach(function (b) { return b.onclick = function (e) { e.stopPropagation(); sbEdit(b.dataset.sbed); }; });
         el.querySelectorAll('[data-sbadd]').forEach(function (i) { return i.onchange = function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var k, n, _c, _e, f, id, er_1, e_21_1;
-            var e_21, _f;
+            var k, n, _c, _e, f, id, er_1, e_25_1;
+            var e_25, _f;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -11751,7 +12003,7 @@ var __values = (this && this.__values) || function(o) {
                         toast('Impossible d’enregistrer ' + f.name);
                         return [3 /*break*/, 7];
                     case 6:
-                        D.pads.push({ id: id, name: f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim() || 'Son', kind: k, col: SBCOL[(D.pads.length) % SBCOL.length], vol: 1 });
+                        D.pads.push({ id: id, name: f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim() || 'Son', kind: k, col: SBCOL[(D.pads.length) % SBCOL.length], vol: 1, v: Date.now() });
                         n++;
                         _g.label = 7;
                     case 7:
@@ -11759,14 +12011,14 @@ var __values = (this && this.__values) || function(o) {
                         return [3 /*break*/, 2];
                     case 8: return [3 /*break*/, 11];
                     case 9:
-                        e_21_1 = _g.sent();
-                        e_21 = { error: e_21_1 };
+                        e_25_1 = _g.sent();
+                        e_25 = { error: e_25_1 };
                         return [3 /*break*/, 11];
                     case 10:
                         try {
                             if (_e && !_e.done && (_f = _c.return)) _f.call(_c);
                         }
-                        finally { if (e_21) throw e_21.error; }
+                        finally { if (e_25) throw e_25.error; }
                         return [7 /*endfinally*/];
                     case 11:
                         save();
@@ -11780,8 +12032,12 @@ var __values = (this && this.__values) || function(o) {
         v.oninput = function () { D.vol = +v.value / 100; v.nextElementSibling.textContent = v.value + ' %'; sbVolApply(); };
         v.onchange = function () { return save(); };
         el.querySelector('#sbStopAll').onclick = sbStopAll;
+        el.querySelectorAll('[data-sbw]').forEach(function (b) { return b.onclick = function () { if ((D.where || 'tv') === b.dataset.sbw)
+            return; sbStopAll(); D.where = b.dataset.sbw; save(); sbRender(); }; });
         Object.keys(SBP).forEach(sbPadUI);
         sbTick();
+        sbUploadAll();
+        D.pads.forEach(function (p) { return sbUpBadge(p.id); });
     }
     function sbEdit(id) {
         var _c, _e;
@@ -11801,7 +12057,7 @@ var __values = (this && this.__values) || function(o) {
                 b.textContent = 'Confirmer la suppression';
                 return;
             } if (SBP[id])
-                sbKill(id); D.pads = D.pads.filter(function (z) { return z.id !== id; }); IDB.del('sb_' + id, 'snd'); save(); close(); sbRender(); };
+                sbStop(id); D.pads = D.pads.filter(function (z) { return z.id !== id; }); IDB.del('sb_' + id, 'snd'); sbUnpublish(id); save(); close(); sbRender(); };
             el.querySelector('#mOk').onclick = function () {
                 p.name = el.querySelector('#sbN').value.trim() || p.name;
                 p.kind = kind;
@@ -11810,7 +12066,7 @@ var __values = (this && this.__values) || function(o) {
                 p.col = col;
                 if (SBP[id]) {
                     SBP[id].el.loop = p.loop;
-                    SBP[id].p = p;
+                    SBP[id].p.kind = p.kind;
                     sbVolApply();
                 }
                 save();
@@ -11918,7 +12174,7 @@ var __values = (this && this.__values) || function(o) {
     var ambCustom = function () { return SD().ambc || (SD().ambc = []); };
     var AMBFAIL = new Set();
     function ambLoad(id) {
-        return __awaiter(this, void 0, void 0, function () { var b, e_22; return __generator(this, function (_c) {
+        return __awaiter(this, void 0, void 0, function () { var b, e_26; return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
                     if (AMBBUF[id])
@@ -11934,7 +12190,7 @@ var __values = (this && this.__values) || function(o) {
                     b = _c.sent();
                     return [3 /*break*/, 4];
                 case 3:
-                    e_22 = _c.sent();
+                    e_26 = _c.sent();
                     return [3 /*break*/, 4];
                 case 4:
                     if (!b) {
@@ -12026,8 +12282,8 @@ var __values = (this && this.__values) || function(o) {
     }
     function tvPublishAmb() {
         return __awaiter(this, void 0, void 0, function () {
-            var T, _loop_11, _c, _e, a, e_23_1;
-            var e_23, _f;
+            var T, _loop_12, _c, _e, a, e_27_1;
+            var e_27, _f;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -12037,7 +12293,7 @@ var __values = (this && this.__values) || function(o) {
                         if (!T)
                             return [2 /*return*/];
                         TVS.ambSent = TVS.ambSent || {};
-                        _loop_11 = function (a) {
+                        _loop_12 = function (a) {
                             var b, d;
                             return __generator(this, function (_h) {
                                 switch (_h.label) {
@@ -12067,7 +12323,7 @@ var __values = (this && this.__values) || function(o) {
                     case 2:
                         if (!!_e.done) return [3 /*break*/, 5];
                         a = _e.value;
-                        return [5 /*yield**/, _loop_11(a)];
+                        return [5 /*yield**/, _loop_12(a)];
                     case 3:
                         _g.sent();
                         _g.label = 4;
@@ -12076,14 +12332,14 @@ var __values = (this && this.__values) || function(o) {
                         return [3 /*break*/, 2];
                     case 5: return [3 /*break*/, 8];
                     case 6:
-                        e_23_1 = _g.sent();
-                        e_23 = { error: e_23_1 };
+                        e_27_1 = _g.sent();
+                        e_27 = { error: e_27_1 };
                         return [3 /*break*/, 8];
                     case 7:
                         try {
                             if (_e && !_e.done && (_f = _c.return)) _f.call(_c);
                         }
-                        finally { if (e_23) throw e_23.error; }
+                        finally { if (e_27) throw e_27.error; }
                         return [7 /*endfinally*/];
                     case 8: return [2 /*return*/];
                 }
@@ -12707,7 +12963,7 @@ var __values = (this && this.__values) || function(o) {
         }
         pts.unshift(st);
         var trap = null;
-        var _loop_12 = function (i) {
+        var _loop_13 = function (i) {
             var _c = __read(pts[i].split(',').map(Number), 2), px = _c[0], py = _c[1];
             var tp = S.objs.find(function (o) { return o.type === 'piege' && !o.spent && covers({ x: px, y: py, size: sz(c) }, o.x, o.y); });
             if (tp && fits(c, px, py, 'end')) {
@@ -12717,7 +12973,7 @@ var __values = (this && this.__values) || function(o) {
             }
         };
         for (var i = 1; i < pts.length; i++) {
-            var state_4 = _loop_12(i);
+            var state_4 = _loop_13(i);
             if (state_4 === "break")
                 break;
         }
@@ -12739,7 +12995,7 @@ var __values = (this && this.__values) || function(o) {
     }
     /* ---------- Emplacements de départ des joueurs ---------- */
     function spawnFor(c) {
-        var e_24, _c;
+        var e_28, _c;
         var L = (S.map.spawns || []).map(function (k) { return k.split(',').map(Number); });
         try {
             for (var L_2 = __values(L), L_2_1 = L_2.next(); !L_2_1.done; L_2_1 = L_2.next()) {
@@ -12748,12 +13004,12 @@ var __values = (this && this.__values) || function(o) {
                     return { x: x, y: y };
             }
         }
-        catch (e_24_1) { e_24 = { error: e_24_1 }; }
+        catch (e_28_1) { e_28 = { error: e_28_1 }; }
         finally {
             try {
                 if (L_2_1 && !L_2_1.done && (_c = L_2.return)) _c.call(L_2);
             }
-            finally { if (e_24) throw e_24.error; }
+            finally { if (e_28) throw e_28.error; }
         }
         return null;
     }
@@ -12906,7 +13162,7 @@ var __values = (this && this.__values) || function(o) {
             el.querySelector('#mCancel').onclick = close;
             list.forEach(function (c) { var i = el.querySelector("[data-i=\"".concat(c.id, "\"]")); askRoll(c, { kind: 'init', label: 'Initiative', detail: 'Lance 1d20 et saisis le dé : la table ajoute ton bonus.' }, function (v) { i.value = v; flash(i); }); });
             el.querySelector('#mGo').onclick = function () {
-                var e_25, _c;
+                var e_29, _c;
                 var auto = el.querySelector('#autoFoe').checked;
                 try {
                     for (var list_1 = __values(list), list_1_1 = list_1.next(); !list_1_1.done; list_1_1 = list_1.next()) {
@@ -12928,12 +13184,12 @@ var __values = (this && this.__values) || function(o) {
                         c.initTot = d + (+c.initB);
                     }
                 }
-                catch (e_25_1) { e_25 = { error: e_25_1 }; }
+                catch (e_29_1) { e_29 = { error: e_29_1 }; }
                 finally {
                     try {
                         if (list_1_1 && !list_1_1.done && (_c = list_1.return)) _c.call(list_1);
                     }
-                    finally { if (e_25) throw e_25.error; }
+                    finally { if (e_29) throw e_29.error; }
                 }
                 S.chars.forEach(function (c) { if (!list.includes(c))
                     c.initTot = null; });
@@ -12955,10 +13211,10 @@ var __values = (this && this.__values) || function(o) {
         if (!S.order.length)
             return;
         {
-            var e_26 = S.turn >= 0 ? cur() : null;
-            if (e_26)
-                endTurnFx(e_26);
-            var lg_1 = S.chars.filter(function (m) { var _c; return m !== e_26 && m.hp > 0 && legMax(m) && ((_c = m.legLeft) !== null && _c !== void 0 ? _c : legMax(m)) > 0; });
+            var e_30 = S.turn >= 0 ? cur() : null;
+            if (e_30)
+                endTurnFx(e_30);
+            var lg_1 = S.chars.filter(function (m) { var _c; return m !== e_30 && m.hp > 0 && legMax(m) && ((_c = m.legLeft) !== null && _c !== void 0 ? _c : legMax(m)) > 0; });
             if (lg_1.length && S.turn >= 0)
                 setTimeout(function () { return toast(lg_1.map(function (m) { return m.name; }).join(', ') + ' : action légendaire possible (fiche du monstre)'); }, 900);
         }
@@ -13991,7 +14247,7 @@ var __values = (this && this.__values) || function(o) {
             modal("<h2>Cr\u00E9er la table en ligne</h2><div class=\"sub\">Donne un nom \u00E0 ta partie : tes joueurs le verront en rejoignant.</div>\n      <label class=\"fld\">Nom de la partie<input id=\"tn\" value=\"La Crypte des Gobelins\"></label>\n      <div class=\"row\"><button class=\"btn\" id=\"mCancel\" type=\"button\">Annuler</button><button class=\"btn primary\" id=\"mOk\" type=\"button\">Cr\u00E9er et inviter</button></div>", function (el) {
                 el.querySelector('#mCancel').onclick = close;
                 el.querySelector('#mOk').onclick = function () { return __awaiter(_this, void 0, void 0, function () {
-                    var name, tid, e_27;
+                    var name, tid, e_31;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
                             case 0:
@@ -14005,7 +14261,7 @@ var __values = (this && this.__values) || function(o) {
                                 _c.sent();
                                 return [3 /*break*/, 4];
                             case 3:
-                                e_27 = _c.sent();
+                                e_31 = _c.sent();
                                 toast('Impossible de créer la table : vérifie les règles de la base (guide, étape 4)');
                                 return [2 /*return*/];
                             case 4:
@@ -14064,7 +14320,7 @@ var __values = (this && this.__values) || function(o) {
     }
     function newCode() {
         return __awaiter(this, void 0, void 0, function () {
-            var N, old, name, tid, e_28, nb, P, del, e_29;
+            var N, old, name, tid, e_32, nb, P, del, e_33;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -14081,8 +14337,8 @@ var __values = (this && this.__values) || function(o) {
                         _c.sent();
                         return [3 /*break*/, 4];
                     case 3:
-                        e_28 = _c.sent();
-                        toast('Impossible de créer le nouveau code : ' + (e_28 && e_28.message || e_28));
+                        e_32 = _c.sent();
+                        toast('Impossible de créer le nouveau code : ' + (e_32 && e_32.message || e_32));
                         nb = $('#iNew');
                         if (nb) {
                             nb.disabled = false;
@@ -14102,7 +14358,7 @@ var __values = (this && this.__values) || function(o) {
                         _c.sent();
                         return [3 /*break*/, 8];
                     case 7:
-                        e_29 = _c.sent();
+                        e_33 = _c.sent();
                         return [3 /*break*/, 8];
                     case 8:
                         N.remove("tables/".concat(old, "/meta")).catch(function () { });
