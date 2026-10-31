@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='31/10-18h30';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='31/10-23h15';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -109,7 +109,7 @@ details.card>summary{font-family:var(--f-display);font-weight:700;letter-spacing
 /* Liste */
 .pc{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;width:100%;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;box-shadow:0 1px 0 var(--line)}
 .pc:hover{border-color:var(--line-2)}
-.pcrow{display:flex;gap:8px;align-items:stretch}.pcrow .pc{flex:1;min-width:0}.pcdel{flex:none;color:var(--foe,#a33);border-color:currentColor;align-self:center}
+.pcrow{display:flex;gap:8px;align-items:stretch}.pcrow .pc{flex:1;min-width:0}.pcbtns{display:flex;flex-direction:column;gap:6px;justify-content:center;flex:none}.pcbtns .btn{min-width:110px}.pcdel{flex:none;color:var(--foe,#a33);border-color:currentColor;align-self:center}
 .av{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;color:var(--accent-ink);font-family:var(--f-display);font-weight:700;font-size:20px;background-size:cover;background-position:center 20%;box-shadow:0 0 0 3px var(--paper),0 0 0 4.5px var(--line-2)}
 .pc .nm{font-family:var(--f-display);font-weight:700;font-size:20px;line-height:1.05;letter-spacing:.03em}
 .pc .ds{font-size:14px;color:var(--muted)}
@@ -585,7 +585,7 @@ function makeThumb(src){return new Promise(ok=>{const im=new Image();im.onload=(
 function thumbExisting(){DB.chars.forEach(c=>{if(c.img&&!c.thumb)makeThumb(c.img).then(t=>{if(t){c.thumb=t;save()}});if(c.img&&(!c.bust||(c.bustV||0)<3))makeBust(c.img,c).then(t=>{if(t){c.bust=t;c.bustV=3;save()}})})}
 setTimeout(trimExisting,50);setTimeout(thumbExisting,400);
 function tokenImg(file,removeWhite){return new Promise((ok,ko)=>{const r=new FileReader();r.onerror=ko;r.onload=()=>{const im=new Image();im.onerror=ko;im.onload=()=>{
-  const MAX=256,k=Math.min(1,MAX/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*k)),h=Math.max(1,Math.round(im.height*k));
+  const MAX=384,k=Math.min(1,MAX/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*k)),h=Math.max(1,Math.round(im.height*k));
   const cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d');g.drawImage(im,0,0,w,h);const D=g.getImageData(0,0,w,h),p=D.data;
   if(removeWhite){const isBg=i=>{const R=p[i],G=p[i+1],B=p[i+2];return p[i+3]<20||(Math.min(R,G,B)>222&&Math.max(R,G,B)-Math.min(R,G,B)<26)};
     const seen=new Uint8Array(w*h),st=[];for(let x=0;x<w;x++)st.push(x,(h-1)*w+x);for(let y=0;y<h;y++)st.push(y*w,y*w+w-1);
@@ -635,9 +635,10 @@ function renderList(){
     <div><h1 class="brand">Fiche d’Aventurier</h1><div class="sub">Tes personnages D&amp;D 5e, gardés sur cet appareil. <span style="opacity:.6">· version ${esc(window.APP_V||'?')}</span></div></div>
     ${joined()?`<div class="card con"><div class="row" style="justify-content:space-between"><span>Tu joues <b>${esc(fullName(myChar()))}</b> à <b>${esc((CON.meta&&CON.meta.name)||'la table')}</b></span><button class="btn sm primary" data-a="open" data-v="${myChar().id}" type="button">Ouvrir</button></div></div>`:''}
     ${DB.chars.length?DB.chars.map(c=>{const D=calc(c);const hp=c.hp==null?D.hpMax:c.hp;return `<div class="pcrow"><button type="button" class="pc" data-a="open" data-v="${c.id}"><span class="av" style="background-color:${esc(c.color)};${c.img?`background-image:url('${c.img}')`:''}">${c.img?'':esc(initials(fullName(c)))}</span>
-      <span style="min-width:0"><span class="nm" style="display:block">${esc(fullName(c))}</span><span class="ds">${esc(D.R.n)} · ${esc(D.K.n)} niv. ${D.L}</span></span><span class="mono">${hp}/${D.hpMax} PV</span></button><button type="button" class="btn sm pcdel" data-a="delpc" data-v="${c.id}" aria-label="Supprimer ${esc(fullName(c))}">Supprimer</button></div>`}).join('')
+      <span style="min-width:0"><span class="nm" style="display:block">${esc(fullName(c))}</span><span class="ds">${esc(D.R.n)} · ${esc(D.K.n)} niv. ${D.L}</span></span><span class="mono">${hp}/${D.hpMax} PV</span></button><span class="pcbtns"><button type="button" class="btn sm" data-a="savepc" data-v="${c.id}" aria-label="Sauvegarder ${esc(fullName(c))} dans un fichier">Sauvegarder</button><button type="button" class="btn sm pcdel" data-a="delpc" data-v="${c.id}" aria-label="Supprimer ${esc(fullName(c))}">Supprimer</button></span></div>`}).join('')
       :`<div class="card"><h3>Aucun personnage</h3><p class="empty" style="margin:0">Crée ton premier personnage : choisis sa race, sa classe et son niveau, l’appli calcule le reste (modificateurs, bonus de maîtrise, CA, PV, sorts…).</p></div>`}
-    <div class="row"><button class="btn primary" data-a="new" type="button">+ Nouveau personnage</button></div>
+    <div class="row" style="flex-wrap:wrap"><button class="btn primary" data-a="new" type="button">+ Nouveau personnage</button><button class="btn" data-a="import" type="button">Importer un personnage</button>${DB.chars.length>1?'<button class="btn" data-a="saveall" type="button">Tout sauvegarder</button>':''}</div>
+    <div class="card"><h3>Changer d’appareil</h3><p class="sub" style="margin:0"><b>Sauvegarder</b> crée un fichier avec ton personnage complet (fiche, sorts, objets, portrait et pion). Garde-le dans tes fichiers ou envoie-le-toi (mail, WhatsApp, AirDrop…), puis sur l’autre appareil touche <b>Importer un personnage</b> et choisis ce fichier.</p></div>
     <div class="card"><h3>Comment ça marche</h3><p class="sub" style="margin:0">Ta fiche reste sur ce téléphone. Pour jouer, ouvre ton personnage, touche <b>Rejoindre une table</b> et tape le code que le MJ te donne. Pendant ton tour, tu joues directement depuis ton téléphone.</p></div>
   </div>`;
 }
@@ -822,6 +823,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
     case 'tab':view.tab=v;keep=false;break;
     case 'export':case 'joinT':return joinModal(c);
     case 'import':return importModal();
+    case 'savepc':{const x=DB.chars.find(z=>z.id===v);if(x)saveFile([x]);return}
+    case 'saveall':return saveFile(DB.chars);
     case 'dmg':case 'heal':case 'temp':{const n=Math.max(0,+$('#hpN').value||0);if(!n){toast('Saisis un nombre');return}const D=calc(c);
       if(a==='dmg'){let r=n;if(c.temp){const t=Math.min(c.temp,r);c.temp-=t;r-=t}if(c.hp<=0&&r>0){c.death.f=Math.min(3,c.death.f+1);toast('Dégâts à 0 PV : un échec contre la mort')}
         c.hp=Math.max(0,c.hp-r);if(c.hp===0&&!c.conds.includes('inconscient')){c.conds.push('inconscient');toast('Tu tombes inconscient·e')}if(c.conc&&n>0)toast(`Concentration : JdS CON DD ${Math.max(10,Math.floor(n/2))}`)}
@@ -978,15 +981,34 @@ function exportModal(c){const long=encode(c);
       try{navigator.clipboard.writeText(txt).then(()=>toast('Code copié'),fb)}catch(_){fb()}};});
   if(shortNet()){modal('<h2>Envoyer à la table</h2><div class="how">Création du code…</div>');shareShort(c).then(show).catch(()=>show(null))}else show(null);
 }
+function importChars(L){const base=newChar();let n=0,last=null;
+  L.forEach(s=>{if(!s||typeof s!=='object'||!s.id)return;Object.keys(base).forEach(k=>{if(s[k]===undefined)s[k]=JSON.parse(JSON.stringify(base[k]))});
+    const i=DB.chars.findIndex(x=>x.id===s.id);if(i>=0)DB.chars[i]=s;else DB.chars.push(s);n++;last=s});
+  if(!n)throw new Error('vide');if(n===1&&last)DB.cur=last.id;
+  try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(err){toast('Fichier importé, mais la mémoire de cet appareil est presque pleine')}
+  save();return n}
+function saveFile(L){if(!L.length)return;const data=JSON.stringify({app:'fiche-aventurier',kind:'personnages',v:1,date:new Date().toISOString(),chars:L});
+  const nm=(L.length===1?(fullName(L[0])||'personnage'):'mes-personnages').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase()+'.json';
+  const blob=new Blob([data],{type:'application/json'});let file=null;try{file=new File([blob],nm,{type:'application/json'})}catch(e){}
+  const dl=()=>{const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Fichier enregistré : '+nm)};
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]}))navigator.share({files:[file],title:nm}).then(()=>toast('Personnage sauvegardé')).catch(e=>{if(!e||e.name!=='AbortError')dl()});else dl()}
 function importModal(){
-  modal(`<h2>Importer un personnage</h2><div class="how">Tape le code à 6 caractères, ou colle un code long (FA1:…). Si ce personnage existe déjà ici, il sera remplacé par la version du code.</div>
-    <textarea class="in code" id="code" placeholder="Ex. K7P 2QX" style="min-height:70px"></textarea>
-    <div class="row" style="justify-content:flex-end"><button class="btn" data-x="no" type="button">Annuler</button><button class="btn primary" data-x="ok" type="button">Importer</button></div>`,el=>{
+  modal(`<h2>Importer un personnage</h2>
+    <div class="how"><b>Depuis un fichier</b> : choisis le fichier créé avec <b>Sauvegarder</b> sur ton autre appareil.</div>
+    <div class="row"><label class="btn primary" style="position:relative;overflow:hidden">Choisir le fichier<input type="file" id="impF" accept=".json,application/json,text/plain" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label></div>
+    <details style="margin-top:12px"><summary class="sub" style="cursor:pointer">Ou avec un code (6 caractères ou FA1:…)</summary>
+      <textarea class="in code" id="code" placeholder="Ex. K7P 2QX" style="min-height:70px;margin-top:8px"></textarea>
+      <div class="row" style="justify-content:flex-end"><button class="btn" data-x="ok" type="button">Importer le code</button></div></details>
+    <p class="sub" style="margin:10px 0 0">Si ce personnage existe déjà sur cet appareil, il est remplacé par la version importée.</p>
+    <div class="row" style="justify-content:flex-end"><button class="btn" data-x="no" type="button">Fermer</button></div>`,el=>{
     el.querySelector('[data-x=no]').onclick=close;
+    el.querySelector('#impF').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onerror=()=>toast('Fichier illisible');
+      r.onload=()=>{let o;try{o=JSON.parse(r.result)}catch(_){toast('Ce fichier n’est pas une sauvegarde de personnage');return}
+        const L=Array.isArray(o&&o.chars)?o.chars:o&&o.sheet?[o.sheet]:o&&o.id&&o.cls?[o]:[];
+        try{const n=importChars(L);close();view.tab='fiche';render();toast(n>1?n+' personnages importés':'Personnage importé')}catch(_){toast('Aucun personnage trouvé dans ce fichier')}};r.readAsText(f)};
     el.querySelector('[data-x=ok]').onclick=async()=>{const t=el.querySelector('#code').value;let o;
       try{o=isShort(t)?await fetchShort(t):decode(t)}catch(e){toast(isShort(t)?(shortNet()?'Code introuvable : vérifie les 6 caractères':'Pas de connexion : utilise le code long'):'Code invalide : vérifie le code');return}
-      try{const s=o.sheet;if(!s||!s.id)throw 0;const base=newChar();Object.keys(base).forEach(k=>{if(s[k]===undefined)s[k]=base[k]});
-        const i=DB.chars.findIndex(x=>x.id===s.id);if(i>=0)DB.chars[i]=s;else DB.chars.push(s);DB.cur=s.id;view.tab='combat';save();close();render();toast('Personnage importé')}catch(_){toast('Code invalide')}};});
+      try{importChars([o.sheet]);view.tab='combat';close();render();toast('Personnage importé')}catch(_){toast('Code invalide')}};});
 }
 /* ---------- Table en ligne ---------- */
 const SPELL_DESC={
