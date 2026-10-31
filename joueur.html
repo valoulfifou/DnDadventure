@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='31/10-10h23';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='31/10-10h45';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -1147,7 +1147,7 @@ function lvSmp(k,t,{g=1,rate=1,rev=0}={}){const L=LVA.buf[k],x=LVA.x;if(!L||!L.l
   const gn=x.createGain();gn.gain.value=g;s.connect(gn);gn.connect(LVA.out);if(rev){const r=x.createGain();r.gain.value=rev;gn.connect(r);r.connect(LVA.rev)}s.start(t)}
 // son du gain de niveau fourni par le MJ (levelup.mp3), sinon le son de l'app MJ
 function lvFile(){if(LVA.file!==undefined)return LVA.file;const x=lvAudio();if(!x)return LVA.file=Promise.resolve(null);
-  return LVA.file=fetch('levelup.mp3?v=1').then(r=>r.ok?r.arrayBuffer():null).then(ab=>ab?new Promise((ok,ko)=>x.decodeAudioData(ab,ok,ko)):null).catch(()=>null)}
+  return LVA.file=fetch('levelup.mp3?v=2').then(r=>r.ok?r.arrayBuffer():null).then(ab=>ab?new Promise((ok,ko)=>x.decodeAudioData(ab,ok,ko)):null).catch(()=>null)}
 document.addEventListener('pointerdown',()=>{try{lvFile()}catch(e){}},{passive:true,once:true});
 function lvlSnd(){const x=lvAudio();if(!x)return;(x.state==='suspended'?x.resume():Promise.resolve()).catch(()=>{}).then(()=>lvFile()).then(b=>{if(!b){lvlSndMJ();return}const s=x.createBufferSource();s.buffer=b;const g=x.createGain();g.gain.value=1;s.connect(g);g.connect(LVA.out);s.start(x.currentTime+.02)})}
 function lvlSndMJ(){const x=lvAudio();if(!x)return;(x.state==='suspended'?x.resume():Promise.resolve()).catch(()=>{}).then(()=>LVA.dec).then(()=>{const t=x.currentTime+.02;
@@ -1186,17 +1186,20 @@ function grantsIn(R){const c=myChar();if(!c)return;xpFix(c);const N=net();CON.gd
 function lvSess(){try{if(navigator.audioSession&&navigator.audioSession.type!=='playback')navigator.audioSession.type='playback'}catch(e){}}
 function lvPlay(fn){const x=lvAudio();if(!x)return;lvSess();(x.state==='suspended'?x.resume():Promise.resolve()).catch(()=>{}).then(()=>LVA.dec).then(()=>{try{fn(x.currentTime+.02)}catch(e){}})}
 // même son que « Tour d'un PJ » dans l'app MJ
-function tourSnd(){lvPlay(t=>{lvSmp('swish',t,{g:.55,rate:.55,rev:.3});lvSmp('bellL',t+.06,{g:.55,rate:.9,rev:.65});lvSmp('bell',t+.22,{g:.35,rate:1.35,rev:.6});lvSmp('chime',t+.3,{g:.25,rate:.9,rev:.6})})}
-function aooSnd(){lvPlay(t=>{lvSmp('swish',t,{g:.6,rate:.8,rev:.3});lvSmp('bellL',t+.1,{g:.45,rate:.7,rev:.6})})}
-function finSnd(){lvPlay(t=>[1,1.26,1.5].forEach((r,i)=>lvSmp('bell',t+i*.32,{rate:r,g:.5,rev:.6})))}
+function tourSndSynth(){lvPlay(t=>{lvSmp('swish',t,{g:.55,rate:.55,rev:.3});lvSmp('bellL',t+.06,{g:.55,rate:.9,rev:.65});lvSmp('bell',t+.22,{g:.35,rate:1.35,rev:.6});lvSmp('chime',t+.3,{g:.25,rate:.9,rev:.6})})}
+function tourFile(){if(LVA.tour!==undefined)return LVA.tour;const x=lvAudio();if(!x)return null;
+  return LVA.tour=fetch('tour-pj.mp3?v=1').then(r=>r.ok?r.arrayBuffer():null).then(ab=>ab?new Promise((ok,ko)=>x.decodeAudioData(ab,ok,ko)):null).catch(()=>null).then(b=>{if(!b)LVA.tour=undefined;return b})}
+document.addEventListener('pointerdown',()=>{try{tourFile()}catch(e){}},{passive:true,once:true});
+// son « Tour PJ » (fichier tour-pj.mp3) quand c'est le tour du joueur
+function tourSnd(){const x=lvAudio();if(!x)return;lvSess();(x.state==='suspended'?x.resume():Promise.resolve()).catch(()=>{}).then(()=>tourFile()).then(b=>{if(!b){tourSndSynth();return}const s=x.createBufferSource();s.buffer=b;const g=x.createGain();g.gain.value=1;s.connect(g);g.connect(LVA.out);s.start(x.currentTime+.02)})}
 function fxScreen(cls,html,ms){document.querySelectorAll('.turnfx').forEach(x=>x.remove());const d=document.createElement('div');d.className='turnfx '+cls;d.innerHTML=`<div class="tfcore">${html}</div>`;
   document.body.appendChild(d);const end=()=>{if(d.classList.contains('out'))return;d.classList.add('out');setTimeout(()=>d.remove(),480)};d.onclick=end;setTimeout(end,ms)}
 function turnFx(){tourSnd();try{navigator.vibrate&&navigator.vibrate([120,60,120,60,240])}catch(e){}
   const c=myChar(),r=CON.view&&CON.view.round;
   fxScreen('',`<small>${r?'Round '+r:''}</small><b>C’est ton tour !</b>${c?`<span>${esc(fullName(c))}</span>`:''}<i></i>`,3200)}
-function combatEndFx(){finSnd();try{navigator.vibrate&&navigator.vibrate([60,40,60,40,160])}catch(e){}
+function combatEndFx(){try{navigator.vibrate&&navigator.vibrate([60,40,60,40,160])}catch(e){}
   fxScreen('fin','<small>La table</small><b>Combat terminé</b><i></i>',3800)}
-function aooModal(rid,r,n){try{navigator.vibrate&&navigator.vibrate([100,50,100,50,220])}catch(e){}aooSnd();
+function aooModal(rid,r,n){try{navigator.vibrate&&navigator.vibrate([100,50,100,50,220])}catch(e){}
   const ws=Array.isArray(r.ws)?r.ws:Object.values(r.ws||{}),W=ws.length?ws:[{n:'Attaque',b:0,d:''}];
   const wl=w=>`${esc(w.n)}${w.d?' ('+((+w.b||0)>=0?'+':'')+(+w.b||0)+' au toucher, '+esc(w.d)+')':''}`;
   modal(`<h2 id="aooMark">⚔ Attaque d’opportunité !</h2><div class="how"><b>${esc(r.tgt||'Un adversaire')}</b> s’éloigne de toi. Tu peux utiliser ta <b>réaction</b> pour le frapper avant qu’il ne parte.</div>
