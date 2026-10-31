@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='31/10-11h32';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='31/10-18h30';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -291,6 +291,7 @@ details>summary{cursor:pointer}
 
 <script src="sorts.js?v=2"></script>
 <script src="classes.js?v=1"></script>
+<script src="capacites.js?v=1"></script>
 <script>
 (()=>{
 /* ---------- Données de règles (D&D 5e 2014, SRD) ---------- */
@@ -411,7 +412,7 @@ function calc(c){
   switch(c.cls){
     case 'barbare':R_('rage','Rage',L<3?2:L<6?3:L<12?4:L<17?5:L<20?6:99,'long',`+${L<9?2:L<16?3:4} aux dégâts de FOR · résistance contondant/perforant/tranchant`);if(L>=2)rem.push('Attaque téméraire');break;
     case 'barde':R_('insp','Inspiration bardique',Math.max(1,mod.CHA),L>=5?'court':'long',`d${L<5?6:L<10?8:L<15?10:12} à donner à un allié`);break;
-    case 'clerc':if(L>=2)R_('cd','Conduit divin',L<6?1:L<18?2:3,'court','Renvoi des morts-vivants…');break;
+    case 'clerc':if(L>=2)R_('cd','Conduit divin',L<6?1:L<18?2:3,'court','Renvoi des morts-vivants…');if(/temp[eê]te/i.test(c.sub||''))R_('ouragan','Fureur de l’ouragan',Math.max(1,mod.SAG),'long','Réaction : 2d8 foudre ou tonnerre à qui te frappe au contact');break;
     case 'druide':if(L>=2)R_('fs','Forme sauvage',2,'court','');break;
     case 'ensorceleur':if(L>=2)R_('ps','Points de sorcellerie',L,'long','');break;
     case 'guerrier':R_('ss','Second souffle',1,'court',`Action bonus : récupère 1d10 + ${L} PV`);if(L>=2)R_('fa','Fougue',L>=17?2:1,'court','Une action supplémentaire pendant ton tour');if(L>=9)R_('ind','Indomptable',L>=17?3:L>=13?2:1,'long','Relance un JdS raté');break;
@@ -442,19 +443,17 @@ function itemActs(c,D){const o=[];(c.inv||[]).filter(i=>+i.qty>0&&i.kind).forEac
   if(i.kind==='parchemin'){const S0=sortFind(i.spell);if(!S0)return;const [dc,atk]=SCROLL_DC[S0[1]]||[13,5],k=S0[2]==='autre'?'auto':S0[2];
     o.push({name:`📜 ${S0[0]} (parchemin${q})`,kind:k,cost:S0[3],range:+S0[4]||0,area:+S0[5]||0,bonus:atk,dc,save:S0[6]||'DEX',dmg:S0[2]==='autre'||!S0[7]?'0':withMod(S0[7],D.cast?D.cast.mod:0),dtype:S0[8]||'',half:!!S0[9],slot:0,item:i.id,note:[S0[10]||'','Parchemin : DD '+dc+' / attaque '+sgn(atk)+'. Il disparaît après usage.'].filter(Boolean).join(' ')})}});return o}
 function combatSummary(c){const D=calc(c),acts=[];
-  c.weapons.forEach(w=>{const l=weaponLine(c,D,w);acts.push({name:w.name,kind:'attaque',cost:'action',range:w.ranged?(+w.range||24):(w.reach?3:1.5),area:0,bonus:l.atk,dc:0,save:'DEX',dmg:l.dmg,dtype:w.dtype,half:true,slot:0,note:[w.thrown?`Lancer : ${w.thrown} m`:'',w.note].filter(Boolean).join(' · ')})});
+  c.weapons.forEach(w=>{const l=weaponLine(c,D,w);acts.push({name:w.name,kind:'attaque',cost:'action',range:w.ranged?(+w.range||24):(w.reach?3:1.5),area:0,bonus:l.atk,dc:0,save:'DEX',dmg:l.dmg,dtype:w.dtype,half:true,slot:0,fin:w.finesse||w.ranged?1:0,note:[w.thrown?`Lancer : ${w.thrown} m`:'',w.note].filter(Boolean).join(' · ')})});
   const u=unarmed(c,D);acts.push({name:'Mains nues',kind:'attaque',cost:'action',range:1.5,area:0,bonus:u.atk,dc:0,save:'DEX',dmg:u.dmg,dtype:'contondant',half:true,slot:0,note:''});
   const dr=drakeAction(c,D);if(dr)acts.push(dr);
   {const L=D.L,xa=L>=5&&['guerrier','barbare','paladin','rodeur','moine'].includes(c.cls)?(c.cls==='guerrier'?(L>=20?4:L>=11?3:2):2):1;
     if(xa>1)acts.forEach(a=>{if(a.kind==='attaque'&&a.cost==='action'){a.rep=xa;a.repKey='attaque';a.note=[a.note,`Attaque supplémentaire : ${xa} attaques`].filter(Boolean).join(' · ')}});
     if(c.cls==='moine'){const u=unarmed(c,D),base={kind:'attaque',cost:'bonus',range:1.5,area:0,bonus:u.atk,dc:0,save:'DEX',dmg:u.dmg,dtype:'contondant',half:true,slot:0};
       acts.push({...base,name:'Arts martiaux (mains nues)',note:'Après avoir attaqué avec ton action.'});
-      if(L>=2){acts.push({...base,name:'Déluge de coups (1 ki)',ki:1,rep:2,repKey:'deluge',note:'Deux attaques à mains nues. Coûte 1 point de ki.'});
-        acts.push({name:'Défense patiente (1 ki)',kind:'auto',cost:'bonus',range:0,area:0,bonus:0,dc:0,save:'DEX',dmg:'0',dtype:'',half:true,slot:0,ki:1,note:'Esquiver en action bonus. Coûte 1 point de ki.'});
-        acts.push({name:'Pas du vent (1 ki)',kind:'auto',cost:'bonus',range:0,area:0,bonus:0,dc:0,save:'DEX',dmg:'0',dtype:'',half:true,slot:0,ki:1,note:'Foncer ou Se désengager en action bonus, saut doublé. Coûte 1 point de ki.'})}}}
+      if(L>=2){acts.push({...base,name:'Déluge de coups (1 ki)',rk:'ki',rep:2,repKey:'deluge',note:'Deux attaques à mains nues. Coûte 1 point de ki.'})}}}
   if(c.cls==='druide'&&D.L>=2){const moon=/lune/i.test(c.sub||'');acts.push({name:'Forme sauvage',kind:'auto',cost:moon?'bonus':'action',range:0,area:0,bonus:0,dc:0,save:'DEX',dmg:'0',dtype:'',half:true,slot:0,ws:{L:D.L,moon},note:'Deux utilisations par repos court. Tu prends les PV, la CA, la vitesse et les attaques de la bête ; à 0 PV tu redeviens druide.'})}
-  if(c.cls==='guerrier')acts.push({name:'Second souffle',kind:'soin',cost:'bonus',range:0,area:0,bonus:0,dc:0,save:'DEX',dmg:`1d10+${D.L}`,dtype:'',half:true,slot:0,note:'Une fois par repos court.'});
-  if(c.cls==='barbare')acts.push({name:'Rage',kind:'auto',cost:'bonus',range:0,area:0,bonus:0,dc:0,save:'DEX',dmg:'0',dtype:'',half:true,slot:0,note:D.res[0]?.note||''});
+  const CF=cfOf(c,D);CF.acts.forEach(a=>acts.push(a));
+  if(CF.cfp.crit)acts.forEach(a=>{if(a.kind==='attaque')a.crit=CF.cfp.crit});
   c.spells.filter(s=>s.lvl===0||s.prep).forEach(s=>{const k=s.kind==='autre'?'auto':s.kind;
     acts.push({name:s.name,kind:k,cost:s.cost,range:+s.range||0,area:+s.area||0,bonus:D.cast?D.cast.atk:0,dc:D.cast?D.cast.dc:10,save:s.save||'DEX',dmg:s.kind==='autre'?'0':spellLine(c,D,s),dtype:s.dtype,half:!!s.half,slot:+s.lvl||0,note:[s.note||'',isConc((s.name))&&!/concentration/i.test(s.note||'')?'Concentration':''].filter(Boolean).join(' · ')})});
   itemActs(c,D).forEach(a=>acts.push(a));
@@ -462,7 +461,8 @@ function combatSummary(c){const D=calc(c),acts=[];
   if(D.pact){const l=D.pact.lvl,u=Math.min(D.pact.n,+c.pactUsed||0);slots[l]=slots[l]?[slots[l][0]+D.pact.n,slots[l][1]+u]:[D.pact.n,u]}
   const pets=(c.pets||[]).map(p=>({pid:p.id,name:p.name||'Compagnon',hpMax:Math.max(1,+p.hpMax||1),ac:+p.ac||10,speed:+p.speed||9,initB:+p.initB||0,size:Math.max(1,Math.min(3,+p.size||1)),
     actions:p.atkName&&p.dmg?[{name:p.atkName,kind:'attaque',cost:'action',range:+p.range||1.5,area:0,bonus:+p.atk||0,dc:0,save:'DEX',dmg:p.dmg,dtype:p.dtype||'',half:true,slot:0,note:''}]:[]}));
-  return {pets,sheetId:c.id,name:fullName(c),color:c.color,portrait:c.thumb||null,bust:c.bust||null,token:c.token||null,tokStyle:c.tokStyle||'medaillon',hp:c.hp==null?D.hpMax:c.hp,hpMax:D.hpMax,ac:D.ac,speed:D.spd,initB:D.init,saves:D.saves,mods:D.mod,lvl:D.L,prof:D.prof,cls:c.cls||'',slots,actions:acts,conds:c.conds.slice()}}
+  return {pets,sheetId:c.id,name:fullName(c),color:c.color,portrait:c.thumb||null,bust:c.bust||null,token:c.token||null,tokStyle:c.tokStyle||'medaillon',hp:c.hp==null?D.hpMax:c.hp,hpMax:D.hpMax,ac:D.ac,speed:D.spd,initB:D.init,saves:D.saves,mods:D.mod,lvl:D.L,prof:D.prof,cls:c.cls||'',slots,actions:acts,conds:c.conds.slice(),cres:Object.fromEntries(Object.entries(CF.res).map(([k,v])=>[k,[v[0],Math.min(v[0],+(c.resUsed||{})[k]||0),v[2],v[3]]])),cfp:CF.cfp}}
+function cfOf(c,D){D=D||calc(c);return window.CFEAT?CFEAT({cls:c.cls,sub:c.sub,L:D.L,mod:D.mod,prof:D.prof,dc:D.cast?D.cast.dc:8+D.prof}):{acts:[],res:{},cfp:{}}}
 const fullName=c=>[c.first,c.last].filter(Boolean).join(' ')||'Sans nom';
 const SHORT_ALPHA='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const shortNet=()=>window.NET&&window.NET.ready?window.NET:null;
@@ -1096,7 +1096,8 @@ const myChar=()=>joined()?DB.chars.find(c=>c.id===DB.join.sheetId):null;
 function liveOfSheet(c){const D=calc(c),sl={};D.slots.forEach((n,i)=>{if(n>0)sl[i+1]=Math.min(n,+c.slotsUsed[i+1]||0)});
   if(D.pact){const l=D.pact.lvl;sl[l]=(sl[l]||0)+Math.min(D.pact.n,+c.pactUsed||0)}
   const conds=c.conds.filter(k=>PCONDS.includes(k));if(c.conc)conds.push('concentration');
-  return {hp:c.hp==null?D.hpMax:+c.hp,conds:[...new Set(conds)].sort(),death:{s:+c.death.s||0,f:+c.death.f||0},slots:sl}}
+  const rs={};Object.entries(cfOf(c,D).res).forEach(([k,v])=>{rs[k]=Math.min(v[0],+(c.resUsed||{})[k]||0)});
+  return {hp:c.hp==null?D.hpMax:+c.hp,conds:[...new Set(conds)].sort(),death:{s:+c.death.s||0,f:+c.death.f||0},slots:sl,res:rs}}
 function netConnect(){const N=net();CON.unsub.concat(CON.charUn).forEach(u=>{try{u&&u()}catch(e){}});CON.unsub=[];CON.charUn=[];CON.cid=null;CON.view=null;CON.cache='';CON.sumJ='';CON.lost=false;CON.conn=null;CON.metaOk=false;CON.endTs=undefined;
   if(!N||!DB.join||!DB.join.tid){softRefresh();return}
   CON.unsub.push(N.on(TP('meta'),v=>{{const j0=v&&v.journal||[],jj=JSON.stringify((Array.isArray(j0)?j0:Object.values(j0)).filter(e=>!e.to||e.to===CON.cid));if(CON.jourJ!=null&&jj!==CON.jourJ&&jj!=='[]')toast('📜 Le journal de quête a été mis à jour');CON.jourJ=jj}if(v)CON.metaOk=true;else if(CON.metaOk&&DB.join){CON.metaOk=false;DB.leftTid=DB.join.tid;DB.join=null;saveLocal();toast('Le MJ a changé le code de la table : demande-lui le nouveau');netConnect();const y=window.scrollY;render();window.scrollTo(0,y);return}CON.meta=v;CON.metaSeen=true;const y=window.scrollY;render();window.scrollTo(0,y)}));
@@ -1117,8 +1118,9 @@ function listenChar(){const N=net();CON.charUn.forEach(u=>{try{u&&u()}catch(e){}
   CON.charUn.push(N.on(TP('live/'+CON.cid),L=>{if(L)applyLiveSheet(L)}));
   CON.charUn.push(N.on(TP('rolls/'+CON.cid),R=>{CON.rolls=R||{};grantsIn(R||{});showRolls()}))}
 function applyLiveSheet(L){const c=myChar();if(!c)return;
-  const norm={hp:+L.hp||0,conds:(L.conds||[]).slice().sort(),death:{s:+(L.death&&L.death.s)||0,f:+(L.death&&L.death.f)||0},slots:L.slots||{}};
+  const norm={hp:+L.hp||0,conds:(L.conds||[]).slice().sort(),death:{s:+(L.death&&L.death.s)||0,f:+(L.death&&L.death.f)||0},slots:L.slots||{},res:L.res||{}};
   if(JSON.stringify(norm)===CON.cache)return;
+  c.resUsed=c.resUsed||{};Object.entries(norm.res).forEach(([k,u])=>{c.resUsed[k]=Math.max(0,+u||0)});
   const D=calc(c),before=c.hp;c.hp=Math.max(0,Math.min(D.hpMax,norm.hp));c.conc=norm.conds.includes('concentration');c.conds=norm.conds.filter(k=>k!=='concentration');c.death=norm.death;
   Object.entries(norm.slots).forEach(([l,u])=>{l=+l;const n=D.slots[l-1]||0;let used=+u||0;
     if(D.pact&&D.pact.lvl===l){const pu=Math.min(D.pact.n,Math.max(0,used-n));c.pactUsed=pu;used-=pu}if(n)c.slotsUsed[l]=Math.min(n,used)});

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='31/10-11h32';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='31/10-18h30';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -3462,7 +3462,12 @@ var __values = (this && this.__values) || function(o) {
             return 'Déjà utilisé aujourd’hui';
         if (act.cost === 'leg')
             return ((_c = c.legLeft) !== null && _c !== void 0 ? _c : legMax(c)) >= 1 ? '' : 'Plus d’action légendaire';
-        if (!c.res[act.cost] && !((c.res.rep || {})[act.repKey || act.name] > 0) && !(act.cost === 'action' && c.res.hx && act.kind === 'attaque'))
+        {
+            var w = cfCan(c, act);
+            if (w)
+                return w;
+        }
+        if (!act.nf && !c.res[act.cost] && !((c.res.rep || {})[act.repKey || act.name] > 0) && !(act.cost === 'action' && c.res.hx && act.kind === 'attaque') && !(act.cost === 'action' && c.res.as > 0))
             return (COSTS[act.cost] || '') + ' déjà utilisée';
         if (slotFor(c, act) === -1)
             return 'Plus d’emplacement de niveau ' + act.slot + '+';
@@ -3499,9 +3504,19 @@ var __values = (this && this.__values) || function(o) {
             c.res.rep[rk]--;
             return 0;
         }
+        cfSpend(c, act);
+        if (act.nf)
+            return 0;
         if (act.cost === 'action' && !c.res.action && c.res.hx) {
             c.res.hx = 0;
             log("".concat(esc(c.name), " utilise son action de H\u00E2te."));
+            return 0;
+        }
+        if (act.cost === 'action' && !c.res.action && c.res.as > 0) {
+            c.res.as--;
+            if (+act.rep > 1)
+                (c.res.rep || (c.res.rep = {}))[rk] = act.rep - 1;
+            log("".concat(esc(c.name), " utilise l\u2019action de sa Fougue."));
             return 0;
         }
         c.res[act.cost] = false;
@@ -4151,7 +4166,7 @@ var __values = (this && this.__values) || function(o) {
         var slots = Object.keys(c.slots).sort().map(function (l) { var _c = __read(c.slots[l], 2), mx = _c[0], u = _c[1]; return "<div class=\"slotrow\"><span class=\"lv\">Niveau ".concat(l, "</span>").concat(Array.from({ length: mx }, function (_, i) { return "<button type=\"button\" class=\"pip ".concat(i < u ? 'used' : '', "\" data-sl=\"").concat(l, "\" data-i=\"").concat(i, "\" aria-label=\"Emplacement niveau ").concat(l, "\"></button>"); }).join(''), "</div>"); }).join('');
         var downAdj = c.hp > 0 && cur() === c && c.res && c.res.action ? S.chars.filter(function (o) { return o !== c && o.side === 'pj' && o.hp <= 0 && !pjDead(o) && !pjStable(o) && dist(c, o) * CELL_M <= CELL_M + 1e-6; }) : [];
         var death = (downAdj.length ? "<div class=\"sect\"><h3>Alli\u00E9 \u00E0 terre</h3><div class=\"quick\">".concat(downAdj.map(function (o) { return "<button class=\"btn sm primary\" type=\"button\" data-help=\"".concat(o.id, "\">Aider ").concat(esc(o.name), " \u00E0 se relever</button><button class=\"btn sm\" type=\"button\" data-stab=\"").concat(o.id, "\">Stabiliser (M\u00E9decine)</button>"); }).join(''), "</div><p class=\"hint\" style=\"margin:4px 0 0\">Aider (action) : il se rel\u00E8ve avec 1 PV mais ne pourra pas agir \u00E0 son prochain tour (il peut seulement se d\u00E9placer). Un soin le r\u00E9veille aussi.</p></div>") : '') + (c.side === 'pj' && c.hp <= 0 ? "<div class=\"sect\"><h3>".concat(pjDead(c) ? '✝ Mort·e' : pjStable(c) ? 'Stabilisé·e (inconscient·e)' : 'Jets contre la mort', "</h3>").concat(pjDead(c) ? "<div class=\"quick\"><button class=\"btn sm\" type=\"button\" id=\"dRev\">Ramener \u00E0 la vie (1 PV)</button></div>" : '', "<div class=\"death\"><span>R\u00E9ussites</span>").concat([0, 1, 2].map(function (i) { return "<button type=\"button\" class=\"pip s ".concat(i < c.death.s ? 'on' : '', "\" data-ds=\"s\" data-i=\"").concat(i, "\"></button>"); }).join(''), "<span>\u00C9checs</span>").concat([0, 1, 2].map(function (i) { return "<button type=\"button\" class=\"pip f ".concat(i < c.death.f ? 'on' : '', "\" data-ds=\"f\" data-i=\"").concat(i, "\"></button>"); }).join(''), "</div>").concat(!pjDead(c) && !pjStable(c) ? "<div class=\"quick\" style=\"margin-top:6px\"><button class=\"btn sm\" type=\"button\" id=\"dSave\">Faire le jet contre la mort</button></div>" : '', "</div>") : '');
-        p.innerHTML = "\n    <div class=\"ph\"><div class=\"av ".concat(art(c) ? 'portrait' : '', "\" style=\"background-color:").concat(c.color).concat(art(c) ? ";background-image:url('".concat(art(c), "')") : '', ";border-radius:").concat(square(c) ? '12px' : '50%', "\">").concat(art(c) ? '' : esc(label(c)), "</div>\n      <div style=\"min-width:0;flex:1\"><div class=\"side ").concat(c.side, "\">").concat(c.side === 'pj' ? 'Personnage joueur' : 'Ennemi').concat(isCur ? ' · à son tour' : '', "</div><h2>").concat(esc(c.name), "</h2></div>\n      <button class=\"btn sm ghost\" id=\"pEdit\" type=\"button\">Modifier</button></div>\n    <div class=\"sect\">\n      <div class=\"hprow\" style=\"justify-content:space-between;margin-bottom:6px\"><span class=\"mono\" style=\"font-size:20px;font-weight:700\">").concat(c.hp, "<span style=\"color:var(--muted);font-size:14px\"> / ").concat(c.hpMax, " PV</span></span>\n      <span class=\"hprow\"><input id=\"pHpN\" class=\"mono\" type=\"number\" inputmode=\"numeric\" min=\"0\" placeholder=\"0\" aria-label=\"Points de vie\"><button class=\"btn sm danger\" id=\"pDmg\" type=\"button\">D\u00E9g\u00E2ts</button><button class=\"btn sm\" id=\"pHeal\" type=\"button\">Soin</button></span></div>\n      <div class=\"hpbar\"><i style=\"width:").concat(pr * 100, "%;background:").concat(col, "\"></i></div></div>\n    <div class=\"stats\"><div class=\"stat\"><div class=\"k\">CA</div><div class=\"v\">").concat(acOf(c)).concat(acOf(c) !== c.ac ? "<small style=\"font-size:11px;color:var(--muted)\"> (".concat(c.ac, ")</small>") : '', "</div></div><div class=\"stat\"><div class=\"k\">Vitesse</div><div class=\"v\">").concat(fm(effSpeed(c)).replace(' m', ''), "<small style=\"font-size:12px\"> m</small></div></div><div class=\"stat\"><div class=\"k\">Init.</div><div class=\"v\">").concat(sgn(+c.initB), "</div></div></div>\n    ").concat(death).concat(c.note ? "<p class=\"hint\" style=\"margin:0\">".concat(esc(c.note), "</p>") : '', "\n    ").concat(LM && S.turn >= 0 ? "<div class=\"sect\"><h3>Actions l\u00E9gendaires <span class=\"mono\" style=\"letter-spacing:2px\">".concat('●'.repeat((_e = c.legLeft) !== null && _e !== void 0 ? _e : LM)).concat('○'.repeat(LM - ((_f = c.legLeft) !== null && _f !== void 0 ? _f : LM)), "</span></h3><div class=\"quick\"><button class=\"btn sm ").concat(legOn ? 'primary' : '', "\" type=\"button\" data-leg=\"atk\">").concat(legOn ? '✓ Choisis l’attaque ci-dessous' : 'Attaque légendaire (1)', "</button><button class=\"btn sm\" type=\"button\" data-leg=\"1\">Autre (1)</button><button class=\"btn sm\" type=\"button\" data-leg=\"2\">Autre (2)</button>").concat(LM >= 3 ? '<button class="btn sm" type="button" data-leg="3">Autre (3)</button>' : '', "</div><p class=\"hint\" style=\"margin:4px 0 0\">Entre les tours des autres cr\u00E9atures. Se recharge au d\u00E9but de son tour.</p></div>") : '', "\n    ").concat(efPanel(c)).concat((c.ce || []).length ? "<div class=\"sect\"><h3>Effets en cours</h3><div class=\"hint\" style=\"margin:0\">".concat(c.ce.map(function (e) { return "".concat(esc(e.k), " \u00B7 ").concat(e.left, " tour").concat(e.left > 1 ? 's' : '').concat(e.save ? " \u00B7 JdS ".concat(e.save, " DD ").concat(e.dc, " \u00E0 la fin de son tour") : '').concat(e.src ? ' (' + esc(e.src) + ')' : ''); }).join('<br>'), "</div></div>") : '', "\n    ").concat(has(c, 'concentration') && c.concOn ? "<p class=\"hint\" style=\"margin:0\">Concentration : <b>".concat(esc(c.concOn), "</b></p>") : '', "\n    <div class=\"sect\"><h3>Ressources du tour</h3><div class=\"res\">\n      <span class=\"pill act ").concat(c.res.action ? 'on' : 'off', "\"><span class=\"dot\"></span>Action</span>\n      <span class=\"pill bon ").concat(c.res.bonus ? 'on' : 'off', "\"><span class=\"dot\"></span>Bonus</span>\n      <span class=\"pill ").concat(c.res.reaction ? 'on' : 'off', "\"><span class=\"dot\"></span>R\u00E9action</span>\n      <span class=\"pill on mono\">").concat(fm(c.res.move), "</span></div></div>\n    <div class=\"quick\">\n      <button class=\"btn primary\" id=\"pMove\" type=\"button\" ").concat(c.res.move < CELL_M || c.hp <= 0 ? 'disabled' : '', ">Se d\u00E9placer</button>\n      <button class=\"btn\" data-q=\"dash\" type=\"button\" ").concat(c.res.action && c.hp > 0 ? '' : 'disabled', ">Foncer</button>\n      <button class=\"btn\" data-q=\"dodge\" type=\"button\" ").concat(c.res.action && c.hp > 0 ? '' : 'disabled', ">Esquiver</button>\n      <button class=\"btn\" data-q=\"dis\" type=\"button\" ").concat(c.res.action && c.hp > 0 ? '' : 'disabled', ">Se d\u00E9sengager</button>\n      ").concat(has(c, 'à terre') && c.hp > 0 ? "<button class=\"btn\" data-q=\"up\" type=\"button\" ".concat(c.res.move >= c.speed / 2 ? '' : 'disabled', ">Se relever (").concat(fm(c.speed / 2), ")</button>") : '', "\n    </div>\n    ").concat(inter && c.hp > 0 ? "<div class=\"sect\"><h3>Interactions \u00E0 port\u00E9e</h3><div class=\"quick\">".concat(inter, "</div></div>") : '', "\n    ").concat((function () {
+        p.innerHTML = "\n    <div class=\"ph\"><div class=\"av ".concat(art(c) ? 'portrait' : '', "\" style=\"background-color:").concat(c.color).concat(art(c) ? ";background-image:url('".concat(art(c), "')") : '', ";border-radius:").concat(square(c) ? '12px' : '50%', "\">").concat(art(c) ? '' : esc(label(c)), "</div>\n      <div style=\"min-width:0;flex:1\"><div class=\"side ").concat(c.side, "\">").concat(c.side === 'pj' ? 'Personnage joueur' : 'Ennemi').concat(isCur ? ' · à son tour' : '', "</div><h2>").concat(esc(c.name), "</h2></div>\n      <button class=\"btn sm ghost\" id=\"pEdit\" type=\"button\">Modifier</button></div>\n    <div class=\"sect\">\n      <div class=\"hprow\" style=\"justify-content:space-between;margin-bottom:6px\"><span class=\"mono\" style=\"font-size:20px;font-weight:700\">").concat(c.hp, "<span style=\"color:var(--muted);font-size:14px\"> / ").concat(c.hpMax, " PV</span></span>\n      <span class=\"hprow\"><input id=\"pHpN\" class=\"mono\" type=\"number\" inputmode=\"numeric\" min=\"0\" placeholder=\"0\" aria-label=\"Points de vie\"><button class=\"btn sm danger\" id=\"pDmg\" type=\"button\">D\u00E9g\u00E2ts</button><button class=\"btn sm\" id=\"pHeal\" type=\"button\">Soin</button></span></div>\n      <div class=\"hpbar\"><i style=\"width:").concat(pr * 100, "%;background:").concat(col, "\"></i></div></div>\n    <div class=\"stats\"><div class=\"stat\"><div class=\"k\">CA</div><div class=\"v\">").concat(acOf(c)).concat(acOf(c) !== c.ac ? "<small style=\"font-size:11px;color:var(--muted)\"> (".concat(c.ac, ")</small>") : '', "</div></div><div class=\"stat\"><div class=\"k\">Vitesse</div><div class=\"v\">").concat(fm(effSpeed(c)).replace(' m', ''), "<small style=\"font-size:12px\"> m</small></div></div><div class=\"stat\"><div class=\"k\">Init.</div><div class=\"v\">").concat(sgn(+c.initB), "</div></div></div>\n    ").concat(death).concat(c.note ? "<p class=\"hint\" style=\"margin:0\">".concat(esc(c.note), "</p>") : '', "\n    ").concat(LM && S.turn >= 0 ? "<div class=\"sect\"><h3>Actions l\u00E9gendaires <span class=\"mono\" style=\"letter-spacing:2px\">".concat('●'.repeat((_e = c.legLeft) !== null && _e !== void 0 ? _e : LM)).concat('○'.repeat(LM - ((_f = c.legLeft) !== null && _f !== void 0 ? _f : LM)), "</span></h3><div class=\"quick\"><button class=\"btn sm ").concat(legOn ? 'primary' : '', "\" type=\"button\" data-leg=\"atk\">").concat(legOn ? '✓ Choisis l’attaque ci-dessous' : 'Attaque légendaire (1)', "</button><button class=\"btn sm\" type=\"button\" data-leg=\"1\">Autre (1)</button><button class=\"btn sm\" type=\"button\" data-leg=\"2\">Autre (2)</button>").concat(LM >= 3 ? '<button class="btn sm" type="button" data-leg="3">Autre (3)</button>' : '', "</div><p class=\"hint\" style=\"margin:4px 0 0\">Entre les tours des autres cr\u00E9atures. Se recharge au d\u00E9but de son tour.</p></div>") : '', "\n    ").concat(cfPanel(c)).concat(efPanel(c)).concat((c.ce || []).length ? "<div class=\"sect\"><h3>Effets en cours</h3><div class=\"hint\" style=\"margin:0\">".concat(c.ce.map(function (e) { return "".concat(esc(e.k), " \u00B7 ").concat(e.left, " tour").concat(e.left > 1 ? 's' : '').concat(e.save ? " \u00B7 JdS ".concat(e.save, " DD ").concat(e.dc, " \u00E0 la fin de son tour") : '').concat(e.src ? ' (' + esc(e.src) + ')' : ''); }).join('<br>'), "</div></div>") : '', "\n    ").concat(has(c, 'concentration') && c.concOn ? "<p class=\"hint\" style=\"margin:0\">Concentration : <b>".concat(esc(c.concOn), "</b></p>") : '', "\n    <div class=\"sect\"><h3>Ressources du tour</h3><div class=\"res\">\n      <span class=\"pill act ").concat(c.res.action ? 'on' : 'off', "\"><span class=\"dot\"></span>Action</span>\n      <span class=\"pill bon ").concat(c.res.bonus ? 'on' : 'off', "\"><span class=\"dot\"></span>Bonus</span>\n      <span class=\"pill ").concat(c.res.reaction ? 'on' : 'off', "\"><span class=\"dot\"></span>R\u00E9action</span>\n      <span class=\"pill on mono\">").concat(fm(c.res.move), "</span></div></div>\n    <div class=\"quick\">\n      <button class=\"btn primary\" id=\"pMove\" type=\"button\" ").concat(c.res.move < CELL_M || c.hp <= 0 ? 'disabled' : '', ">Se d\u00E9placer</button>\n      <button class=\"btn\" data-q=\"dash\" type=\"button\" ").concat(c.res.action && c.hp > 0 ? '' : 'disabled', ">Foncer</button>\n      <button class=\"btn\" data-q=\"dodge\" type=\"button\" ").concat(c.res.action && c.hp > 0 ? '' : 'disabled', ">Esquiver</button>\n      <button class=\"btn\" data-q=\"dis\" type=\"button\" ").concat(c.res.action && c.hp > 0 ? '' : 'disabled', ">Se d\u00E9sengager</button>\n      ").concat(has(c, 'à terre') && c.hp > 0 ? "<button class=\"btn\" data-q=\"up\" type=\"button\" ".concat(c.res.move >= c.speed / 2 ? '' : 'disabled', ">Se relever (").concat(fm(c.speed / 2), ")</button>") : '', "\n    </div>\n    ").concat(inter && c.hp > 0 ? "<div class=\"sect\"><h3>Interactions \u00E0 port\u00E9e</h3><div class=\"quick\">".concat(inter, "</div></div>") : '', "\n    ").concat((function () {
             var K = ['action', 'bonus', 'reaction'].filter(function (k) { return groups[k].length; });
             if (!K.length)
                 return '';
@@ -4995,7 +5010,12 @@ var __values = (this && this.__values) || function(o) {
                         el.innerHTML = "".concat(head, "<div class=\"verdict hit\">Touch\u00E9\u2026 sauf si</div><div class=\"how\">").concat(esc(rx.txt), "</div><div class=\"row\"><button class=\"btn\" id=\"rxNo\" type=\"button\">Non</button><button class=\"btn primary\" id=\"rxYes\" type=\"button\">").concat(esc(rx.btn), "</button></div>");
                         var again_1 = function () { close(); resolveSingle._skipRx = true; resolveSingle._d = d; CS_SKIP = true; resolveSingle(att, a, tgt); };
                         el.querySelector('#rxNo').onclick = again_1;
-                        el.querySelector('#rxYes').onclick = function () { rx.use(); again_1(); };
+                        el.querySelector('#rxYes').onclick = function () { var r = rx.use(); if (r && r.then) {
+                            close();
+                            r.then(again_1);
+                        }
+                        else
+                            again_1(); };
                         return;
                     }
                     var lvl = spend(att, a);
@@ -5118,15 +5138,31 @@ var __values = (this && this.__values) || function(o) {
                 i.value = v;
                 flash(i);
             } });
+        var MX = cfMaxEf(att, a);
+        if (MX) {
+            var i = el.querySelector('#dv');
+            i.value = maxDice(F);
+            el.querySelector('.how').insertAdjacentHTML('beforeend', "<br><b>".concat(esc(MX.n), "</b> : d\u00E9g\u00E2ts au maximum (").concat(maxDice(F), ")."));
+            cancelRolls();
+        }
         el.querySelector('#mGo').onclick = function () {
             var _c;
             var n = +el.querySelector('#dv').value;
+            if (MX) {
+                n = maxDice(F);
+                efDel(att, MX, false);
+                log("".concat(esc(att.name), " \u00B7 ").concat(esc(MX.n), " : d\u00E9g\u00E2ts au maximum."));
+            }
             if (!(n >= 0))
                 return;
             if ((_c = el.querySelector('#res')) === null || _c === void 0 ? void 0 : _c.checked)
                 n = Math.floor(n / 2);
             if (DF.half)
                 n = Math.floor(n / 2);
+            if (DF.xs.some(function (x) { return x.sa; }))
+                att.res.sneak = 1;
+            if (DF.xs.some(function (x) { return x.fd; }))
+                att.res.fdiv = 1;
             curDT = (a.dtype || '').toLowerCase();
             curCrit = !!crit;
             tgts.forEach(function (t) { return damage(t, n); });
@@ -5143,7 +5179,7 @@ var __values = (this && this.__values) || function(o) {
                 if (P && P.on !== 'save')
                     pushAfter(att, a, tgts.filter(function (t) { return !t.isObj && (t.hp > 0 || t.side === 'pj'); }));
             }
-            endA(a);
+            cfAfterHit(att, a, tgts, crit, function () { return endA(a); });
         };
     }
     function resolveArea(att, a, center) {
@@ -5208,9 +5244,20 @@ var __values = (this && this.__values) || function(o) {
             el.querySelector('#mRoll').onclick = function () { sfx('dice'); el.querySelectorAll('[data-t]').forEach(function (i) { if (!i.disabled && i.value === '')
                 i.value = rollD(20); }); var dv = el.querySelector('#dv'); if (dv && dv.value === '')
                 dv.value = rollDice(a.dmg); };
+            var MX = noD ? null : cfMaxEf(att, a);
+            if (MX) {
+                var dv = el.querySelector('#dv');
+                dv.value = maxDice(a.dmg);
+                dv.title = MX.n;
+            }
             el.querySelector('#mGo').onclick = function () {
                 var e_5, _c;
                 var dvi = el.querySelector('#dv');
+                if (MX) {
+                    dvi.value = maxDice(a.dmg);
+                    efDel(att, MX, false);
+                    log("".concat(esc(att.name), " \u00B7 ").concat(esc(MX.n), " : d\u00E9g\u00E2ts au maximum."));
+                }
                 var n = noD ? 0 : +dvi.value;
                 if (!noD && (!(n >= 0) || dvi.value === '')) {
                     toast('Saisis les dégâts');
@@ -5339,6 +5386,8 @@ var __values = (this && this.__values) || function(o) {
     // z: zone persistante ; g: action accordée tant que le sort dure ; tp: téléportation (m) ; sum: invocation ; x: règle spéciale ; pk: choix au lancement
     var M1 = 10, M10 = 100, H1 = 600, H8 = 4800, J1 = 14400;
     var SPX0 = {
+        // ===== Capacités de classe =====
+        'Rage': { t: 's', x: 'cfRage' }, 'Attaque téméraire': { t: 's', x: 'cfReck' }, 'Inspiration bardique': { t: 'a', x: 'cfInsp' }, 'Renvoi des morts-vivants': { t: 's', x: 'cfTurn' }, 'Fureur destructrice': { t: 's', x: 'cfDestr' }, 'Fougue': { t: 's', x: 'cfSurge' }, 'Défense patiente': { t: 's', x: 'cfDodge' }, 'Pas du vent': { t: 's', x: 'cfStep' }, 'Ruse : Foncer': { t: 's', x: 'cfDash' }, 'Ruse : Se désengager': { t: 's', x: 'cfDis' }, 'Ruse : Se cacher': { t: 's', x: 'cfHide' }, 'Imposition des mains': { t: 'a', x: 'cfLay' },
         // ===== Tours de magie =====
         'Amis': { u: 'Avantage aux tests de Charisme (hors combat).' },
         "Aspersion d'acide": { n: 2 },
@@ -5958,7 +6007,7 @@ var __values = (this && this.__values) || function(o) {
     function efDel(t, e, why) { if (!t || !t.ef || !t.ef.includes(e))
         return; t.ef = t.ef.filter(function (x) { return x !== e; }); efClean(t, e, why === false); if (why !== false)
         log("<b>".concat(esc(t.name), "</b> : ").concat(esc(e.n), " prend fin").concat(why ? ' (' + esc(why) + ')' : '', ".")); dirty(); }
-    function efUse(t, kind) { (t.ef || []).filter(function (e) { return e.use === kind; }).forEach(function (e) { return efDel(t, e, false); }); }
+    function efUse(t, kind) { (t.ef || []).filter(function (e) { return e.use === kind || e.use === 'd20' && (kind === 'atk' || kind === 'save'); }).forEach(function (e) { return efDel(t, e, false); }); }
     function efBreak(t, kind) { (t.ef || []).filter(function (e) { return e.brk === kind; }).forEach(function (e) { return efDel(t, e, kind === 'dmg' ? 'subit des dégâts' : 'attaque'); }); }
     var efLbl = function (e) { return (e.ic ? e.ic + ' ' : '') + e.n; };
     /* ----- Mécanique : CA, vitesse, jets, dégâts ----- */
@@ -6014,6 +6063,7 @@ var __values = (this && this.__values) || function(o) {
             });
         efAll(att).forEach(function (e) { if (e.m && e.m.halfW && W)
             out.push({ half: 1, n: e.n }); });
+        cfXd(att, a, tgt, out);
         return out;
     }
     function dmgFormula(att, a, tgt) {
@@ -7606,6 +7656,15 @@ var __values = (this && this.__values) || function(o) {
             actions: o.wpn.map(function (w) { return A(w); }).concat(o.extra || [], o.sp.map(function (n) { return tstSpell(n, o.lvl, o.mod, o.dc, o.atk); }).filter(Boolean)) });
         Object.assign(c, { lvl: o.lvl, prof: o.prof, mods: o.mods, cls: o.cls, tst: 1, label: o.lab });
         c.res = { move: 9, action: true, bonus: true, reaction: true };
+        if (window.CFEAT) {
+            var F_1 = CFEAT({ cls: o.cls, sub: o.sub, L: o.lvl, mod: o.mods, prof: o.prof, dc: o.dc });
+            c.actions = c.actions.concat(F_1.acts.map(function (a) { return A(a); }));
+            c.cres = F_1.res;
+            c.cfp = F_1.cfp;
+            if (F_1.cfp.crit)
+                c.actions.forEach(function (a) { if (a.kind === 'attaque')
+                    a.crit = F_1.cfp.crit; });
+        }
         return c;
     }
     function makeTestMap() {
@@ -7632,7 +7691,20 @@ var __values = (this && this.__values) || function(o) {
         var clr = tstPJ({ name: 'Brunhild (clerc niv. 7)', lab: 'Cl', col: '#b8892b', hp: 52, ac: 18, init: 0, lvl: 7, prof: 3, mod: 4, dc: 15, atk: 7, cls: 'clerc', mods: { FOR: 2, DEX: 0, CON: 2, INT: 0, SAG: 4, CHA: 1 }, saves: { FOR: 2, DEX: 0, CON: 2, INT: 0, SAG: 7, CHA: 4 }, slots: sl(4, 3, 3, 1),
             wpn: [{ name: 'Masse d’armes', kind: 'attaque', bonus: 5, dmg: '1d6+2', dtype: 'contondant', range: 1.5 }],
             sp: ['Flamme sacrée', 'Glas', 'Bénédiction', 'Fléau', 'Soins', 'Mot de guérison', 'Bouclier de la foi', 'Sanctuaire', 'Injonction', 'Aide', 'Arme spirituelle', 'Immobilisation de personne', 'Restauration partielle', 'Esprits gardiens', 'Mot de guérison de groupe', 'Retour à la vie', 'Malédiction', 'Gardien de la foi', 'Bannissement', 'Protection contre la mort'] });
-        var P = [[mage, 3, 6], [dru, 3, 8], [clr, 3, 10]];
+        clr.name = 'Brunhild (clerc niv. 7, Tempête)';
+        {
+            var F = window.CFEAT && CFEAT({ cls: 'clerc', sub: 'Tempête', L: 7, mod: clr.mods, prof: 3, dc: 15 });
+            if (F) {
+                clr.actions = clr.actions.filter(function (a) { return !a.cf; }).concat(F.acts.map(function (a) { return A(a); }));
+                clr.cres = F.res;
+                clr.cfp = F.cfp;
+            }
+        }
+        var bar = tstPJ({ name: 'Grom (barbare niv. 5)', lab: 'Ba', col: '#9b3a2a', hp: 55, ac: 15, init: 2, lvl: 5, prof: 3, mod: 0, dc: 0, atk: 0, cls: 'barbare', sub: 'Voie du berserker', mods: { FOR: 4, DEX: 2, CON: 3, INT: -1, SAG: 1, CHA: 0 }, saves: { FOR: 7, DEX: 2, CON: 6, INT: -1, SAG: 1, CHA: 0 }, slots: {},
+            wpn: [{ name: 'Hache à deux mains', kind: 'attaque', bonus: 7, dmg: '1d12+4', dtype: 'tranchant', range: 1.5, rep: 2, repKey: 'attaque' }, { name: 'Javeline', kind: 'attaque', bonus: 7, dmg: '1d6+4', dtype: 'perforant', range: 9 }], sp: [] });
+        var brd = tstPJ({ name: 'Lyra (barde niv. 5, Savoir)', lab: 'Bd', col: '#a0428a', hp: 38, ac: 14, init: 3, lvl: 5, prof: 3, mod: 4, dc: 15, atk: 7, cls: 'barde', sub: 'Collège du savoir', mods: { FOR: -1, DEX: 3, CON: 1, INT: 1, SAG: 0, CHA: 4 }, saves: { FOR: -1, DEX: 6, CON: 1, INT: 1, SAG: 0, CHA: 7 }, slots: sl(4, 3, 2),
+            wpn: [{ name: 'Rapière', kind: 'attaque', bonus: 6, dmg: '1d8+3', dtype: 'perforant', range: 1.5, fin: 1 }], sp: ['Moquerie cruelle', 'Mot de guérison', 'Fou rire de Tasha', 'Charme-personne', 'Immobilisation de personne', 'Fracassement', 'Hypnose', 'Peur'] });
+        var P = [[mage, 3, 6], [dru, 3, 8], [clr, 3, 10], [bar, 5, 9], [brd, 5, 11]];
         P.forEach(function (_c) {
             var _e = __read(_c, 3), c = _e[0], x = _e[1], y = _e[2];
             c.x = x;
@@ -7977,10 +8049,11 @@ var __values = (this && this.__values) || function(o) {
     }
     function concCheck(c, dc) { quickSave(c, 'CON', dc, 'garder sa concentration', function () { log("".concat(esc(c.name), " garde sa concentration.")); }, function () { return dropConc(c, 'dégâts'); }); }
     // réactions défensives : Bouclier (sort) et Parade (monstre)
-    function reactDefense(att, a, tgt, tot, AC) {
+    function reactDefense(att, a, tgt, tot, AC) { return reactDefense0(att, a, tgt, tot, AC) || cfCutting(att, a, tgt, tot, AC); }
+    function reactDefense0(att, a, tgt, tot, AC) {
         if (!tgt || tgt.isObj || !tgt.res || !tgt.res.reaction || tgt.hp <= 0)
             return null;
-        var sh = (tgt.actions || []).find(function (x) { return /^bouclier\b/i.test(x.name) && x.kind !== 'attaque'; });
+        var sh = (tgt.actions || []).find(function (x) { return /^bouclier(\s*\(|$)/i.test(x.name) && x.kind !== 'attaque'; });
         var shN = !sh && /Réactions :[^.]*Bouclier/.test(tgt.note || '');
         if (shN && tot < AC + 5)
             return { txt: "".concat(tgt.name, " peut lancer Bouclier (r\u00E9action, +5 CA jusqu\u2019\u00E0 son prochain tour) : l\u2019attaque (").concat(tot, ") raterait."), btn: 'Lancer Bouclier', use: function () { tgt.res.reaction = false; tgt.acB = 5; log("<b>".concat(esc(tgt.name), "</b> lance Bouclier : +5 CA.")); sfxRelay('magie'); } };
@@ -11701,6 +11774,214 @@ var __values = (this && this.__values) || function(o) {
             el.querySelector('#mOk').onclick = function () { sndUI = function () { }; close(); };
         });
     }
+    /* ---------- Capacités de classe : ressources, actions, passifs ---------- */
+    var cfLeft = function (c, k) { var v = c && c.cres && c.cres[k]; return v ? Math.max(0, +v[0] - (+v[1] || 0)) : 0; };
+    var cfIncap = function (c) { return ['neutralisé', 'paralysé', 'étourdi', 'inconscient', 'pétrifié'].some(function (k) { return has(c, k); }); };
+    function cfCan(c, a) {
+        if (a.rk && c.cres && c.cres[a.rk] && cfLeft(c, a.rk) < (a.rc || 1))
+            return 'Épuisé : ' + (c.cres[a.rk][2] || a.rk) + ' (revient au ' + (c.cres[a.rk][3] === 'court' ? 'repos court' : 'repos long') + ')';
+        var X = spx(a) || {};
+        if (X.x === 'cfRage' && (c.ef || []).some(function (e) { return e.n === 'Rage'; }))
+            return 'Déjà en rage';
+        if (X.x === 'cfReck' && c.res && c.res.reck)
+            return 'Déjà utilisée ce tour';
+        return '';
+    }
+    function cfSpend(c, a) { if (a.rk && !a.rkNo && c.cres && c.cres[a.rk])
+        c.cres[a.rk][1] = Math.min(+c.cres[a.rk][0], (+c.cres[a.rk][1] || 0) + (a.rc || 1)); }
+    function cfUse(c, k, n) { if (c.cres && c.cres[k])
+        c.cres[k][1] = Math.min(+c.cres[k][0], (+c.cres[k][1] || 0) + (n || 1)); }
+    function cfCount(c, a) { var v = a.rk && c.cres && c.cres[a.rk]; return v ? " \u00B7 ".concat(cfLeft(c, a.rk), "/").concat(v[0]) : ''; }
+    function cfPanel(c) {
+        var R = Object.entries(c.cres || {});
+        if (!R.length)
+            return '';
+        return "<div class=\"sect\"><h3>Capacit\u00E9s de classe</h3><div class=\"hint\" style=\"margin:0;line-height:1.7\">".concat(R.map(function (_c) {
+            var _e = __read(_c, 2), k = _e[0], v = _e[1];
+            return "<b>".concat(esc(v[2] || k), "</b> ").concat(+v[0] > 12 ? "".concat(cfLeft(c, k), " / ").concat(v[0]) : "<span class=\"mono\" style=\"letter-spacing:2px\">".concat('●'.repeat(cfLeft(c, k))).concat('○'.repeat(Math.max(0, +v[1] || 0)), "</span>"));
+        }).join(' · ')).concat(c.cfp && c.cfp.sa ? " \u00B7 <b>Attaque sournoise</b> ".concat(esc(c.cfp.sa)).concat(c.res && c.res.sneak ? ' (utilisée ce tour)' : '') : '', "</div></div>");
+    }
+    // dés en plus automatiques : attaque sournoise, frappe divine
+    function cfXd(att, a, tgt, out) {
+        var P = att && att.cfp;
+        if (!P || !a || a.kind !== 'attaque' || !tgt || tgt.isObj || tgt.side === att.side)
+            return;
+        if (P.sa && a.fin && !(att.res && att.res.sneak)) {
+            var I = advInfo(att, tgt, a), ally = S.chars.some(function (o) { return o !== att && o.side === att.side && o.hp > 0 && !cfIncap(o) && dist(o, tgt) <= 1; });
+            if (!I.dis.length && (I.adv.length || ally))
+                out.push({ d: P.sa, t: '', n: 'Attaque sournoise', sa: 1 });
+        }
+        if (P.fd && !(att.res && att.res.fdiv))
+            out.push({ d: P.fd.d, t: P.fd.t, n: 'Frappe divine', fd: 1 });
+    }
+    function cfMaxEf(att, a) { var t = String(a.dtype || '').toLowerCase(); return (att.ef || []).find(function (e) { return e.m && e.m.maxDT && e.m.maxDT.includes(t); }) || null; }
+    // après un coup qui touche : châtiment divin, frappe étourdissante, fureur de l'ouragan
+    function cfAfterHit(att, a, tgts, crit, done) {
+        var t = tgts.length === 1 ? tgts[0] : null;
+        if (!t || t.isObj || a.kind !== 'attaque') {
+            done();
+            return;
+        }
+        var mel = (+a.range || 1.5) <= 3, P = att.cfp || {}, Q = [];
+        if (P.smite && mel && att.hp > 0 && t.side !== att.side && Object.keys(att.slots || {}).some(function (l) { return att.slots[l][1] < att.slots[l][0]; }))
+            Q.push(cfSmite);
+        if (P.stun && mel && att.hp > 0 && t.hp > 0 && t.side !== att.side && cfLeft(att, 'ki') > 0)
+            Q.push(cfStun);
+        var T = t.cfp || {};
+        if (T.ouragan && t.hp > 0 && att.hp > 0 && t.res && t.res.reaction && cfLeft(t, 'ouragan') > 0 && dist(att, t) <= 1 && !cfIncap(t))
+            Q.push(cfOuragan);
+        var next = function () { var f = Q.shift(); if (!f) {
+            done();
+            return;
+        } save(); render(); f(att, a, t, crit, next); };
+        next();
+    }
+    function cfAsk(title, txt, btns, cb) { modal("<h2>".concat(esc(title), "</h2><div class=\"how\">").concat(txt, "</div><div class=\"row\" style=\"flex-wrap:wrap\">").concat(btns.map(function (b, i) { return "<button class=\"btn ".concat(i ? 'primary' : '', "\" type=\"button\" data-cfb=\"").concat(i, "\">").concat(esc(b), "</button>"); }).join(''), "</div>"), function (el) { return el.querySelectorAll('[data-cfb]').forEach(function (b) { return b.onclick = function () { close(); cb(+b.dataset.cfb); }; }); }); }
+    function cfSmite(att, a, t, crit, next) {
+        var L = Object.keys(att.slots || {}).map(Number).filter(function (l) { return att.slots[l][1] < att.slots[l][0]; }).sort(function (x, y) { return x - y; }), evil = /mort|fi[ée]lon/i.test(foeType(t) || '');
+        cfAsk('Châtiment divin', "<b>".concat(esc(att.name), "</b> touche ").concat(esc(t.name), ". D\u00E9penser un emplacement pour ajouter des d\u00E9g\u00E2ts radiants ?").concat(evil ? '<br>+1d8 contre ce ' + esc(foeType(t).toLowerCase()) + '.' : '').concat(crit ? '<br>Coup critique : dés doublés.' : ''), ['Non'].concat(L.map(function (l) { return "Niveau ".concat(l, " (").concat(Math.min(5, 1 + l) + (evil ? 1 : 0), "d8)"); })), function (i) {
+            if (!i) {
+                next();
+                return;
+            }
+            var l = L[i - 1];
+            att.slots[l][1]++;
+            var n = Math.min(5, 1 + l) + (evil ? 1 : 0);
+            if (crit)
+                n *= 2;
+            dieAsk(att, "Ch\u00E2timent divin (niv. ".concat(l, ")"), n + 'd8', function (v) { curDT = 'radiant'; damage(t, v); curDT = ''; log("<b>".concat(esc(att.name), "</b> \u00B7 Ch\u00E2timent divin (niv. ").concat(l, ") : ").concat(esc(t.name), " subit ").concat(v, " d\u00E9g\u00E2ts radiants.")); queueFx({ att: att, a: { kind: 'none' }, hits: [{ c: t, dm: v, kind: 'crit', kill: t.hp === 0 }], label: 'Châtiment divin' }); runFx(); next(); });
+        });
+    }
+    function cfStun(att, a, t, crit, next) {
+        cfAsk('Frappe étourdissante', "<b>".concat(esc(att.name), "</b> peut d\u00E9penser 1 point de ki (").concat(cfLeft(att, 'ki'), " restants) : ").concat(esc(t.name), " fait un JdS de Constitution DD ").concat(att.cfp.stun.dc, " ou est \u00E9tourdi jusqu\u2019\u00E0 la fin du prochain tour de ").concat(esc(att.name), "."), ['Non', 'Frappe étourdissante'], function (i) {
+            if (!i) {
+                next();
+                return;
+            }
+            cfUse(att, 'ki');
+            quickSave(t, 'CON', att.cfp.stun.dc, 'Frappe étourdissante', function () { log("".concat(esc(t.name), " r\u00E9siste \u00E0 la Frappe \u00E9tourdissante.")); next(); }, function () { efAdd(t, { n: 'Frappe étourdissante', ic: '💫', src: att.id, c: ['étourdi'], left: null, ex: 'se', nx: 1 }); log("<b>".concat(esc(t.name), "</b> est \u00E9tourdi\u00B7e (Frappe \u00E9tourdissante).")); next(); });
+        });
+    }
+    function cfOuragan(att, a, t, crit, next) {
+        cfAsk('Fureur de l’ouragan', "<b>".concat(esc(t.name), "</b> peut utiliser sa r\u00E9action (").concat(cfLeft(t, 'ouragan'), " restante").concat(cfLeft(t, 'ouragan') > 1 ? 's' : '', ") : ").concat(esc(att.name), " subit 2d8 d\u00E9g\u00E2ts, JdS de Dext\u00E9rit\u00E9 DD ").concat(t.cfp.ouragan.dc, " pour moiti\u00E9."), ['Non', 'Foudre', 'Tonnerre'], function (i) {
+            if (!i) {
+                next();
+                return;
+            }
+            var dt = i === 1 ? 'foudre' : 'tonnerre';
+            t.res.reaction = false;
+            cfUse(t, 'ouragan');
+            log("<b>".concat(esc(t.name), "</b> d\u00E9cha\u00EEne la Fureur de l\u2019ouragan sur ").concat(esc(att.name), "."));
+            dieAsk(t, 'Fureur de l’ouragan', '2d8', function (v) {
+                var hit = function (n) { curDT = dt; damage(att, n); curDT = ''; log("".concat(esc(att.name), " subit ").concat(n, " d\u00E9g\u00E2ts de ").concat(dt, " (Fureur de l\u2019ouragan).")); queueFx({ att: t, a: { kind: 'none' }, hits: [{ c: att, dm: n, kind: 'hit', kill: att.hp === 0 }], label: 'Fureur de l’ouragan' }); runFx(); next(); };
+                quickSave(att, 'DEX', t.cfp.ouragan.dc, 'Fureur de l’ouragan', function () { return hit(Math.floor(v / 2)); }, function () { return hit(v); });
+            });
+        });
+    }
+    // réaction du barde (Collège du savoir) : retirer son dé d'inspiration à une attaque ennemie
+    function cfCutting(att, a, tgt, tot, AC) {
+        if (!tgt || tgt.isObj || att.side === tgt.side)
+            return null;
+        var b = S.chars.find(function (o) { return o.side === tgt.side && o !== att && o.cfp && o.cfp.cw && o.hp > 0 && o.res && o.res.reaction && cfLeft(o, 'insp') > 0 && !cfIncap(o) && dist(o, att) * CELL_M <= 18 + 1e-6; });
+        if (!b)
+            return null;
+        var mx = maxDice(b.cfp.cw);
+        if (tot - mx >= AC)
+            return null;
+        return { txt: "".concat(b.name, " peut utiliser Mots cinglants (r\u00E9action, 1 inspiration) : l\u2019attaque (").concat(tot, ") perd ").concat(b.cfp.cw, " et pourrait rater."), btn: 'Mots cinglants', use: function () { return new Promise(function (res) { return dieAsk(b, 'Mots cinglants', b.cfp.cw, function (v) { b.res.reaction = false; cfUse(b, 'insp'); efAdd(att, { n: 'Mots cinglants', ic: '🗯', src: b.id, left: 1, use: 'atk', m: { atkB: -v } }); log("<b>".concat(esc(b.name), "</b> lance des Mots cinglants : \u2212").concat(v, " \u00E0 l\u2019attaque de ").concat(esc(att.name), ".")); floatText(att, '−' + v, 'info'); res(); }); }); } };
+    }
+    var cfDone = function (att, a, txt, ft) { queueFx({ att: att, a: a, hits: [], label: a.name }); log(txt); if (ft)
+        floatText(att, ft, 'info'); endAction(); };
+    Object.assign(SPXX, {
+        cfRage: function (att, a) {
+            spendX(att, a);
+            dropConc(att, 'entre en rage');
+            var v = a.cfv || 2;
+            efAdd(att, { n: 'Rage', ic: '😤', src: att.id, left: M1, m: { res: a.bear ? ['allbut:psychique'] : ['contondant', 'perforant', 'tranchant'], xd: { d: String(v), t: '', w: 1, mel: 1 }, sAdv: ['FOR'], noSpell: 1 } });
+            sfxRelay('aoo');
+            cfDone(att, a, "<b>".concat(esc(att.name), "</b> entre en <b>rage</b> : +").concat(v, " aux d\u00E9g\u00E2ts au corps \u00E0 corps, r\u00E9sistance aux d\u00E9g\u00E2ts physiques").concat(a.bear ? ' (et plus encore)' : '', "."), 'RAGE !');
+        },
+        cfReck: function (att, a) { spendX(att, a); att.res.reck = 1; efAdd(att, { n: 'Attaque téméraire', ic: '⚔', src: att.id, left: null, ex: 'os', m: { advW: 1, vsA: 1 } }); cfDone(att, a, "".concat(esc(att.name), " attaque avec <b>t\u00E9m\u00E9rit\u00E9</b> : avantage \u00E0 ses attaques, mais on l\u2019attaque avec avantage jusqu\u2019\u00E0 son prochain tour."), 'Témérité'); },
+        cfInsp: function (att, a, X, tg) {
+            var t = tg[0];
+            if (!t || t === att) {
+                toast('Choisis un allié (pas toi-même)');
+                return;
+            }
+            spendX(att, a);
+            efAdd(t, { n: 'Inspiration bardique', ic: '🎵', src: att.id, left: 100, use: 'd20', m: { atkD: a.cfv || '1d6', saveD: a.cfv || '1d6' } });
+            sfxRelay('magie');
+            floatText(t, '+' + (a.cfv || '1d6'), 'heal');
+            cfDone(att, a, "<b>".concat(esc(att.name), "</b> inspire <b>").concat(esc(t.name), "</b> : +").concat(esc(a.cfv || '1d6'), " \u00E0 son prochain jet d\u2019attaque ou de sauvegarde."));
+        },
+        cfTurn: function (att, a) {
+            spendX(att, a);
+            var dc = +a.dc || spDC(att, a) || 13, crMax = +a.cfv || 0, L = S.chars.filter(function (o) { return o.side !== att.side && o.hp > 0 && !o.hid && /mort/i.test(foeType(o) || '') && dist(att, o) * CELL_M <= 9 + 1e-6; });
+            queueFx({ att: att, a: a, hits: L.map(function (o) { return ({ c: o, kind: 'hit', dm: 0 }); }), label: a.name });
+            log("<b>".concat(esc(att.name), "</b> pr\u00E9sente son symbole sacr\u00E9 : <b>Renvoi des morts-vivants</b>."));
+            sfxRelay('magie');
+            if (!L.length) {
+                toast('Aucun mort-vivant à 9 m');
+                endAction();
+                return;
+            }
+            var go = function () {
+                var o = L.shift();
+                if (!o) {
+                    save();
+                    endAction();
+                    return;
+                }
+                quickSave(o, 'SAG', dc, 'Renvoi des morts-vivants', function () { log("".concat(esc(o.name), " r\u00E9siste au renvoi.")); go(); }, function () {
+                    if (crMax && crNum(o.cr) <= crMax) {
+                        log("<b>".concat(esc(o.name), "</b> est <b>d\u00E9truit</b> par la puissance divine !"));
+                        damage(o, o.hp);
+                    }
+                    else {
+                        efAdd(o, { n: 'Renvoyé', ic: '☀', src: att.id, left: M1, brk: 'dmg', c: ['effrayé'] });
+                        log("<b>".concat(esc(o.name), "</b> est renvoy\u00E9 : il fuit pendant 1 minute (ou jusqu\u2019\u00E0 subir des d\u00E9g\u00E2ts)."));
+                    }
+                    go();
+                });
+            };
+            go();
+        },
+        cfDestr: function (att, a) { spendX(att, a); efAdd(att, { n: 'Fureur destructrice', ic: '⚡', src: att.id, left: M1, m: { maxDT: ['foudre', 'tonnerre'] } }); cfDone(att, a, "<b>".concat(esc(att.name), "</b> invoque la <b>Fureur destructrice</b> : ses prochains d\u00E9g\u00E2ts de foudre ou de tonnerre seront au maximum."), '⚡ Fureur'); },
+        cfSurge: function (att, a) { spendX(att, a); att.res.as = (att.res.as || 0) + 1; cfDone(att, a, "<b>".concat(esc(att.name), "</b> utilise sa <b>Fougue</b> : une action de plus ce tour."), 'Fougue !'); },
+        cfDodge: function (att, a) { spendX(att, a); if (!has(att, 'esquive'))
+            att.conds.push('esquive'); cfDone(att, a, "".concat(esc(att.name), " : D\u00E9fense patiente (esquive)."), 'Esquive'); },
+        cfStep: function (att, a) { cfAsk('Pas du vent', "".concat(esc(att.name), " d\u00E9pense 1 point de ki pour :"), ['Annuler', 'Foncer', 'Se désengager'], function (i) { if (!i)
+            return; spendX(att, a); if (i === 1)
+            att.res.move += effSpeed(att);
+        else if (!has(att, 'désengagé'))
+            att.conds.push('désengagé'); cfDone(att, a, "".concat(esc(att.name), " : Pas du vent (").concat(i === 1 ? 'foncer' : 'se désengager', ")."), i === 1 ? 'Foncer !' : 'Désengagé'); }); },
+        cfDash: function (att, a) { spendX(att, a); att.res.move += effSpeed(att); cfDone(att, a, "".concat(esc(att.name), " (Ruse) fonce (+").concat(fm(effSpeed(att)), ")."), 'Foncer !'); },
+        cfDis: function (att, a) { spendX(att, a); if (!has(att, 'désengagé'))
+            att.conds.push('désengagé'); cfDone(att, a, "".concat(esc(att.name), " (Ruse) se d\u00E9sengage."), 'Désengagé'); },
+        cfHide: function (att, a) { spendX(att, a); if (!has(att, 'caché'))
+            att.conds.push('caché'); cfDone(att, a, "".concat(esc(att.name), " (Ruse) se cache."), 'Caché'); },
+        cfLay: function (att, a, X, tg) {
+            var t = tg[0] || att, left = cfLeft(att, 'imp'), miss = Math.max(0, t.hpMax - t.hp);
+            if (!left) {
+                toast('Réserve vide');
+                return;
+            }
+            modal("<h2>Imposition des mains</h2><div class=\"sub\">".concat(esc(att.name), " \u2192 ").concat(esc(t.name), " \u00B7 r\u00E9serve ").concat(left, " PV</div><label class=\"fld\">PV \u00E0 rendre<input class=\"big\" id=\"lhN\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"").concat(left, "\" value=\"").concat(Math.max(1, Math.min(left, miss || 1)), "\"></label><div class=\"row\"><button class=\"btn\" id=\"mCancel\" type=\"button\">Annuler</button><button class=\"btn primary\" id=\"mGo\" type=\"button\">Soigner</button></div>"), function (el) {
+                el.querySelector('#mCancel').onclick = close;
+                el.querySelector('#mGo').onclick = function () {
+                    var n = Math.max(1, Math.min(left, Math.round(+el.querySelector('#lhN').value || 0)));
+                    close();
+                    spendX(att, a);
+                    cfUse(att, 'imp', n);
+                    heal(t, n);
+                    floatText(t, '+' + n, 'heal');
+                    queueFx({ att: att, a: a, hits: [{ c: t, dm: n, kind: 'heal' }], label: a.name });
+                    log("<b>".concat(esc(att.name), "</b> impose les mains \u00E0 ").concat(esc(t.name), " : +").concat(n, " PV (r\u00E9serve ").concat(cfLeft(att, 'imp'), ")."));
+                    endAction();
+                };
+            });
+        }
+    });
     /* ---------- Histoire : campagnes, sessions, scénario, PNJ, notes ---------- */
     var STD = function () { return S.story || (S.story = { camps: [] }); };
     var stCamp = function () { return STD().camps.find(function (c) { return c.id === ui.stC; }) || null; };
@@ -13289,12 +13570,12 @@ var __values = (this && this.__values) || function(o) {
             } g.fillRect(p.x, p.y, p.r * 3 * p.z, p.r * .8); });
         }
         if (t === 'brouillard' || t === 'sable' || t === 'blizzard') {
-            var F_1 = wxFogCv(t === 'sable' ? [205, 170, 115] : [225, 230, 236]);
+            var F_2 = wxFogCv(t === 'sable' ? [205, 170, 115] : [225, 230, 236]);
             var s_2 = t === 'brouillard' ? 3.2 : 2.4, sp_1 = t === 'brouillard' ? 8 : t === 'sable' ? 60 : 40;
             (t === 'brouillard' ? [[1, 1], [1.7, -.6]] : [[1, 1]]).forEach(function (_c, j) {
                 var _e = __read(_c, 2), k = _e[0], dir = _e[1];
                 try {
-                    var P = g.createPattern(F_1, 'repeat');
+                    var P = g.createPattern(F_2, 'repeat');
                     P.setTransform(new DOMMatrix().translate((now / 1000 * sp_1 * k * dir) % (256 * s_2 * k), (now / 1000 * sp_1 * .3 * k) % (256 * s_2 * k)).scale(s_2 * k));
                     g.globalAlpha = (t === 'brouillard' ? .55 : .35) * I * (j ? .7 : 1);
                     g.fillStyle = P;
@@ -13435,7 +13716,7 @@ var __values = (this && this.__values) || function(o) {
                 return; var _c = __read(k.split(',').map(Number), 2), x = _c[0], y = _c[1]; reach_1.push([x, y, r1_1((R_1.cost.get(k) || d) * CELL_M)]); });
             var TH_2 = aooThreat(c);
             t = { cid: c.id, own: own ? own.id : '', nm: c.name, n: S.round, res: { a: c.res.action ? 1 : 0, b: c.res.bonus ? 1 : 0, r: c.res.reaction ? 1 : 0, m: r1_1(c.res.move) }, me: [c.x, c.y, sz(c)],
-                acts: c.actions.map(function (a) { var w = canUse(c, a), X = spx(a) || {}, sh = shapeOf(X.shape || X.line ? spAct(a, X) : a); var ui0 = upInfo(c, a); var ct = aCat(a); return { cg: ct.n, co: ct.o, wsL: a.ws ? wsList(c, a).map(function (m) { return [m[0], m[11], m[3], parseInt(m[4]), WS_FLY[m[0]] || m[5]]; }) : 0, up: ui0 ? ui0.levels.map(function (l) { return [l, l > ui0.base ? upTxt(ui0.U, l - ui0.base) : '', (X.n || 1) + (ui0.U.n || 0) * (l - ui0.base)]; }) : 0, tg: X.t || '', mt: X.n || 0, cell: (X.k === 'tp' || a.tp || X.t === 'p' && !((X.area != null ? X.area : a.area) > 0)) ? 1 : 0, tp: X.tp || a.tp || 0, sh: sh ? sh.k : '', L: sh ? sh.L : 0, id: a.id, name: a.name, kind: a.kind, cost: a.cost, range: +a.range || 0, area: +a.area || 0, dmg: a.dmg && a.dmg !== '0' ? a.dmg : '', dtype: a.dtype || '', nt: String(a.note || '').slice(0, 300), ok: w ? 0 : 1, why: w || '' }; }).concat(c.hp > 0 && c.side === 'pj' ? S.chars.filter(function (o) { return o !== c && o.side === 'pj' && o.hp <= 0 && !pjDead(o) && dist(c, o) * CELL_M <= CELL_M + 1e-6; }).map(function (o) { return ({ id: 'help:' + o.id, name: 'Aider ' + o.name + ' à se relever', kind: 'auto', cost: 'action', range: 1.5, area: 0, dmg: '', dtype: '', nt: 'Il se relève avec 1 PV mais ne pourra pas agir à son prochain tour.', ok: c.res && c.res.action ? 1 : 0, why: c.res && c.res.action ? '' : 'Action déjà utilisée', sh: '', L: 0 }); }) : []),
+                acts: c.actions.map(function (a) { var w = canUse(c, a), X = spx(a) || {}, sh = shapeOf(X.shape || X.line ? spAct(a, X) : a); var ui0 = upInfo(c, a); var ct = aCat(a); return { cg: ct.n, co: ct.o, wsL: a.ws ? wsList(c, a).map(function (m) { return [m[0], m[11], m[3], parseInt(m[4]), WS_FLY[m[0]] || m[5]]; }) : 0, up: ui0 ? ui0.levels.map(function (l) { return [l, l > ui0.base ? upTxt(ui0.U, l - ui0.base) : '', (X.n || 1) + (ui0.U.n || 0) * (l - ui0.base)]; }) : 0, tg: X.t || '', mt: X.n || 0, cell: (X.k === 'tp' || a.tp || X.t === 'p' && !((X.area != null ? X.area : a.area) > 0)) ? 1 : 0, tp: X.tp || a.tp || 0, sh: sh ? sh.k : '', L: sh ? sh.L : 0, id: a.id, name: a.name + cfCount(c, a), kind: a.kind, cost: a.cost, range: +a.range || 0, area: +a.area || 0, dmg: a.dmg && a.dmg !== '0' ? a.dmg : '', dtype: a.dtype || '', nt: String(a.note || '').slice(0, 300), ok: w ? 0 : 1, why: w || '' }; }).concat(c.hp > 0 && c.side === 'pj' ? S.chars.filter(function (o) { return o !== c && o.side === 'pj' && o.hp <= 0 && !pjDead(o) && dist(c, o) * CELL_M <= CELL_M + 1e-6; }).map(function (o) { return ({ id: 'help:' + o.id, name: 'Aider ' + o.name + ' à se relever', kind: 'auto', cost: 'action', range: 1.5, area: 0, dmg: '', dtype: '', nt: 'Il se relève avec 1 PV mais ne pourra pas agir à son prochain tour.', ok: c.res && c.res.action ? 1 : 0, why: c.res && c.res.action ? '' : 'Action déjà utilisée', sh: '', L: 0 }); }) : []),
                 fog: S.map.fog ? { s: S.map.seen || '', v: S.map.vis || '' } : null,
                 toks: S.chars.filter(function (o) { return !o.hid && charSeen(o) && (o.hp > 0 || o.side === 'pj'); }).map(function (o) { return ({ id: o.id, n: o.name, l: label(o), x: o.x, y: o.y, s: sz(o), c: o.color || '#888', side: o.side, d: o === c ? 0 : r1_1(dist(c, o) * CELL_M) }); }),
                 objs: (S.objs || []).filter(function (o) { return o.hpMax > 0 && !o.broken && !(o.type === 'piege' && o.hidden); }).map(function (o) { return ({ id: o.id, n: o.name, x: o.x, y: o.y, d: r1_1(dist(c, o) * CELL_M) }); }), reach: reach_1, aoo: TH_2.length ? reach_1.filter(function (_c) {
@@ -14246,7 +14527,8 @@ var __values = (this && this.__values) || function(o) {
     }
     function groupRest(kind) {
         var pjs = S.chars.filter(function (c) { return c.side === 'pj'; });
-        pjs.forEach(function (c) { c.wsUsed = 0; });
+        pjs.forEach(function (c) { c.wsUsed = 0; Object.values(c.cres || {}).forEach(function (v) { if (kind === 'long' || v[3] === 'court')
+            v[1] = 0; }); });
         if (kind === 'long')
             pjs.forEach(function (c) { c.hp = c.hpMax; Object.values(c.slots || {}).forEach(function (v) { v[1] = 0; }); c.death = { s: 0, f: 0 }; c.conds = c.conds.filter(function (k) { return !['inconscient', 'à terre', 'empoisonné', 'effrayé'].includes(k); }); c.res = { move: effSpeed(c), action: true, bonus: true, reaction: true }; });
         S.restSig = { kind: kind, ts: Date.now() };
@@ -14637,7 +14919,12 @@ var __values = (this && this.__values) || function(o) {
             if (v && +v[0] > 0)
                 sl[l] = +v[1] || 0;
         });
-        return { hp: +c.hp || 0, conds: (c.conds || []).filter(function (k) { return PCONDS.has(k); }).sort(), death: { s: +(c.death && c.death.s) || 0, f: +(c.death && c.death.f) || 0 }, slots: sl };
+        var rs = {};
+        Object.entries(c.cres || {}).forEach(function (_c) {
+            var _e = __read(_c, 2), k = _e[0], v = _e[1];
+            rs[k] = +v[1] || 0;
+        });
+        return { hp: +c.hp || 0, conds: (c.conds || []).filter(function (k) { return PCONDS.has(k); }).sort(), death: { s: +(c.death && c.death.s) || 0, f: +(c.death && c.death.f) || 0 }, slots: sl, res: rs };
     }
     var playerOf = function (c) { return c && Object.entries(NETS.players).find(function (_c) {
         var _e = __read(_c, 2), u = _e[0], p = _e[1];
@@ -14744,10 +15031,15 @@ var __values = (this && this.__values) || function(o) {
             var c = byId(cid);
             if (!c || !L || !playerOf(c))
                 return;
-            var norm = { hp: +L.hp || 0, conds: (L.conds || []).slice().sort(), death: { s: +(L.death && L.death.s) || 0, f: +(L.death && L.death.f) || 0 }, slots: L.slots || {} };
+            var norm = { hp: +L.hp || 0, conds: (L.conds || []).slice().sort(), death: { s: +(L.death && L.death.s) || 0, f: +(L.death && L.death.f) || 0 }, slots: L.slots || {}, res: L.res || {} };
             var j = JSON.stringify(norm);
             if (j === NETS.cache[cid])
                 return;
+            Object.entries(norm.res).forEach(function (_c) {
+                var _e = __read(_c, 2), k = _e[0], u = _e[1];
+                if (c.cres && c.cres[k])
+                    c.cres[k][1] = Math.min(+c.cres[k][0], Math.max(0, +u || 0));
+            });
             var before = c.hp;
             c.hp = Math.max(0, Math.min(c.hpMax, norm.hp));
             c.conds = __spreadArray(__spreadArray([], __read(norm.conds), false), __read(c.conds.filter(function (k) { return !PCONDS.has(k); })), false);
@@ -14780,6 +15072,16 @@ var __values = (this && this.__values) || function(o) {
             slots[l] = [max, c && c.slots && c.slots[l] ? Math.min(max, +c.slots[l][1] || 0) : Math.min(max, +(v && v[1]) || 0)];
         });
         f.slots = slots;
+        {
+            var R_2 = {};
+            Object.entries(k.cres || {}).forEach(function (_c) {
+                var _e = __read(_c, 2), q = _e[0], v = _e[1];
+                var max = +(v && v[0]) || 0;
+                R_2[q] = [max, c && c.cres && c.cres[q] ? Math.min(max, +c.cres[q][1] || 0) : Math.min(max, +(v && v[1]) || 0), v && v[2] || q, v && v[3] || 'long'];
+            });
+            f.cres = R_2;
+            f.cfp = k.cfp || {};
+        }
         if (k.token) {
             f.img = k.token;
             f.imgFromSheet = true;
@@ -15140,6 +15442,7 @@ var __values = (this && this.__values) || function(o) {
 </script>
 
 <script src="sorts.js?v=2" defer></script>
+<script src="capacites.js?v=1" defer></script>
 <script src="tokens.js?v=1" defer></script>
 <script src="net-legacy.js"></script>
 </body>

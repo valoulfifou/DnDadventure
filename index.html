@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='31/10-11h32';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='31/10-18h30';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -1515,7 +1515,8 @@ function canUse(c,act){
   if(rchOf(act)&&(c.rch||{})[act.name]===false)return 'En recharge ('+rchOf(act)+'-6)';
   if(perDay(act)&&((c.used||{})[act.name]||0)>=perDay(act))return 'Déjà utilisé aujourd’hui';
   if(act.cost==='leg')return (c.legLeft??legMax(c))>=1?'':'Plus d’action légendaire';
-  if(!c.res[act.cost]&&!((c.res.rep||{})[act.repKey||act.name]>0)&&!(act.cost==='action'&&c.res.hx&&act.kind==='attaque'))return (COSTS[act.cost]||'')+' déjà utilisée';
+  {const w=cfCan(c,act);if(w)return w}
+  if(!act.nf&&!c.res[act.cost]&&!((c.res.rep||{})[act.repKey||act.name]>0)&&!(act.cost==='action'&&c.res.hx&&act.kind==='attaque')&&!(act.cost==='action'&&c.res.as>0))return (COSTS[act.cost]||'')+' déjà utilisée';
   if(slotFor(c,act)===-1)return 'Plus d’emplacement de niveau '+act.slot+'+';
   return '';
 }
@@ -1525,7 +1526,9 @@ function spend(c,act){if(act&&act._free)return 0;if(act&&act.item)itemUsed(c,act
   if(act.uses!=null){act.uses--;const o=c.actions.find(x=>x.id===act.id);if(o&&o!==act)o.uses=act.uses;if(act.uses<=0)c.actions=c.actions.filter(x=>x.id!==act.id)}
   if(act.cost==='leg'){c.legLeft=Math.max(0,(c.legLeft??legMax(c))-1);return 0}
   const rk=act.repKey||act.name;if(!c.res[act.cost]&&(c.res.rep||{})[rk]>0){c.res.rep[rk]--;return 0}
+  cfSpend(c,act);if(act.nf)return 0;
   if(act.cost==='action'&&!c.res.action&&c.res.hx){c.res.hx=0;log(`${esc(c.name)} utilise son action de Hâte.`);return 0}
+  if(act.cost==='action'&&!c.res.action&&c.res.as>0){c.res.as--;if(+act.rep>1)(c.res.rep||(c.res.rep={}))[rk]=act.rep-1;log(`${esc(c.name)} utilise l’action de sa Fougue.`);return 0}
   c.res[act.cost]=false;if(efHas(c,'oneAct')){if(act.cost==='action')c.res.bonus=false;if(act.cost==='bonus')c.res.action=false}if(+act.rep>1)(c.res.rep||(c.res.rep={}))[rk]=act.rep-1;const l=slotFor(c,act);if(l>0){c.slots[l][1]++;return l}return 0}
 
 /* ---------- Dégâts ---------- */
@@ -1793,7 +1796,7 @@ function renderPanel(){
     <div class="stats"><div class="stat"><div class="k">CA</div><div class="v">${acOf(c)}${acOf(c)!==c.ac?`<small style="font-size:11px;color:var(--muted)"> (${c.ac})</small>`:''}</div></div><div class="stat"><div class="k">Vitesse</div><div class="v">${fm(effSpeed(c)).replace(' m','')}<small style="font-size:12px"> m</small></div></div><div class="stat"><div class="k">Init.</div><div class="v">${sgn(+c.initB)}</div></div></div>
     ${death}${c.note?`<p class="hint" style="margin:0">${esc(c.note)}</p>`:''}
     ${LM&&S.turn>=0?`<div class="sect"><h3>Actions légendaires <span class="mono" style="letter-spacing:2px">${'●'.repeat(c.legLeft??LM)}${'○'.repeat(LM-(c.legLeft??LM))}</span></h3><div class="quick"><button class="btn sm ${legOn?'primary':''}" type="button" data-leg="atk">${legOn?'✓ Choisis l’attaque ci-dessous':'Attaque légendaire (1)'}</button><button class="btn sm" type="button" data-leg="1">Autre (1)</button><button class="btn sm" type="button" data-leg="2">Autre (2)</button>${LM>=3?'<button class="btn sm" type="button" data-leg="3">Autre (3)</button>':''}</div><p class="hint" style="margin:4px 0 0">Entre les tours des autres créatures. Se recharge au début de son tour.</p></div>`:''}
-    ${efPanel(c)}${(c.ce||[]).length?`<div class="sect"><h3>Effets en cours</h3><div class="hint" style="margin:0">${c.ce.map(e=>`${esc(e.k)} · ${e.left} tour${e.left>1?'s':''}${e.save?` · JdS ${e.save} DD ${e.dc} à la fin de son tour`:''}${e.src?' ('+esc(e.src)+')':''}`).join('<br>')}</div></div>`:''}
+    ${cfPanel(c)}${efPanel(c)}${(c.ce||[]).length?`<div class="sect"><h3>Effets en cours</h3><div class="hint" style="margin:0">${c.ce.map(e=>`${esc(e.k)} · ${e.left} tour${e.left>1?'s':''}${e.save?` · JdS ${e.save} DD ${e.dc} à la fin de son tour`:''}${e.src?' ('+esc(e.src)+')':''}`).join('<br>')}</div></div>`:''}
     ${has(c,'concentration')&&c.concOn?`<p class="hint" style="margin:0">Concentration : <b>${esc(c.concOn)}</b></p>`:''}
     <div class="sect"><h3>Ressources du tour</h3><div class="res">
       <span class="pill act ${c.res.action?'on':'off'}"><span class="dot"></span>Action</span>
@@ -2041,7 +2044,7 @@ function resolveSingle(att,a,tgt){
         const rx=d!==1&&d<critOn&&tot>=AC&&a._mir!=='dup'?reactDefense(att,a,tgt,tot,AC):null;
         if(rx&&!el._rx){el._rx=1;el.innerHTML=`${head}<div class="verdict hit">Touché… sauf si</div><div class="how">${esc(rx.txt)}</div><div class="row"><button class="btn" id="rxNo" type="button">Non</button><button class="btn primary" id="rxYes" type="button">${esc(rx.btn)}</button></div>`;
           const again=()=>{close();resolveSingle._skipRx=true;resolveSingle._d=d;CS_SKIP=true;resolveSingle(att,a,tgt)};
-          el.querySelector('#rxNo').onclick=again;el.querySelector('#rxYes').onclick=()=>{rx.use();again()};return}
+          el.querySelector('#rxNo').onclick=again;el.querySelector('#rxYes').onclick=()=>{const r=rx.use();if(r&&r.then){close();r.then(again)}else again()};return}
         const lvl=spend(att,a);lastLvl=lvl||+a.slot||0;const crit=d>=critOn||(info.autoCrit&&tot>=AC&&d!==1);const hit=d!==1&&(d>=critOn||tot>=AC);
         efUse(att,'atk');if(!tgt.isObj)efUse(tgt,'vs');
         if(has(att,'caché'))att.conds=att.conds.filter(k=>k!=='caché');
@@ -2083,8 +2086,9 @@ function damageStep(el,head,att,a,tgts,crit,label,note){
   el.querySelector('#dv').focus();cancelRolls();
   if(att.side!=='pj'){el.querySelector('#dv').value=rollDice(F)}
   else askRoll(att,{kind:'dmg',label:'Dégâts : '+a.name,detail:'Lance '+Ftxt+(crit?' (critique : dés doublés)':'')+(a.dtype?' · '+a.dtype:'')+' et saisis le total.'},v=>{const i=el.querySelector('#dv');if(i){i.value=v;flash(i)}});
-  el.querySelector('#mGo').onclick=()=>{let n=+el.querySelector('#dv').value;if(!(n>=0))return;if(el.querySelector('#res')?.checked)n=Math.floor(n/2);if(DF.half)n=Math.floor(n/2);
-    curDT=(a.dtype||'').toLowerCase();curCrit=!!crit;tgts.forEach(t=>damage(t,n));curCrit=false;envReact(curDT,actCells(att,a,tgts,ui.center),!!a.area);curDT='';queueFx({att,a,center:ui.center?{...ui.center}:null,hits:tgts.map(t=>({c:t,dm:n,kind:crit?'crit':'hit',kill:t.hp===0}))});log(`<b>${esc(tgts.map(t=>t.name).join(', '))}</b> subit ${n} dégâts${a.dtype?' de '+esc(a.dtype):''}.`);close();fxAfter(att,a,tgts.filter(t=>!t.isObj&&t.hp>0));spOnHit(att,a,tgts,crit,n);{const P=pushOf(a);if(P&&P.on!=='save')pushAfter(att,a,tgts.filter(t=>!t.isObj&&(t.hp>0||t.side==='pj')))}endA(a)};
+  const MX=cfMaxEf(att,a);if(MX){const i=el.querySelector('#dv');i.value=maxDice(F);el.querySelector('.how').insertAdjacentHTML('beforeend',`<br><b>${esc(MX.n)}</b> : dégâts au maximum (${maxDice(F)}).`);cancelRolls()}
+  el.querySelector('#mGo').onclick=()=>{let n=+el.querySelector('#dv').value;if(MX){n=maxDice(F);efDel(att,MX,false);log(`${esc(att.name)} · ${esc(MX.n)} : dégâts au maximum.`)}if(!(n>=0))return;if(el.querySelector('#res')?.checked)n=Math.floor(n/2);if(DF.half)n=Math.floor(n/2);if(DF.xs.some(x=>x.sa))att.res.sneak=1;if(DF.xs.some(x=>x.fd))att.res.fdiv=1;
+    curDT=(a.dtype||'').toLowerCase();curCrit=!!crit;tgts.forEach(t=>damage(t,n));curCrit=false;envReact(curDT,actCells(att,a,tgts,ui.center),!!a.area);curDT='';queueFx({att,a,center:ui.center?{...ui.center}:null,hits:tgts.map(t=>({c:t,dm:n,kind:crit?'crit':'hit',kill:t.hp===0}))});log(`<b>${esc(tgts.map(t=>t.name).join(', '))}</b> subit ${n} dégâts${a.dtype?' de '+esc(a.dtype):''}.`);close();fxAfter(att,a,tgts.filter(t=>!t.isObj&&t.hp>0));spOnHit(att,a,tgts,crit,n);{const P=pushOf(a);if(P&&P.on!=='save')pushAfter(att,a,tgts.filter(t=>!t.isObj&&(t.hp>0||t.side==='pj')))}cfAfterHit(att,a,tgts,crit,()=>endA(a))};
 }
 function resolveArea(att,a,center){
   if(counterCheck(att,a,()=>resolveArea(att,a,center)))return;
@@ -2112,7 +2116,8 @@ function saveStep(att,a,tgts,head,note){
     if(!noD&&att.side!=='pj')el.querySelector('#dv').value=rollDice(a.dmg);
     else if(!noD&&tgts.length===1&&tgts[0]===att){}
     el.querySelector('#mRoll').onclick=()=>{sfx('dice');el.querySelectorAll('[data-t]').forEach(i=>{if(!i.disabled&&i.value==='')i.value=rollD(20)});const dv=el.querySelector('#dv');if(dv&&dv.value==='')dv.value=rollDice(a.dmg)};
-    el.querySelector('#mGo').onclick=()=>{const dvi=el.querySelector('#dv');const n=noD?0:+dvi.value;if(!noD&&(!(n>=0)||dvi.value==='')){toast('Saisis les dégâts');return}
+    const MX=noD?null:cfMaxEf(att,a);if(MX){const dv=el.querySelector('#dv');dv.value=maxDice(a.dmg);dv.title=MX.n}
+    el.querySelector('#mGo').onclick=()=>{const dvi=el.querySelector('#dv');if(MX){dvi.value=maxDice(a.dmg);efDel(att,MX,false);log(`${esc(att.name)} · ${esc(MX.n)} : dégâts au maximum.`)}const n=noD?0:+dvi.value;if(!noD&&(!(n>=0)||dvi.value==='')){toast('Saisis les dégâts');return}
       const res=[];for(const t of tgts){const si=t.isObj?{auto:true}:saveInfo(t,a.save,{cond:hasC}),inp=el.querySelector(`[data-t="${t.id}"]`);let ok=false,txt='';
         if(si.auto){txt='échec auto'}else{const d=+inp.value;if(!(d>=1&&d<=20)){toast('Saisis le d20 de '+t.name);return}const xs=xdSum(el,SD[t.id]||[],'s'+t.id+'_'),b=(+t.saves[a.save]||0)+saveFlat(t,a.save);const tot=d+b+xs.s;ok=tot>=a.dc;txt=`${d}${sgn(b)}${xs.txt?' '+xs.txt:''} = ${tot}`;efUse(t,'save')}
         res.push({t,ok,txt})}
@@ -2153,6 +2158,8 @@ function removeCond(t,k){t.conds=t.conds.filter(z=>z!==k);t.ce=(t.ce||[]).filter
 // z: zone persistante ; g: action accordée tant que le sort dure ; tp: téléportation (m) ; sum: invocation ; x: règle spéciale ; pk: choix au lancement
 const M1=10,M10=100,H1=600,H8=4800,J1=14400;
 const SPX0={
+// ===== Capacités de classe =====
+'Rage':{t:'s',x:'cfRage'},'Attaque téméraire':{t:'s',x:'cfReck'},'Inspiration bardique':{t:'a',x:'cfInsp'},'Renvoi des morts-vivants':{t:'s',x:'cfTurn'},'Fureur destructrice':{t:'s',x:'cfDestr'},'Fougue':{t:'s',x:'cfSurge'},'Défense patiente':{t:'s',x:'cfDodge'},'Pas du vent':{t:'s',x:'cfStep'},'Ruse : Foncer':{t:'s',x:'cfDash'},'Ruse : Se désengager':{t:'s',x:'cfDis'},'Ruse : Se cacher':{t:'s',x:'cfHide'},'Imposition des mains':{t:'a',x:'cfLay'},
 // ===== Tours de magie =====
 'Amis':{u:'Avantage aux tests de Charisme (hors combat).'},
 "Aspersion d'acide":{n:2},
@@ -2691,7 +2698,7 @@ function efClean(t,e,quiet){(e.c||[]).forEach(k=>{if(!condHeldElse(t,k,e))t.cond
   if(e.zone){const z=ZN().find(z=>z.id===e.zone);if(z)zDel(z,1)}
   if(e.sum){S.chars.filter(o=>o.sumOf===e.sum).forEach(o=>{S.chars=S.chars.filter(y=>y!==o);S.order=S.order.filter(id=>id!==o.id);if(!quiet)log(`${esc(o.name)} disparaît.`)})}}
 function efDel(t,e,why){if(!t||!t.ef||!t.ef.includes(e))return;t.ef=t.ef.filter(x=>x!==e);efClean(t,e,why===false);if(why!==false)log(`<b>${esc(t.name)}</b> : ${esc(e.n)} prend fin${why?' ('+esc(why)+')':''}.`);dirty()}
-function efUse(t,kind){(t.ef||[]).filter(e=>e.use===kind).forEach(e=>efDel(t,e,false))}
+function efUse(t,kind){(t.ef||[]).filter(e=>e.use===kind||e.use==='d20'&&(kind==='atk'||kind==='save')).forEach(e=>efDel(t,e,false))}
 function efBreak(t,kind){(t.ef||[]).filter(e=>e.brk===kind).forEach(e=>efDel(t,e,kind==='dmg'?'subit des dégâts':'attaque'))}
 const efLbl=e=>(e.ic?e.ic+' ':'')+e.n;
 /* ----- Mécanique : CA, vitesse, jets, dégâts ----- */
@@ -2710,6 +2717,7 @@ function xdOf(att,a,tgt){const out=[];if(!att||!a)return out;const W=a.kind==='a
   if(tgt&&!tgt.isObj)(tgt.ef||[]).forEach(e=>{const m=e.m||{};if(m.cursed&&m.cursed.by===att.id)out.push({d:m.cursed.d,t:m.cursed.t,n:e.n,e});if(m.eb&&String(a.dtype||'').toLowerCase()===m.eb.t)out.push({d:m.eb.d,t:m.eb.t,n:e.n,e});
     if(m.mirror){} });
   efAll(att).forEach(e=>{if(e.m&&e.m.halfW&&W)out.push({half:1,n:e.n})});
+  cfXd(att,a,tgt,out);
   return out}
 function dmgFormula(att,a,tgt){const xs=xdOf(att,a,tgt);let f=String(a.dmg||'0');const parts=[];
   xs.forEach(x=>{if(x.half||!x.d||x.d==='0')return;const s=xSign(x.d);parts.push((s<0?' − ':' + ')+xAbs(x.d)+(x.t?' '+x.t:'')+' ('+x.n+')')});
@@ -3157,7 +3165,8 @@ function tstSpell(name,L,mod,dc,atk){const r=(window.SORTS||[]).find(x=>x[0]===n
   return A({name:r[0],kind:k,cost:r[3],range:+r[4]||0,area:+r[5]||0,bonus:atk,dc,save:r[6]||'DEX',dmg:d,dtype:r[8],half:!!r[9],slot:r[1],note:[r[10]||'',r[11]&&!/concentration/i.test(r[10]||'')?'Concentration':''].filter(Boolean).join(' · ')})}
 function tstPJ(o){const c=C({name:o.name,side:'pj',color:o.col,hp:o.hp,hpMax:o.hp,ac:o.ac,speed:9,initB:o.init,saves:o.saves,slots:o.slots,
   actions:o.wpn.map(w=>A(w)).concat(o.extra||[],o.sp.map(n=>tstSpell(n,o.lvl,o.mod,o.dc,o.atk)).filter(Boolean))});
-  Object.assign(c,{lvl:o.lvl,prof:o.prof,mods:o.mods,cls:o.cls,tst:1,label:o.lab});c.res={move:9,action:true,bonus:true,reaction:true};return c}
+  Object.assign(c,{lvl:o.lvl,prof:o.prof,mods:o.mods,cls:o.cls,tst:1,label:o.lab});c.res={move:9,action:true,bonus:true,reaction:true};
+  if(window.CFEAT){const F=CFEAT({cls:o.cls,sub:o.sub,L:o.lvl,mod:o.mods,prof:o.prof,dc:o.dc});c.actions=c.actions.concat(F.acts.map(a=>A(a)));c.cres=F.res;c.cfp=F.cfp;if(F.cfp.crit)c.actions.forEach(a=>{if(a.kind==='attaque')a.crit=F.cfp.crit})}return c}
 function makeTestMap(){if(!S.maps)ensureMaps();const cols=24,rows=16;
   const e={id:uid(),name:'Test des sorts',objs:[],foes:[],map:{cols,rows,cell:S.map.cell||60,kind:'tiles',src:null,grid:true,walls:[],surf:{},tiles:makeTiles(cols,rows,'p',false)}};
   const sl=(...n)=>{const o={};n.forEach((v,i)=>o[i+1]=[v,0]);return o};
@@ -3171,7 +3180,12 @@ function makeTestMap(){if(!S.maps)ensureMaps();const cols=24,rows=16;
   const clr=tstPJ({name:'Brunhild (clerc niv. 7)',lab:'Cl',col:'#b8892b',hp:52,ac:18,init:0,lvl:7,prof:3,mod:4,dc:15,atk:7,cls:'clerc',mods:{FOR:2,DEX:0,CON:2,INT:0,SAG:4,CHA:1},saves:{FOR:2,DEX:0,CON:2,INT:0,SAG:7,CHA:4},slots:sl(4,3,3,1),
     wpn:[{name:'Masse d’armes',kind:'attaque',bonus:5,dmg:'1d6+2',dtype:'contondant',range:1.5}],
     sp:['Flamme sacrée','Glas','Bénédiction','Fléau','Soins','Mot de guérison','Bouclier de la foi','Sanctuaire','Injonction','Aide','Arme spirituelle','Immobilisation de personne','Restauration partielle','Esprits gardiens','Mot de guérison de groupe','Retour à la vie','Malédiction','Gardien de la foi','Bannissement','Protection contre la mort']});
-  const P=[[mage,3,6],[dru,3,8],[clr,3,10]];P.forEach(([c,x,y])=>{c.x=x;c.y=y;e.foes.push(c)});
+  clr.name='Brunhild (clerc niv. 7, Tempête)';{const F=window.CFEAT&&CFEAT({cls:'clerc',sub:'Tempête',L:7,mod:clr.mods,prof:3,dc:15});if(F){clr.actions=clr.actions.filter(a=>!a.cf).concat(F.acts.map(a=>A(a)));clr.cres=F.res;clr.cfp=F.cfp}}
+  const bar=tstPJ({name:'Grom (barbare niv. 5)',lab:'Ba',col:'#9b3a2a',hp:55,ac:15,init:2,lvl:5,prof:3,mod:0,dc:0,atk:0,cls:'barbare',sub:'Voie du berserker',mods:{FOR:4,DEX:2,CON:3,INT:-1,SAG:1,CHA:0},saves:{FOR:7,DEX:2,CON:6,INT:-1,SAG:1,CHA:0},slots:{},
+    wpn:[{name:'Hache à deux mains',kind:'attaque',bonus:7,dmg:'1d12+4',dtype:'tranchant',range:1.5,rep:2,repKey:'attaque'},{name:'Javeline',kind:'attaque',bonus:7,dmg:'1d6+4',dtype:'perforant',range:9}],sp:[]});
+  const brd=tstPJ({name:'Lyra (barde niv. 5, Savoir)',lab:'Bd',col:'#a0428a',hp:38,ac:14,init:3,lvl:5,prof:3,mod:4,dc:15,atk:7,cls:'barde',sub:'Collège du savoir',mods:{FOR:-1,DEX:3,CON:1,INT:1,SAG:0,CHA:4},saves:{FOR:-1,DEX:6,CON:1,INT:1,SAG:0,CHA:7},slots:sl(4,3,2),
+    wpn:[{name:'Rapière',kind:'attaque',bonus:6,dmg:'1d8+3',dtype:'perforant',range:1.5,fin:1}],sp:['Moquerie cruelle','Mot de guérison','Fou rire de Tasha','Charme-personne','Immobilisation de personne','Fracassement','Hypnose','Peur']});
+  const P=[[mage,3,6],[dru,3,8],[clr,3,10],[bar,5,9],[brd,5,11]];P.forEach(([c,x,y])=>{c.x=x;c.y=y;e.foes.push(c)});
   const add=(n,x,y,lab)=>{const m=BESTIARY.find(b=>b[0]===n);if(!m)return;const c=monsterChar(m,lab||n);applyBestTok(c,n);c.x=x;c.y=y;e.foes.push(c)};
   add('Troll',16,7,'Troll');add('Ogre',18,10,'Ogre');add('Orc',13,5,'Orc');add('Gobelin',13,11,'Gobelin 1');add('Gobelin',14,12,'Gobelin 2');add('Mage',20,4,'Mage ennemi');
   e.pos={};S.chars.filter(c=>c.side==='pj').forEach((c,i)=>{e.pos[c.id]=[1,2+i*2]});
@@ -3263,8 +3277,9 @@ function dropConc(c,why){if(!has(c,'concentration'))return;c.conds=c.conds.filte
   S.chars.forEach(o=>{(o.ce||[]).filter(e=>e.conc===c.id).forEach(e=>removeCond(o,e.k))});S.chars.slice().forEach(o=>(o.ef||[]).filter(e=>e.conc===c.id).forEach(e=>efDel(o,e,'fin de concentration')));ZN().filter(z=>z.conc===c.id).forEach(z=>zDel(z));log(`<b>${esc(c.name)}</b> perd sa concentration (${esc(why)}) : ${esc(nm)} prend fin.`);toast(c.name+' perd sa concentration');save();render()}
 function concCheck(c,dc){quickSave(c,'CON',dc,'garder sa concentration',()=>{log(`${esc(c.name)} garde sa concentration.`)},()=>dropConc(c,'dégâts'))}
 // réactions défensives : Bouclier (sort) et Parade (monstre)
-function reactDefense(att,a,tgt,tot,AC){if(!tgt||tgt.isObj||!tgt.res||!tgt.res.reaction||tgt.hp<=0)return null;
-  const sh=(tgt.actions||[]).find(x=>/^bouclier\b/i.test(x.name)&&x.kind!=='attaque');
+function reactDefense(att,a,tgt,tot,AC){return reactDefense0(att,a,tgt,tot,AC)||cfCutting(att,a,tgt,tot,AC)}
+function reactDefense0(att,a,tgt,tot,AC){if(!tgt||tgt.isObj||!tgt.res||!tgt.res.reaction||tgt.hp<=0)return null;
+  const sh=(tgt.actions||[]).find(x=>/^bouclier(\s*\(|$)/i.test(x.name)&&x.kind!=='attaque');
   const shN=!sh&&/Réactions :[^.]*Bouclier/.test(tgt.note||'');
   if(shN&&tot<AC+5)return {txt:`${tgt.name} peut lancer Bouclier (réaction, +5 CA jusqu’à son prochain tour) : l’attaque (${tot}) raterait.`,btn:'Lancer Bouclier',use:()=>{tgt.res.reaction=false;tgt.acB=5;log(`<b>${esc(tgt.name)}</b> lance Bouclier : +5 CA.`);sfxRelay('magie')}};
   if(sh&&tot<AC+5&&slotFor(tgt,sh)!==-1)return {txt:`${tgt.name} peut lancer Bouclier (réaction, +5 CA jusqu’à son prochain tour) : l’attaque (${tot}) raterait.`,btn:'Lancer Bouclier',use:()=>{spend(tgt,{...sh,cost:'reaction'});tgt.res.reaction=false;tgt.acB=5;log(`<b>${esc(tgt.name)}</b> lance Bouclier : +5 CA.`);sfxRelay('magie')}};
@@ -4362,6 +4377,72 @@ function sndModal(){const d=SD(),M=MD();let impMood=sndModal.mood||'exploration'
 
 
 
+
+/* ---------- Capacités de classe : ressources, actions, passifs ---------- */
+const cfLeft=(c,k)=>{const v=c&&c.cres&&c.cres[k];return v?Math.max(0,+v[0]-(+v[1]||0)):0};
+const cfIncap=c=>['neutralisé','paralysé','étourdi','inconscient','pétrifié'].some(k=>has(c,k));
+function cfCan(c,a){if(a.rk&&c.cres&&c.cres[a.rk]&&cfLeft(c,a.rk)<(a.rc||1))return 'Épuisé : '+(c.cres[a.rk][2]||a.rk)+' (revient au '+(c.cres[a.rk][3]==='court'?'repos court':'repos long')+')';
+  const X=spx(a)||{};if(X.x==='cfRage'&&(c.ef||[]).some(e=>e.n==='Rage'))return 'Déjà en rage';if(X.x==='cfReck'&&c.res&&c.res.reck)return 'Déjà utilisée ce tour';return ''}
+function cfSpend(c,a){if(a.rk&&!a.rkNo&&c.cres&&c.cres[a.rk])c.cres[a.rk][1]=Math.min(+c.cres[a.rk][0],(+c.cres[a.rk][1]||0)+(a.rc||1))}
+function cfUse(c,k,n){if(c.cres&&c.cres[k])c.cres[k][1]=Math.min(+c.cres[k][0],(+c.cres[k][1]||0)+(n||1))}
+function cfCount(c,a){const v=a.rk&&c.cres&&c.cres[a.rk];return v?` · ${cfLeft(c,a.rk)}/${v[0]}`:''}
+function cfPanel(c){const R=Object.entries(c.cres||{});if(!R.length)return '';
+  return `<div class="sect"><h3>Capacités de classe</h3><div class="hint" style="margin:0;line-height:1.7">${R.map(([k,v])=>`<b>${esc(v[2]||k)}</b> ${+v[0]>12?`${cfLeft(c,k)} / ${v[0]}`:`<span class="mono" style="letter-spacing:2px">${'●'.repeat(cfLeft(c,k))}${'○'.repeat(Math.max(0,+v[1]||0))}</span>`}`).join(' · ')}${c.cfp&&c.cfp.sa?` · <b>Attaque sournoise</b> ${esc(c.cfp.sa)}${c.res&&c.res.sneak?' (utilisée ce tour)':''}`:''}</div></div>`}
+// dés en plus automatiques : attaque sournoise, frappe divine
+function cfXd(att,a,tgt,out){const P=att&&att.cfp;if(!P||!a||a.kind!=='attaque'||!tgt||tgt.isObj||tgt.side===att.side)return;
+  if(P.sa&&a.fin&&!(att.res&&att.res.sneak)){const I=advInfo(att,tgt,a),ally=S.chars.some(o=>o!==att&&o.side===att.side&&o.hp>0&&!cfIncap(o)&&dist(o,tgt)<=1);
+    if(!I.dis.length&&(I.adv.length||ally))out.push({d:P.sa,t:'',n:'Attaque sournoise',sa:1})}
+  if(P.fd&&!(att.res&&att.res.fdiv))out.push({d:P.fd.d,t:P.fd.t,n:'Frappe divine',fd:1})}
+function cfMaxEf(att,a){const t=String(a.dtype||'').toLowerCase();return (att.ef||[]).find(e=>e.m&&e.m.maxDT&&e.m.maxDT.includes(t))||null}
+// après un coup qui touche : châtiment divin, frappe étourdissante, fureur de l'ouragan
+function cfAfterHit(att,a,tgts,crit,done){const t=tgts.length===1?tgts[0]:null;if(!t||t.isObj||a.kind!=='attaque'){done();return}
+  const mel=(+a.range||1.5)<=3,P=att.cfp||{},Q=[];
+  if(P.smite&&mel&&att.hp>0&&t.side!==att.side&&Object.keys(att.slots||{}).some(l=>att.slots[l][1]<att.slots[l][0]))Q.push(cfSmite);
+  if(P.stun&&mel&&att.hp>0&&t.hp>0&&t.side!==att.side&&cfLeft(att,'ki')>0)Q.push(cfStun);
+  const T=t.cfp||{};if(T.ouragan&&t.hp>0&&att.hp>0&&t.res&&t.res.reaction&&cfLeft(t,'ouragan')>0&&dist(att,t)<=1&&!cfIncap(t))Q.push(cfOuragan);
+  const next=()=>{const f=Q.shift();if(!f){done();return}save();render();f(att,a,t,crit,next)};next()}
+function cfAsk(title,txt,btns,cb){modal(`<h2>${esc(title)}</h2><div class="how">${txt}</div><div class="row" style="flex-wrap:wrap">${btns.map((b,i)=>`<button class="btn ${i?'primary':''}" type="button" data-cfb="${i}">${esc(b)}</button>`).join('')}</div>`,el=>el.querySelectorAll('[data-cfb]').forEach(b=>b.onclick=()=>{close();cb(+b.dataset.cfb)}))}
+function cfSmite(att,a,t,crit,next){const L=Object.keys(att.slots||{}).map(Number).filter(l=>att.slots[l][1]<att.slots[l][0]).sort((x,y)=>x-y),evil=/mort|fi[ée]lon/i.test(foeType(t)||'');
+  cfAsk('Châtiment divin',`<b>${esc(att.name)}</b> touche ${esc(t.name)}. Dépenser un emplacement pour ajouter des dégâts radiants ?${evil?'<br>+1d8 contre ce '+esc(foeType(t).toLowerCase())+'.':''}${crit?'<br>Coup critique : dés doublés.':''}`,['Non'].concat(L.map(l=>`Niveau ${l} (${Math.min(5,1+l)+(evil?1:0)}d8)`)),i=>{if(!i){next();return}
+    const l=L[i-1];att.slots[l][1]++;let n=Math.min(5,1+l)+(evil?1:0);if(crit)n*=2;dieAsk(att,`Châtiment divin (niv. ${l})`,n+'d8',v=>{curDT='radiant';damage(t,v);curDT='';log(`<b>${esc(att.name)}</b> · Châtiment divin (niv. ${l}) : ${esc(t.name)} subit ${v} dégâts radiants.`);queueFx({att,a:{kind:'none'},hits:[{c:t,dm:v,kind:'crit',kill:t.hp===0}],label:'Châtiment divin'});runFx();next()})})}
+function cfStun(att,a,t,crit,next){cfAsk('Frappe étourdissante',`<b>${esc(att.name)}</b> peut dépenser 1 point de ki (${cfLeft(att,'ki')} restants) : ${esc(t.name)} fait un JdS de Constitution DD ${att.cfp.stun.dc} ou est étourdi jusqu’à la fin du prochain tour de ${esc(att.name)}.`,['Non','Frappe étourdissante'],i=>{if(!i){next();return}
+  cfUse(att,'ki');quickSave(t,'CON',att.cfp.stun.dc,'Frappe étourdissante',()=>{log(`${esc(t.name)} résiste à la Frappe étourdissante.`);next()},()=>{efAdd(t,{n:'Frappe étourdissante',ic:'💫',src:att.id,c:['étourdi'],left:null,ex:'se',nx:1});log(`<b>${esc(t.name)}</b> est étourdi·e (Frappe étourdissante).`);next()})})}
+function cfOuragan(att,a,t,crit,next){cfAsk('Fureur de l’ouragan',`<b>${esc(t.name)}</b> peut utiliser sa réaction (${cfLeft(t,'ouragan')} restante${cfLeft(t,'ouragan')>1?'s':''}) : ${esc(att.name)} subit 2d8 dégâts, JdS de Dextérité DD ${t.cfp.ouragan.dc} pour moitié.`,['Non','Foudre','Tonnerre'],i=>{if(!i){next();return}
+  const dt=i===1?'foudre':'tonnerre';t.res.reaction=false;cfUse(t,'ouragan');log(`<b>${esc(t.name)}</b> déchaîne la Fureur de l’ouragan sur ${esc(att.name)}.`);
+  dieAsk(t,'Fureur de l’ouragan','2d8',v=>{const hit=n=>{curDT=dt;damage(att,n);curDT='';log(`${esc(att.name)} subit ${n} dégâts de ${dt} (Fureur de l’ouragan).`);queueFx({att:t,a:{kind:'none'},hits:[{c:att,dm:n,kind:'hit',kill:att.hp===0}],label:'Fureur de l’ouragan'});runFx();next()};
+    quickSave(att,'DEX',t.cfp.ouragan.dc,'Fureur de l’ouragan',()=>hit(Math.floor(v/2)),()=>hit(v))})})}
+// réaction du barde (Collège du savoir) : retirer son dé d'inspiration à une attaque ennemie
+function cfCutting(att,a,tgt,tot,AC){if(!tgt||tgt.isObj||att.side===tgt.side)return null;
+  const b=S.chars.find(o=>o.side===tgt.side&&o!==att&&o.cfp&&o.cfp.cw&&o.hp>0&&o.res&&o.res.reaction&&cfLeft(o,'insp')>0&&!cfIncap(o)&&dist(o,att)*CELL_M<=18+1e-6);if(!b)return null;
+  const mx=maxDice(b.cfp.cw);if(tot-mx>=AC)return null;
+  return {txt:`${b.name} peut utiliser Mots cinglants (réaction, 1 inspiration) : l’attaque (${tot}) perd ${b.cfp.cw} et pourrait rater.`,btn:'Mots cinglants',use:()=>new Promise(res=>dieAsk(b,'Mots cinglants',b.cfp.cw,v=>{b.res.reaction=false;cfUse(b,'insp');efAdd(att,{n:'Mots cinglants',ic:'🗯',src:b.id,left:1,use:'atk',m:{atkB:-v}});log(`<b>${esc(b.name)}</b> lance des Mots cinglants : −${v} à l’attaque de ${esc(att.name)}.`);floatText(att,'−'+v,'info');res()}))}}
+const cfDone=(att,a,txt,ft)=>{queueFx({att,a,hits:[],label:a.name});log(txt);if(ft)floatText(att,ft,'info');endAction()};
+Object.assign(SPXX,{
+  cfRage(att,a){spendX(att,a);dropConc(att,'entre en rage');const v=a.cfv||2;
+    efAdd(att,{n:'Rage',ic:'😤',src:att.id,left:M1,m:{res:a.bear?['allbut:psychique']:['contondant','perforant','tranchant'],xd:{d:String(v),t:'',w:1,mel:1},sAdv:['FOR'],noSpell:1}});
+    sfxRelay('aoo');cfDone(att,a,`<b>${esc(att.name)}</b> entre en <b>rage</b> : +${v} aux dégâts au corps à corps, résistance aux dégâts physiques${a.bear?' (et plus encore)':''}.`,'RAGE !')},
+  cfReck(att,a){spendX(att,a);att.res.reck=1;efAdd(att,{n:'Attaque téméraire',ic:'⚔',src:att.id,left:null,ex:'os',m:{advW:1,vsA:1}});cfDone(att,a,`${esc(att.name)} attaque avec <b>témérité</b> : avantage à ses attaques, mais on l’attaque avec avantage jusqu’à son prochain tour.`,'Témérité')},
+  cfInsp(att,a,X,tg){const t=tg[0];if(!t||t===att){toast('Choisis un allié (pas toi-même)');return}spendX(att,a);
+    efAdd(t,{n:'Inspiration bardique',ic:'🎵',src:att.id,left:100,use:'d20',m:{atkD:a.cfv||'1d6',saveD:a.cfv||'1d6'}});sfxRelay('magie');floatText(t,'+'+(a.cfv||'1d6'),'heal');
+    cfDone(att,a,`<b>${esc(att.name)}</b> inspire <b>${esc(t.name)}</b> : +${esc(a.cfv||'1d6')} à son prochain jet d’attaque ou de sauvegarde.`)},
+  cfTurn(att,a){spendX(att,a);const dc=+a.dc||spDC(att,a)||13,crMax=+a.cfv||0,L=S.chars.filter(o=>o.side!==att.side&&o.hp>0&&!o.hid&&/mort/i.test(foeType(o)||'')&&dist(att,o)*CELL_M<=9+1e-6);
+    queueFx({att,a,hits:L.map(o=>({c:o,kind:'hit',dm:0})),label:a.name});log(`<b>${esc(att.name)}</b> présente son symbole sacré : <b>Renvoi des morts-vivants</b>.`);sfxRelay('magie');
+    if(!L.length){toast('Aucun mort-vivant à 9 m');endAction();return}
+    const go=()=>{const o=L.shift();if(!o){save();endAction();return}quickSave(o,'SAG',dc,'Renvoi des morts-vivants',()=>{log(`${esc(o.name)} résiste au renvoi.`);go()},()=>{
+      if(crMax&&crNum(o.cr)<=crMax){log(`<b>${esc(o.name)}</b> est <b>détruit</b> par la puissance divine !`);damage(o,o.hp)}
+      else{efAdd(o,{n:'Renvoyé',ic:'☀',src:att.id,left:M1,brk:'dmg',c:['effrayé']});log(`<b>${esc(o.name)}</b> est renvoyé : il fuit pendant 1 minute (ou jusqu’à subir des dégâts).`)}go()})};go()},
+  cfDestr(att,a){spendX(att,a);efAdd(att,{n:'Fureur destructrice',ic:'⚡',src:att.id,left:M1,m:{maxDT:['foudre','tonnerre']}});cfDone(att,a,`<b>${esc(att.name)}</b> invoque la <b>Fureur destructrice</b> : ses prochains dégâts de foudre ou de tonnerre seront au maximum.`,'⚡ Fureur')},
+  cfSurge(att,a){spendX(att,a);att.res.as=(att.res.as||0)+1;cfDone(att,a,`<b>${esc(att.name)}</b> utilise sa <b>Fougue</b> : une action de plus ce tour.`,'Fougue !')},
+  cfDodge(att,a){spendX(att,a);if(!has(att,'esquive'))att.conds.push('esquive');cfDone(att,a,`${esc(att.name)} : Défense patiente (esquive).`,'Esquive')},
+  cfStep(att,a){cfAsk('Pas du vent',`${esc(att.name)} dépense 1 point de ki pour :`,['Annuler','Foncer','Se désengager'],i=>{if(!i)return;spendX(att,a);if(i===1)att.res.move+=effSpeed(att);else if(!has(att,'désengagé'))att.conds.push('désengagé');cfDone(att,a,`${esc(att.name)} : Pas du vent (${i===1?'foncer':'se désengager'}).`,i===1?'Foncer !':'Désengagé')})},
+  cfDash(att,a){spendX(att,a);att.res.move+=effSpeed(att);cfDone(att,a,`${esc(att.name)} (Ruse) fonce (+${fm(effSpeed(att))}).`,'Foncer !')},
+  cfDis(att,a){spendX(att,a);if(!has(att,'désengagé'))att.conds.push('désengagé');cfDone(att,a,`${esc(att.name)} (Ruse) se désengage.`,'Désengagé')},
+  cfHide(att,a){spendX(att,a);if(!has(att,'caché'))att.conds.push('caché');cfDone(att,a,`${esc(att.name)} (Ruse) se cache.`,'Caché')},
+  cfLay(att,a,X,tg){const t=tg[0]||att,left=cfLeft(att,'imp'),miss=Math.max(0,t.hpMax-t.hp);if(!left){toast('Réserve vide');return}
+    modal(`<h2>Imposition des mains</h2><div class="sub">${esc(att.name)} → ${esc(t.name)} · réserve ${left} PV</div><label class="fld">PV à rendre<input class="big" id="lhN" type="number" inputmode="numeric" min="1" max="${left}" value="${Math.max(1,Math.min(left,miss||1))}"></label><div class="row"><button class="btn" id="mCancel" type="button">Annuler</button><button class="btn primary" id="mGo" type="button">Soigner</button></div>`,el=>{
+      el.querySelector('#mCancel').onclick=close;el.querySelector('#mGo').onclick=()=>{const n=Math.max(1,Math.min(left,Math.round(+el.querySelector('#lhN').value||0)));close();spendX(att,a);cfUse(att,'imp',n);heal(t,n);floatText(t,'+'+n,'heal');
+        queueFx({att,a,hits:[{c:t,dm:n,kind:'heal'}],label:a.name});log(`<b>${esc(att.name)}</b> impose les mains à ${esc(t.name)} : +${n} PV (réserve ${cfLeft(att,'imp')}).`);endAction()}})}
+});
 /* ---------- Histoire : campagnes, sessions, scénario, PNJ, notes ---------- */
 const STD=()=>S.story||(S.story={camps:[]});
 const stCamp=()=>STD().camps.find(c=>c.id===ui.stC)||null;
@@ -4813,7 +4894,7 @@ function turnPublish(){const N=net();if(!N||!NETS.tid||TVM)return;const c=S.turn
     R.forEach((d,k)=>{if(k===c.x+','+c.y)return;const [x,y]=k.split(',').map(Number);reach.push([x,y,r1((R.cost.get(k)||d)*CELL_M)])});
     const TH=aooThreat(c);
     t={cid:c.id,own:own?own.id:'',nm:c.name,n:S.round,res:{a:c.res.action?1:0,b:c.res.bonus?1:0,r:c.res.reaction?1:0,m:r1(c.res.move)},me:[c.x,c.y,sz(c)],
-      acts:c.actions.map(a=>{const w=canUse(c,a),X=spx(a)||{},sh=shapeOf(X.shape||X.line?spAct(a,X):a);const ui0=upInfo(c,a);const ct=aCat(a);return {cg:ct.n,co:ct.o,wsL:a.ws?wsList(c,a).map(m=>[m[0],m[11],m[3],parseInt(m[4]),WS_FLY[m[0]]||m[5]]):0,up:ui0?ui0.levels.map(l=>[l,l>ui0.base?upTxt(ui0.U,l-ui0.base):'',(X.n||1)+(ui0.U.n||0)*(l-ui0.base)]):0,tg:X.t||'',mt:X.n||0,cell:(X.k==='tp'||a.tp||X.t==='p'&&!((X.area!=null?X.area:a.area)>0))?1:0,tp:X.tp||a.tp||0,sh:sh?sh.k:'',L:sh?sh.L:0,id:a.id,name:a.name,kind:a.kind,cost:a.cost,range:+a.range||0,area:+a.area||0,dmg:a.dmg&&a.dmg!=='0'?a.dmg:'',dtype:a.dtype||'',nt:String(a.note||'').slice(0,300),ok:w?0:1,why:w||''}}).concat(c.hp>0&&c.side==='pj'?S.chars.filter(o=>o!==c&&o.side==='pj'&&o.hp<=0&&!pjDead(o)&&dist(c,o)*CELL_M<=CELL_M+1e-6).map(o=>({id:'help:'+o.id,name:'Aider '+o.name+' à se relever',kind:'auto',cost:'action',range:1.5,area:0,dmg:'',dtype:'',nt:'Il se relève avec 1 PV mais ne pourra pas agir à son prochain tour.',ok:c.res&&c.res.action?1:0,why:c.res&&c.res.action?'':'Action déjà utilisée',sh:'',L:0})):[]),
+      acts:c.actions.map(a=>{const w=canUse(c,a),X=spx(a)||{},sh=shapeOf(X.shape||X.line?spAct(a,X):a);const ui0=upInfo(c,a);const ct=aCat(a);return {cg:ct.n,co:ct.o,wsL:a.ws?wsList(c,a).map(m=>[m[0],m[11],m[3],parseInt(m[4]),WS_FLY[m[0]]||m[5]]):0,up:ui0?ui0.levels.map(l=>[l,l>ui0.base?upTxt(ui0.U,l-ui0.base):'',(X.n||1)+(ui0.U.n||0)*(l-ui0.base)]):0,tg:X.t||'',mt:X.n||0,cell:(X.k==='tp'||a.tp||X.t==='p'&&!((X.area!=null?X.area:a.area)>0))?1:0,tp:X.tp||a.tp||0,sh:sh?sh.k:'',L:sh?sh.L:0,id:a.id,name:a.name+cfCount(c,a),kind:a.kind,cost:a.cost,range:+a.range||0,area:+a.area||0,dmg:a.dmg&&a.dmg!=='0'?a.dmg:'',dtype:a.dtype||'',nt:String(a.note||'').slice(0,300),ok:w?0:1,why:w||''}}).concat(c.hp>0&&c.side==='pj'?S.chars.filter(o=>o!==c&&o.side==='pj'&&o.hp<=0&&!pjDead(o)&&dist(c,o)*CELL_M<=CELL_M+1e-6).map(o=>({id:'help:'+o.id,name:'Aider '+o.name+' à se relever',kind:'auto',cost:'action',range:1.5,area:0,dmg:'',dtype:'',nt:'Il se relève avec 1 PV mais ne pourra pas agir à son prochain tour.',ok:c.res&&c.res.action?1:0,why:c.res&&c.res.action?'':'Action déjà utilisée',sh:'',L:0})):[]),
       fog:S.map.fog?{s:S.map.seen||'',v:S.map.vis||''}:null,
       toks:S.chars.filter(o=>!o.hid&&charSeen(o)&&(o.hp>0||o.side==='pj')).map(o=>({id:o.id,n:o.name,l:label(o),x:o.x,y:o.y,s:sz(o),c:o.color||'#888',side:o.side,d:o===c?0:r1(dist(c,o)*CELL_M)})),
       objs:(S.objs||[]).filter(o=>o.hpMax>0&&!o.broken&&!(o.type==='piege'&&o.hidden)).map(o=>({id:o.id,n:o.name,x:o.x,y:o.y,d:r1(dist(c,o)*CELL_M)})),
@@ -5042,7 +5123,7 @@ function rollDetail(f){let total=0,parts=[];String(f).replace(/\s/g,'').replace(
   if(d){const r=[];for(let i=0;i<Math.min(100,+n||1);i++)r.push(rollD(+d));const v=r.reduce((a,b)=>a+b,0);total+=s1==='-'?-v:v;parts.push(`${s1||''}${(+n||1)}d${d} [${r.join(', ')}]`)}
   else if(k){total+=s2==='-'?-(+k):+k;parts.push(`${s2||'+'}${k}`)}return m});return {total,detail:parts.join(' ')}}
 function groupRest(kind){
-  const pjs=S.chars.filter(c=>c.side==='pj');pjs.forEach(c=>{c.wsUsed=0});
+  const pjs=S.chars.filter(c=>c.side==='pj');pjs.forEach(c=>{c.wsUsed=0;Object.values(c.cres||{}).forEach(v=>{if(kind==='long'||v[3]==='court')v[1]=0})});
   if(kind==='long')pjs.forEach(c=>{c.hp=c.hpMax;Object.values(c.slots||{}).forEach(v=>{v[1]=0});c.death={s:0,f:0};c.conds=c.conds.filter(k=>!['inconscient','à terre','empoisonné','effrayé'].includes(k));c.res={move:effSpeed(c),action:true,bonus:true,reaction:true}});
   S.restSig={kind,ts:Date.now()};sfxRelay('rest');
   log(kind==='long'?'<b>Repos long</b> : le groupe récupère tous ses PV et ses emplacements de sorts.':'<b>Repos court</b> : chaque joueur peut dépenser ses dés de vie sur son téléphone.');
@@ -5213,7 +5294,8 @@ const net=()=>window.NET&&window.NET.ready?window.NET:null;
 const TP=p=>`tables/${NETS.tid}/${p}`;
 const stripHtml=h=>String(h).replace(/<[^>]+>/g,'');
 function liveOf(c){const sl={};Object.entries(c.slots||{}).forEach(([l,v])=>{if(v&&+v[0]>0)sl[l]=+v[1]||0});
-  return {hp:+c.hp||0,conds:(c.conds||[]).filter(k=>PCONDS.has(k)).sort(),death:{s:+(c.death&&c.death.s)||0,f:+(c.death&&c.death.f)||0},slots:sl}}
+  const rs={};Object.entries(c.cres||{}).forEach(([k,v])=>{rs[k]=+v[1]||0});
+  return {hp:+c.hp||0,conds:(c.conds||[]).filter(k=>PCONDS.has(k)).sort(),death:{s:+(c.death&&c.death.s)||0,f:+(c.death&&c.death.f)||0},slots:sl,res:rs}}
 const playerOf=c=>c&&Object.entries(NETS.players).find(([u,p])=>p&&p.cid===c.id);
 const isOnline=c=>{const p=playerOf(c);return !!(p&&p[1].online)};
 function netStart(){if(TVM){tvNetStart();return}const N=net();NETS.unsub.forEach(u=>{try{u&&u()}catch(e){}});NETS.unsub=[];NETS.players={};NETS.cache={};NETS.viewJ='';
@@ -5238,8 +5320,9 @@ function publishNet(){const N=net();if(!N||!NETS.tid||NETS.passive)return;
 }
 function applyLive(v){let changed=false;
   Object.entries(v).forEach(([cid,L])=>{const c=byId(cid);if(!c||!L||!playerOf(c))return;
-    const norm={hp:+L.hp||0,conds:(L.conds||[]).slice().sort(),death:{s:+(L.death&&L.death.s)||0,f:+(L.death&&L.death.f)||0},slots:L.slots||{}};
+    const norm={hp:+L.hp||0,conds:(L.conds||[]).slice().sort(),death:{s:+(L.death&&L.death.s)||0,f:+(L.death&&L.death.f)||0},slots:L.slots||{},res:L.res||{}};
     const j=JSON.stringify(norm);if(j===NETS.cache[cid])return;
+    Object.entries(norm.res).forEach(([k,u])=>{if(c.cres&&c.cres[k])c.cres[k][1]=Math.min(+c.cres[k][0],Math.max(0,+u||0))});
     const before=c.hp;c.hp=Math.max(0,Math.min(c.hpMax,norm.hp));c.conds=[...norm.conds,...c.conds.filter(k=>!PCONDS.has(k))];c.death=norm.death;
     Object.entries(norm.slots).forEach(([l,u])=>{if(c.slots[l])c.slots[l][1]=Math.min(+c.slots[l][0],+u||0)});
     NETS.cache[cid]=JSON.stringify(liveOf(c));changed=true;
@@ -5248,7 +5331,7 @@ function applyLive(v){let changed=false;
 function summaryFields(k){return {name:k.name||'Sans nom',side:'pj',color:k.color||'#2e66c7',hpMax:Math.max(1,+k.hpMax||1),ac:+k.ac||10,speed:+k.speed||9,initB:+k.initB||0,
   saves:Object.assign({FOR:0,DEX:0,CON:0,INT:0,SAG:0,CHA:0},k.saves||{}),actions:(k.actions||[]).map(a=>A(a)),sheetId:k.sheetId,mods:k.mods||null,lvl:+k.lvl||0,prof:+k.prof||0,cls:k.cls||''}}
 function applySummary(k,c){const f=summaryFields(k),slots={};f.bust=k.bust||null;
-  Object.entries(k.slots||{}).forEach(([l,v])=>{const max=+(v&&v[0])||0;slots[l]=[max,c&&c.slots&&c.slots[l]?Math.min(max,+c.slots[l][1]||0):Math.min(max,+(v&&v[1])||0)]});f.slots=slots;
+  Object.entries(k.slots||{}).forEach(([l,v])=>{const max=+(v&&v[0])||0;slots[l]=[max,c&&c.slots&&c.slots[l]?Math.min(max,+c.slots[l][1]||0):Math.min(max,+(v&&v[1])||0)]});f.slots=slots;{const R={};Object.entries(k.cres||{}).forEach(([q,v])=>{const max=+(v&&v[0])||0;R[q]=[max,c&&c.cres&&c.cres[q]?Math.min(max,+c.cres[q][1]||0):Math.min(max,+(v&&v[1])||0),v&&v[2]||q,v&&v[3]||'long']});f.cres=R;f.cfp=k.cfp||{}}
   if(k.token){f.img=k.token;f.imgFromSheet=true;f.tokStyle=k.tokStyle==='figurine'?'figurine':'medaillon'}else if(k.portrait){f.img=k.portrait;f.imgFromSheet=true;f.tokStyle=(c&&c.tokStyle==='figurine'&&!c.imgFromSheet)?c.tokStyle:'medaillon'}else if(c&&c.imgFromSheet){f.img=null;f.imgFromSheet=false}
   if(c){const gr=(c.actions||[]).filter(a=>a.gr),po=c.poly;if(po){['name','ac','hpMax','speed','actions','saves','img','tokStyle','imgFromSheet'].forEach(q=>{if(q in f){po[q]=f[q];delete f[q]}})}Object.assign(c,f);if(!po){c.actions=c.actions.concat(gr);c.hpMax+=(c.ef||[]).reduce((s,e)=>s+(+(e.m&&e.m.hpMax)||0),0)}c.hp=Math.min(c.hp,c.hpMax);syncPets(k,c);return c}
   c=C({...f,hp:Math.max(0,Math.min(f.hpMax,k.hp==null?f.hpMax:+k.hp))});c.conds=(k.conds||[]).filter(x=>CONDS.includes(x));c.res={move:c.speed,action:true,bonus:true,reaction:true};
@@ -5342,6 +5425,7 @@ setTimeout(()=>{try{histRec()}catch(e){}},300);
 </script>
 
 <script src="sorts.js?v=2" defer></script>
+<script src="capacites.js?v=1" defer></script>
 <script src="tokens.js?v=1" defer></script>
 <script type="module" src="net.js"></script>
 </body>
