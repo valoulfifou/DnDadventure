@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='29/10-16h20';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='30/10-10h51';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -161,6 +161,19 @@ body.mode-st .top .round{visibility:hidden}
 .stview textarea{resize:vertical;min-height:90px;overflow:hidden}
 .stview textarea:focus,.stview input.in:focus,.stview select.in:focus{outline:2px solid #c9a45c;outline-offset:0;background:#fff}
 .stview textarea.big{min-height:260px}
+.stfmt{display:flex;align-items:center;gap:4px;margin:2px 0 5px}
+.stfmt button{border:1px solid #d9c9a5;background:#fffdf7;color:#6b5a3f;border-radius:7px;min-width:34px;height:30px;padding:0 7px;font:700 13px var(--f-display);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.stfmt button.on{background:#8a2a22;border-color:#8a2a22;color:#fff}
+.stfmt .sep{width:1px;height:18px;background:#d9c9a5;margin:0 4px}
+.stread{white-space:pre-wrap;word-wrap:break-word;border:1px solid #d9c9a5;background:#fffdf7;border-radius:10px;padding:10px 12px;font:16px/1.55 Georgia,'Times New Roman',serif;color:#2b2416;min-height:90px;cursor:text}
+.stread[hidden]{display:none}
+.stread a.npcl{color:#8a2a22;font-weight:700;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;cursor:pointer}
+.endfx{position:fixed;top:0;right:0;bottom:0;left:0;z-index:90;display:flex;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.55),rgba(0,0,0,.9));animation:endbg 4.2s ease both}
+.endfx b{display:block;font-family:var(--f-display);font-weight:400;font-size:9vw;letter-spacing:.06em;color:#f3dea0;text-align:center;text-shadow:0 2px 10px #000,0 0 30px rgba(243,222,160,.45);animation:endtitle 4.2s cubic-bezier(.2,.8,.2,1) both}
+.endfx i{display:block;height:3px;width:0;margin:2vw auto 0;background:linear-gradient(90deg,transparent,#f3dea0,transparent);animation:endline 4.2s ease both}
+@keyframes endbg{0%{opacity:0}12%{opacity:1}82%{opacity:1}100%{opacity:0}}
+@keyframes endtitle{0%{opacity:0;transform:scale(1.25);letter-spacing:.3em}16%{opacity:1;transform:scale(1);letter-spacing:.06em}82%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.97)}}
+@keyframes endline{0%,10%{width:0}32%{width:40vw}82%{width:40vw;opacity:1}100%{width:40vw;opacity:0}}
 .stchap{border:1px solid #e3d4b0;border-radius:12px;padding:10px 12px 12px;margin-bottom:12px;background:#fffdf7}
 .stchap .h{display:flex;align-items:center;gap:6px}
 .stchap .h input{flex:1;font:700 18px var(--f-display);border:0;background:transparent;color:#3a2a14;padding:6px 4px;min-width:0}
@@ -3346,6 +3359,7 @@ function renderEditor(){
   const selC=E.tool==='pions'&&ui.edSel?byId(ui.edSel):null,selO=E.tool==='pions'&&ui.edObj?S.objs.find(o=>o.id===ui.edObj):null,SZN=['','Moyenne','Grande','Très grande','Gigantesque'];
   const selBox=selC?`<div class="selbox"><b>${esc(selC.name)}</b> <small class="meta">sélectionné</small>
       <label class="fld">Taille : <b id="szL">${SZN[sz(selC)]}</b><input type="range" id="szR" min="1" max="4" step="1" value="${sz(selC)}"></label>
+      ${selC.img&&selC.tokStyle==='figurine'?`<label class="fld">Rotation : <b id="rtL">${((Math.round(selC.rot||0)%360)+360)%360}°</b><input type="range" id="rtR" min="0" max="360" step="5" value="${((Math.round(selC.rot||0)%360)+360)%360}"></label>`:''}
       <div class="quick"><button class="btn sm" id="sEd" type="button">Modifier la fiche</button>${selC.side!=='pj'?`<button class="btn sm" id="sHid" type="button">${selC.hid?'Révéler':'Cacher'}</button><button class="btn sm danger" id="sDel" type="button">Supprimer</button>`:''}</div></div>`
     :selO?`<div class="selbox"><b>${esc(selO.name)}</b> <small class="meta">sélectionné</small>
       <label class="fld">Taille : <b id="szL">×${selO.sc||1}</b><input type="range" id="szO" min="1" max="4" step="1" value="${selO.sc||1}"></label>
@@ -3366,7 +3380,8 @@ function renderEditor(){
   if($('#eFogR'))$('#eFogR').onchange=e=>{S.map.fogR=+e.target.value;FOGK='';save();render()};
   if($('#eFogA'))$('#eFogA').onclick=()=>{S.map.seen='1'.repeat(S.map.cols*S.map.rows);FOGCK='';save();render()};
   if($('#eFogN'))$('#eFogN').onclick=()=>{S.map.seen='';FOGK='';FOGCK='';save();render()};
-  if(selC){const r=$('#szR');r.oninput=()=>{const n=+r.value,old=selC.size||1;selC.size=n;if(!fits(selC,selC.x,selC.y,'end')){const f=findFree(selC);if(f){selC.x=f.x;selC.y=f.y}}$('#szL').textContent=SZN[n];renderBoard()};r.onchange=()=>{save();render()};
+  if(selC){const rt=$('#rtR');if(rt){rt.oninput=()=>{selC.rot=+rt.value;$('#rtL').textContent=rt.value+'°';renderBoard()};rt.onchange=()=>{save();render()}}
+    const r=$('#szR');r.oninput=()=>{const n=+r.value,old=selC.size||1;selC.size=n;if(!fits(selC,selC.x,selC.y,'end')){const f=findFree(selC);if(f){selC.x=f.x;selC.y=f.y}}$('#szL').textContent=SZN[n];renderBoard()};r.onchange=()=>{save();render()};
     $('#sEd').onclick=()=>editChar(selC,false);if($('#sHid'))$('#sHid').onclick=()=>{selC.hid=!selC.hid;save();render()};
     if($('#sDel'))$('#sDel').onclick=()=>{if(!confirm('Supprimer '+selC.name+' ?'))return;S.chars=S.chars.filter(c=>c!==selC);S.order=S.order.filter(x=>x!==selC.id);ui.edSel=null;save();render()}}
   if(selO){const r=$('#szO');r.oninput=()=>{const old=selO.sc||1,n=+r.value;selO.sc=n;const why=canPlaceObj(selO.type,selO.x,selO.y,ow(selO),oh(selO),selO);if(why){selO.sc=old;r.value=old;toast('Pas assez de place ici');return}$('#szL').textContent='×'+n;dirty();renderBoard()};r.onchange=()=>{save();render()};
@@ -3967,7 +3982,7 @@ function tvPublish(){const T=tvTarget();if(!T||!S.tvOn||TVM)return;tvPublishSfx(
   tvPublishSt(T)}
 function tvPublishSt(T){if(TVM||!S.tvOn)return;T=T||tvTarget();if(!T)return;const a=ui.act,sel=byId(ui.sel);
   const area=ui.mode==='target'&&sel&&a&&a.area>0&&ui.center?{x:ui.center.x,y:ui.center.y,r:Math.floor(a.area/CELL_M+1e-9),col:dcol(a),k:shapeOf(a)?areaKeys(sel,a,ui.center).join(';'):''}:null;
-  const st={an:S.anims||{},ak:S.animKw||null,round:S.round||0,cur:(S.turn>=0&&cur())?cur().id:'',order:S.turn>=0?S.order.filter(id=>{const c=byId(id);return c&&!c.hid&&(c.hp>0||c.side==='pj')}):[],sel:ui.sel||'',area,cam:(S.turn>=0&&S.tvAuto!==false&&cur())?autoCam(cur()):S.tvFollow?tvCam():null,snd:SD(),blk:ui.sb?1:0};
+  const st={an:S.anims||{},ak:S.animKw||null,round:S.round||0,cur:(S.turn>=0&&cur())?cur().id:'',order:S.turn>=0?S.order.filter(id=>{const c=byId(id);return c&&!c.hid&&(c.hp>0||c.side==='pj')}):[],sel:ui.sel||'',area,cam:(S.turn>=0&&S.tvAuto!==false&&cur())?autoCam(cur()):S.tvFollow?tvCam():null,snd:SD(),blk:ui.sb?1:0,idle:(S.tvIdle&&S.turn<0&&!S.tvNoIdle)?1:0};
   sbSync();const j=JSON.stringify(st);if(TVS.cache.st===j)return;TVS.cache.st=j;Promise.resolve(T.set('st',st)).catch(()=>{delete TVS.cache.st})}
 function autoCam(c){const m=S.map,w=Math.min(m.cols,Math.max(10,S.tvZoom||14)),h=Math.min(m.rows,Math.max(7,Math.round(w*9/16)));
   const s=sz(c);let x=c.x+s/2-w/2,y=c.y+s/2-h/2;x=Math.max(0,Math.min(m.cols-w,x));y=Math.max(0,Math.min(m.rows-h,y));return {x:Math.round(x*2)/2,y:Math.round(y*2)/2,w,h}}
@@ -3975,7 +3990,7 @@ function tvCam(){const mw=$('#mapwrap'),cs=S.map.cell,f=v=>Math.round(v*4)/4;ret
 function scheduleTV(){if(!S.tvOn||TVM)return;clearTimeout(TVS.timer);TVS.timer=setTimeout(tvPublish,120)}
 function tvFx(ev){if(TVM||!S.tvOn)return;const T=tvTarget();if(!T)return;clearTimeout(TVS.timer);tvPublish();
   const st=c=>c?{id:c.id,x:c.x,y:c.y,size:sz(c),name:c.name||'',side:c.side||''}:null;let o;
-  if(ev.walk)o={walk:ev.walk};else if(ev.turn)o={turn:ev.turn};else if(ev.sfx)o={sfx:ev.sfx};else if(ev.gone)o={gone:ev.gone};
+  if(ev.walk)o={walk:ev.walk};else if(ev.turn)o={turn:ev.turn};else if(ev.sfx)o={sfx:ev.sfx};else if(ev.gone)o={gone:ev.gone};else if(ev.end)o={end:1};
   else o={att:st(ev.att),a:ev.a?{kind:ev.a.kind||'none',range:ev.a.range||0,area:ev.a.area||0,dtype:ev.a.dtype||'',name:ev.a.name||''}:{kind:'none'},center:ev.center||null,burst:ev.burst||null,label:ev.label||null,
     hits:(ev.hits||[]).map(h=>({dm:h.dm||0,kind:h.kind||'hit',kill:!!h.kill,cs:st(h.c)}))};
   TVS.seq++;o.n=Date.now()*100+(TVS.seq%100);Promise.resolve(T.set('fx/'+(TVS.seq%16),o)).catch(()=>{})}
@@ -3995,11 +4010,12 @@ function tvModal(){const online=tvOnline();
     <div class="sect"><h3>Ce que montre la TV</h3><div class="seg"><button type="button" data-cam="0" class="${S.tvFollow?'':'on'}">Toute la carte</button><button type="button" data-cam="1" class="${S.tvFollow?'on':''}">Suivre ma vue</button></div>
       <p class="hint">« Suivre ma vue » : la TV cadre ce que tu vois sur la tablette (zoom et déplacement compris).</p>
       <label class="check"><input type="checkbox" id="tvAuto" ${S.tvAuto!==false?'checked':''}> Pendant le combat, zoomer automatiquement sur le personnage dont c’est le tour</label>
+      <label class="check"><input type="checkbox" id="tvIdle" ${S.tvNoIdle?'':'checked'}> Écran noir sur la TV entre la fin d’un combat et le suivant</label>
       <label class="fld">Zoom du suivi<select id="tvZoom">${[[10,'Proche'],[14,'Moyen'],[20,'Large']].map(([v,l])=>`<option value="${v}" ${(S.tvZoom||14)===v?'selected':''}>${l}</option>`).join('')}</select></label></div>
     <div class="row" style="justify-content:space-between"><button class="btn" id="tvOpen" type="button">Ouvrir l’écran TV ici</button><button class="btn primary" id="mOk" type="button">Fermer</button></div>`,el=>{
     try{if(online&&window.qrcode){const q=qrcode(0,'M');q.addData(direct);q.make();el.querySelector('#qr').innerHTML=`<img alt="QR code de l’écran TV" src="${q.createDataURL(6,2)}" style="width:160px;height:160px;image-rendering:pixelated;border-radius:8px;background:#fff">`}}catch(e){}
     el.querySelector('#tvOn').onchange=e=>{S.tvOn=e.target.checked;TVS.sfxSent={};setTimeout(sndAmbApply,50);TVS.cache={};TVS.imgs.clear();TVS.warned=0;save();if(S.tvOn)tvPublish()};
-    el.querySelector('#tvAuto').onchange=e=>{S.tvAuto=e.target.checked;save();tvPublishSt()};el.querySelector('#tvZoom').onchange=e=>{S.tvZoom=+e.target.value;save();tvPublishSt()};
+    el.querySelector('#tvAuto').onchange=e=>{S.tvAuto=e.target.checked;save();tvPublishSt()};el.querySelector('#tvIdle').onchange=e=>{S.tvNoIdle=!e.target.checked;if(S.tvNoIdle)S.tvIdle=false;save();tvPublishSt()};el.querySelector('#tvZoom').onchange=e=>{S.tvZoom=+e.target.value;save();tvPublishSt()};
     el.querySelectorAll('[data-cam]').forEach(b=>b.onclick=()=>{S.tvFollow=b.dataset.cam==='1';save();tvPublishSt();el.querySelectorAll('[data-cam]').forEach(x=>x.classList.toggle('on',x===b))});
     el.querySelector('#tvOpen').onclick=()=>{if(!S.tvOn){S.tvOn=true;el.querySelector('#tvOn').checked=true;save()}TVS.cache={};TVS.imgs.clear();tvPublish();window.open(direct,'tdc-tv')};
     el.querySelector('#mOk').onclick=close});
@@ -4034,7 +4050,7 @@ function tvApply(k,v){if(v==null)return;
     if(!TVS.got){TVS.got=true;tvMsg('')}dirty()}
   if(k==='objs'){S.objs=(Array.isArray(v)?v:Object.values(v)).map(o=>Object.assign({conds:[],saves:{},isObj:true,side:'objet',hidden:false},o));dirty()}
   if(k==='toks'){S.chars=(Array.isArray(v)?v:Object.values(v)).map(t=>({...t,img:t.img?'ref:'+t.img:null,bust:t.bust?'ref:'+t.bust:null,por:t.por?'ref:'+t.por:null,conds:t.conds||[],actions:[],res:{},slots:{},saves:{},death:{s:0,f:0}}))}
-  if(k==='st'){TVS.st=v;tvBlack(!!v.blk);if(v.an)S.anims=v.an;if(v.ak)S.animKw=v.ak;else delete S.animKw;if(v.snd){S.snd=v.snd;sndVol();sndAmbApply()}S.round=v.round||0;S.order=v.order||[];S.turn=v.cur?S.order.indexOf(v.cur):-1;ui.sel=v.sel||null}
+  if(k==='st'){TVS.st=v;tvBlack(!!(v.blk||v.idle));if(v.an)S.anims=v.an;if(v.ak)S.animKw=v.ak;else delete S.animKw;if(v.snd){S.snd=v.snd;sndVol();sndAmbApply()}S.round=v.round||0;S.order=v.order||[];S.turn=v.cur?S.order.indexOf(v.cur):-1;ui.sel=v.sel||null}
   tvRender()}
 function tvVidFetch(){const N=net(),k=S.map.vid;if(!N||!k||VIDS.has(k)||TVS.vidBusy===k)return;const P=p=>`tables/${TVM}/tv/${p}`;
   N.get(P('vidm')).then(m=>{if(!m||m.k!==k||!m.ok){setTimeout(tvVidFetch,3000);return}TVS.vidBusy=k;tvMsgVid('Chargement de la vidéo de la carte…');
@@ -4063,6 +4079,7 @@ function tvPlay(o){
   if(o.turn){const c=byId(o.turn);if(c)turnBanner(c);return}
   if(o.lvl){lvlCelebrate(o.lvl.n,o.lvl.lv,!!o.lvl.r,o.lvl.id);return}
   if(o.sfx){sfx(o.sfx);return}
+  if(o.end){combatEndFx();return}
   if(o.gone){o.gone.forEach(id=>{const e=tokEl(id);if(e)e.classList.add('gone')});return}
   const res=s=>s?(byId(s.id)||{...s,conds:[],res:{},isObj:true}):null;
   const ev={att:res(o.att)||{id:'?',x:0,y:0,size:1,conds:[]},a:o.a||{kind:'none'},center:o.center||null,burst:o.burst||null,label:o.label||null,hits:(o.hits||[]).map(h=>({...h,c:res(h.cs)})).filter(h=>h.c)};
@@ -4349,11 +4366,54 @@ function stSave(){const c=stCamp();if(c)c.upd=Date.now();if(!saveT)saveT=setTime
 const stDate=t=>{try{return new Date(t).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}catch(e){return ''}};
 const stTime=t=>{try{return new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}};
 const stToday=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
-function stGrow(t){t.style.height='auto';t.style.height=(t.scrollHeight+2)+'px'}
+function stGrow(t){const sv=[];for(let e=t.parentElement;e;e=e.parentElement)if(e.scrollTop)sv.push([e,e.scrollTop]);
+  const de=document.scrollingElement;if(de&&!sv.some(a=>a[0]===de))sv.push([de,de.scrollTop]);
+  const b=document.body,m=b.style.minHeight;b.style.minHeight=Math.max(b.offsetHeight,document.documentElement.scrollHeight)+'px';
+  t.style.height='auto';t.style.height=(t.scrollHeight+2)+'px';b.style.minHeight=m;
+  sv.forEach(a=>{if(Math.abs(a[0].scrollTop-a[1])>1)a[0].scrollTop=a[1]})}
+// garde le curseur visible quand le texte grandit (sans remonter en haut de la page)
+function stCaret(t){if(document.activeElement!==t)return;try{const cs=getComputedStyle(t),d=document.createElement('div'),pos=t.selectionStart;
+  ['fontFamily','fontSize','fontWeight','lineHeight','letterSpacing','textAlign','whiteSpace','wordWrap','paddingLeft','paddingRight','paddingTop','paddingBottom','borderLeftWidth','borderRightWidth','boxSizing'].forEach(k=>d.style[k]=cs[k]);
+  d.style.cssText+=';position:absolute;visibility:hidden;white-space:pre-wrap;word-wrap:break-word;top:0;left:-9999px;width:'+t.clientWidth+'px';d.style.width=t.offsetWidth+'px';
+  d.textContent=t.value.slice(0,pos);const sp=document.createElement('span');sp.textContent='\u200b';d.appendChild(sp);document.body.appendChild(d);
+  const lh=parseFloat(cs.lineHeight)||24,y=t.getBoundingClientRect().top+sp.offsetTop;d.remove();
+  const vh=window.innerHeight,pad=90;if(y+lh>vh-pad)window.scrollBy(0,y+lh-(vh-pad));else if(y<pad)window.scrollBy(0,y-pad)}catch(e){}}
+/* mise en forme des textes (taille, alignement) et noms de PNJ cliquables */
+const ST_FS=[13,14,16,18,20,24,28,32];
+const ST_AL=[['left','M1 1.5h14M1 4.5h9M1 7.5h14M1 10.5h9','Aligné à gauche'],['center','M1 1.5h14M4 4.5h8M1 7.5h14M4 10.5h8','Centré'],['right','M1 1.5h14M6 4.5h9M1 7.5h14M6 10.5h9','Aligné à droite'],['justify','M1 1.5h14M1 4.5h14M1 7.5h14M1 10.5h14','Justifié']];
+function stNames(){const c=stCamp(),L=[];if(c)(c.npcs||[]).forEach(n=>{const nm=(n.name||'').trim();if(nm.length<2)return;L.push([nm,n.id]);const f=nm.split(/\s+/)[0];if(f&&f!==nm&&f.length>=3)L.push([f,n.id])});return L.sort((a,b)=>b[0].length-a[0].length)}
+function stLinkHTML(txt,skip){const L=stNames().filter(x=>x[1]!==skip);if(!L.length)return null;let re;
+  try{re=new RegExp('(^|[^\\p{L}\\p{N}_])('+L.map(x=>x[0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')(?![\\p{L}\\p{N}_])','giu')}catch(e){return null}
+  const map={};L.forEach(x=>{const k=x[0].toLowerCase();if(!map[k])map[k]=x[1]});
+  const t=String(txt);let out='',last=0,hit=0,m;
+  while((m=re.exec(t))){const st=m.index+m[1].length;out+=esc(t.slice(last,st))+`<a class="npcl" href="#" data-npc="${map[m[2].toLowerCase()]}">${esc(m[2])}</a>`;last=st+m[2].length;hit++}
+  return hit?out+esc(t.slice(last)):null}
+function stEnhance(ta,obj,key){if(ta.dataset.fmt)return;ta.dataset.fmt='1';const fk=key+'_fs',ak=key+'_al';let rd=null;
+  const bar=document.createElement('div');bar.className='stfmt';
+  bar.innerHTML='<button type="button" data-f="-" title="Texte plus petit" aria-label="Texte plus petit">A−</button><button type="button" data-f="+" title="Texte plus grand" aria-label="Texte plus grand">A+</button><span class="sep"></span>'+
+    ST_AL.map(a=>`<button type="button" data-al="${a[0]}" title="${a[2]}" aria-label="${a[2]}"><svg viewBox="0 0 16 12" width="16" height="12"><path d="${a[1]}" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>`).join('');
+  ta.insertAdjacentElement('beforebegin',bar);
+  const paint=()=>{const fs=obj[fk]||0,al=obj[ak]||'';[ta,rd].forEach(e=>{if(!e)return;e.style.fontSize=fs?fs+'px':'';e.style.textAlign=al});
+    bar.querySelectorAll('[data-al]').forEach(b=>b.classList.toggle('on',b.dataset.al===(al||'left')));if(!ta.hidden)stGrow(ta)};
+  const sync=()=>{const h=document.activeElement===ta?null:stLinkHTML(ta.value,ui.stN);
+    if(h===null){if(rd)rd.hidden=true;ta.hidden=false;paint();return}
+    if(!rd){rd=document.createElement('div');rd.className='stread';rd.tabIndex=0;ta.insertAdjacentElement('afterend',rd);
+      rd.addEventListener('click',e=>{const a=e.target.closest('a.npcl');if(a){e.preventDefault();ui.stBack=ui.stN?ui.stBack:(ui.stS?'sess':'camp');ui.stN=a.dataset.npc;stRender();return}edit()});
+      rd.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('a')){e.preventDefault();edit()}})}
+    rd.innerHTML=h;rd.hidden=false;ta.hidden=true;paint()};
+  const edit=()=>{ta.hidden=false;if(rd)rd.hidden=true;paint();ta.focus();try{ta.setSelectionRange(ta.value.length,ta.value.length)}catch(e){}};
+  bar.addEventListener('pointerdown',e=>{if(e.target.closest('button'))e.preventDefault()});
+  bar.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.f){const cur=obj[fk]||16;let i=ST_FS.reduce((p,v,j)=>Math.abs(v-cur)<Math.abs(ST_FS[p]-cur)?j:p,0);i=Math.max(0,Math.min(ST_FS.length-1,i+(b.dataset.f==='+'?1:-1)));obj[fk]=ST_FS[i]===16?0:ST_FS[i]}
+    if(b.dataset.al){obj[ak]=b.dataset.al==='left'?'':b.dataset.al}
+    stSave();paint()});
+  ta.addEventListener('blur',()=>setTimeout(()=>{if(document.activeElement!==ta)sync()},150));
+  ta.addEventListener('input',()=>stCaret(ta));
+  sync()}
 function stPic(n){const u=n&&n.img?imgU(n.img):null;return u?`style="background-image:url('${u}')"`:''}
 const stInit=n=>esc((n.name||'?').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase());
 // lie un champ texte à une propriété d'objet (sans re-rendre la page)
-function stBind(el,sel,obj,key,after){el.querySelectorAll(sel).forEach(i=>{if(i.tagName==='TEXTAREA'){stGrow(i);requestAnimationFrame(()=>stGrow(i))}i.addEventListener('input',()=>{obj[key]=i.value;if(i.tagName==='TEXTAREA')stGrow(i);stSave();after&&after()})})}
+function stBind(el,sel,obj,key,after){el.querySelectorAll(sel).forEach(i=>{if(i.tagName==='TEXTAREA'){stGrow(i);requestAnimationFrame(()=>stGrow(i));stEnhance(i,obj,key)}i.addEventListener('input',()=>{obj[key]=i.value;if(i.tagName==='TEXTAREA')stGrow(i);stSave();after&&after()})})}
 function stRender(){const el=$('#stView');if(!el)return;const D=STD();
   const C=stCamp();if(ui.stC&&!C){ui.stC=ui.stS=ui.stN=null}
   if(!stCamp()){el.innerHTML=stListHTML();stListBind(el);return}
@@ -4477,6 +4537,12 @@ function stNpcBind(el){const c=stCamp(),n=stNpc();
 const SBD=()=>S.sb||(S.sb={pads:[],vol:.8});
 const SBP={};let SBRAF=0;
 const SBCOL=['#8a2a22','#b0562a','#a8841f','#4f7a2a','#2a7a6a','#2a5a8a','#4a3a8a','#7a2a6a','#5a5048','#2b2b30'];
+/* Fin de combat : animation sur la TV et les téléphones, puis écran noir sur la TV jusqu'au prochain combat */
+function combatEndNotify(){S.endSig={ts:Date.now()};tvFx({end:1});clearTimeout(TVS.idleT);
+  if(S.tvNoIdle){S.tvIdle=false;return}
+  TVS.idleT=setTimeout(()=>{if(S.turn<0){S.tvIdle=true;save();tvPublishSt()}},5200)}
+function combatEndFx(){document.querySelectorAll('.endfx').forEach(x=>x.remove());sfx('victoire');
+  const d=document.createElement('div');d.className='endfx';d.innerHTML='<div><b>Combat terminé</b><i></i></div>';document.body.appendChild(d);setTimeout(()=>d.remove(),4400)}
 function tvBlack(on){if(!TVM)return;let d=$('#tvblk');if(!d){d=document.createElement('div');d.id='tvblk';document.body.appendChild(d)}d.classList.toggle('on',on)}
 function sbPlaying(){return Object.keys(SBP).length>0}
 function sbLive(){const b=$('#tSb');if(b)b.classList.toggle('live',sbPlaying())}
@@ -4597,16 +4663,27 @@ function moveAlong(c,pts,costs,trap,skip){skip=skip||new Set();let k=-1,foes=[];
   setTimeout(()=>{if(seg.length>1)afterMove(c,seg,k>0?null:trap);
     if(k>0)setTimeout(()=>{foes.forEach(f=>skip.add(f.id));aooPrompt(c,foes,()=>{
       if(c.hp>0&&effSpeed(c)>0&&byId(c.id)){const rest=pts.slice(k-1),rc=costs.slice(k-1);ui.sel=c.id;moveAlong(c,rest,rc,trap,skip)}else{save();render()}})},seg.length>1?450:0)},wait)}
+const aooPhone=f=>{const N=net();return !!(N&&NETS.tid&&!NETS.passive&&typeof isOnline==='function'&&isOnline(f))};
+// demande envoyée au téléphone du joueur : il choisit lui-même d'attaquer ou non (puis lance ses vrais dés)
+function aooAsk(f,c,W,cb){const N=net();if(!N)return null;
+  const rid=N.push(TP('rolls/'+f.id),{kind:'aoo',label:'Attaque d’opportunité',tgt:c.name,ws:W.map(a=>({n:a.name,b:+a.bonus||0,d:String(a.dmg||'')})),status:'open',ts:Date.now()});
+  let un=null,done=false;const path=TP(`rolls/${f.id}/${rid}`);
+  un=N.on(path,v=>{if(done||!v||v.status!=='answered')return;done=true;try{un&&un()}catch(e){}N.remove(path).catch(()=>{});cb(v.choice==='no'?{no:1}:{w:+v.w||0})});
+  return {stop(){if(done)return;done=true;try{un&&un()}catch(e){}N.remove(path).catch(()=>{})}}}
 function aooPrompt(c,foes,cont){sfxRelay('aoo');let i=0;
   const next=()=>{if(i>=foes.length||c.hp<=0||!byId(c.id)){cont();return}const f=foes[i++];if(!aooAble(f,c)){next();return}const W=aooWeapons(f);
+    const remote=f.side==='pj'&&aooPhone(f);let rq=null;const stopRq=()=>{if(rq){rq.stop();rq=null}};
+    const no=()=>{stopRq();close();log(`${esc(f.name)} laisse passer ${esc(c.name)}.`);next()};
+    const yes=w=>{stopRq();const a={...w,cost:'reaction',name:w.name+' (opportunité)'};close();
+      log(`<b>Attaque d’opportunité</b> : ${esc(f.name)} frappe ${esc(c.name)} qui s’éloigne.`);AOO_CB=next;resolveSingle(f,a,c);
+      const cb=$('#modalRoot #mCancel');if(cb){const o=cb.onclick;cb.onclick=()=>{o&&o();AOO_CB=null;next()}}};
     modal(`<h2>Attaque d’opportunité</h2><div class="sub">${esc(c.name)} quitte la portée de ${esc(f.name)}</div>
-      <div class="how"><b>${esc(f.name)}</b> peut utiliser sa <b>réaction</b> pour attaquer ${esc(c.name)} avant qu’il ne s’éloigne.${f.side==='pj'?' Le joueur reçoit la demande de jet sur son téléphone.':''}</div>
+      <div class="how"><b>${esc(f.name)}</b> peut utiliser sa <b>réaction</b> pour attaquer ${esc(c.name)} avant qu’il ne s’éloigne.${remote?' <br>📱 La demande est partie sur le téléphone du joueur : il choisit lui-même d’attaquer ou non, puis lance ses dés. Tu peux aussi décider à sa place avec les boutons ci-dessous.':(f.side==='pj'?' Le joueur reçoit la demande de jet sur son téléphone.':'')}</div>
       ${W.length>1?`<label class="fld">Arme<select id="aW">${W.map((a,j)=>`<option value="${j}">${esc(a.name)} (${sgn(+a.bonus)}, ${esc(a.dmg)})</option>`).join('')}</select></label>`:`<p class="hint">Arme : <b>${esc(W[0].name)}</b> (${sgn(+W[0].bonus)} au toucher, ${esc(W[0].dmg)})</p>`}
-      <div class="row"><button class="btn" id="aNo" type="button">Laisser passer</button><button class="btn primary" id="aYes" type="button">Attaquer</button></div>`,el=>{
-      el.querySelector('#aNo').onclick=()=>{close();log(`${esc(f.name)} laisse passer ${esc(c.name)}.`);next()};
-      el.querySelector('#aYes').onclick=()=>{const w=W[+(el.querySelector('#aW')?.value||0)],a={...w,cost:'reaction',name:w.name+' (opportunité)'};close();
-        log(`<b>Attaque d’opportunité</b> : ${esc(f.name)} frappe ${esc(c.name)} qui s’éloigne.`);AOO_CB=next;resolveSingle(f,a,c);
-        const cb=$('#modalRoot #mCancel');if(cb){const o=cb.onclick;cb.onclick=()=>{o&&o();AOO_CB=null;next()}}}})};
+      <div class="row"><button class="btn" id="aNo" type="button">${remote?'Laisser passer à sa place':'Laisser passer'}</button><button class="btn primary" id="aYes" type="button">${remote?'Attaquer à sa place':'Attaquer'}</button></div>`,el=>{
+      el.querySelector('#aNo').onclick=no;
+      el.querySelector('#aYes').onclick=()=>yes(W[+(el.querySelector('#aW')?.value||0)]);
+      if(remote)rq=aooAsk(f,c,W,ans=>{rq=null;if(ans.no)no();else yes(W[Math.max(0,Math.min(W.length-1,ans.w||0))])})})};
   next()}
 
 /* ---------- Ambiances multiples + ambiances importées ---------- */
@@ -4788,7 +4865,7 @@ function toSpawns(){let n=0;S.chars.filter(c=>c.side==='pj').forEach(c=>{const s
 /* ---------- Initiative et tours ---------- */
 $('#bEdit').onclick=()=>ui.ed?closeEditor():openEditor();
 $('#bInit').onclick=()=>{
-  if(S.turn>=0){if(!confirm('Terminer le combat en cours ?'))return;S.order=[];S.turn=-1;S.round=0;ui.mode=null;ui.act=null;ui.center=null;log('Fin du combat.');spCombatEnd();if(MD().auto&&MUS.mood==='combat'){if(!musMood('exploration'))musStop()}mvpAward();save();render();toast('Combat terminé');if((S.kills||[]).length&&!S.testing)setTimeout(rewardModal,400);return}
+  if(S.turn>=0){if(!confirm('Terminer le combat en cours ?'))return;S.order=[];S.turn=-1;S.round=0;ui.mode=null;ui.act=null;ui.center=null;log('Fin du combat.');combatEndNotify();spCombatEnd();if(MD().auto&&MUS.mood==='combat'){if(!musMood('exploration'))musStop()}mvpAward();save();render();toast('Combat terminé');if((S.kills||[]).length&&!S.testing)setTimeout(rewardModal,400);return}
   const list=S.chars.filter(c=>c.hp>0||c.side==='pj');
   modal(`<h2>Jet d’initiative</h2><div class="sub">Chacun lance 1d20 et saisit le dé. L’app ajoute le bonus et trie l’ordre.</div>
     <div>${list.map(c=>`<div class="tgtrow"><div><b>${esc(c.name)}</b><div class="meta">${c.side==='pj'?'PJ':'Ennemi'} · bonus ${sgn(+c.initB)}</div></div><span class="meta">d20</span><input type="number" inputmode="numeric" min="1" max="20" data-i="${c.id}"></div>`).join('')}</div>
@@ -5128,7 +5205,7 @@ function publishNet(){const N=net();if(!N||!NETS.tid||NETS.passive)return;
   const st=c=>c.hp<=0?'à terre':c.hp<c.hpMax/2?'en sang':c.hp<c.hpMax?'blessé':'indemne';
   const view={name:(NETS.meta&&NETS.meta.name)||'',round:S.round||0,cur:(S.turn>=0&&cur())?cur().id:'',
     order:S.order.map(id=>{const c=byId(id);return c&&!c.hid?{cid:c.id,name:c.name,side:c.side,color:c.color,init:c.initTot??0,hp:c.side==='pj'?c.hp:-1,hpMax:c.side==='pj'?c.hpMax:-1,st:st(c)}:null}).filter(Boolean),
-    log:S.log.slice(-12).map(l=>({r:l.r,t:stripHtml(l.t)})),rest:S.restSig||null};
+    log:S.log.slice(-12).map(l=>({r:l.r,t:stripHtml(l.t)})),rest:S.restSig||null,end:S.endSig||null};
   const j=JSON.stringify(view);if(j!==NETS.viewJ){NETS.viewJ=j;N.set(TP('view'),view).catch(()=>{})}
   S.chars.forEach(c=>{if(!playerOf(c))return;const L=liveOf(c),lj=JSON.stringify(L);if(NETS.cache[c.id]!==lj){NETS.cache[c.id]=lj;N.set(TP('live/'+c.id),L).catch(()=>{})}});
   try{turnPublish();pmapPublish()}catch(e){console.error(e)}
