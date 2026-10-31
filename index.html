@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='31/10-10h51';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='31/10-11h32';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -3988,7 +3988,7 @@ function tvPublish(){const T=tvTarget();if(!T||!S.tvOn||TVM)return;tvPublishSfx(
   tvPublishSt(T)}
 function tvPublishSt(T){if(TVM||!S.tvOn)return;T=T||tvTarget();if(!T)return;const a=ui.act,sel=byId(ui.sel);
   const area=ui.mode==='target'&&sel&&a&&a.area>0&&ui.center?{x:ui.center.x,y:ui.center.y,r:Math.floor(a.area/CELL_M+1e-9),col:dcol(a),k:shapeOf(a)?areaKeys(sel,a,ui.center).join(';'):''}:null;
-  const st={an:S.anims||{},ak:S.animKw||null,round:S.round||0,cur:(S.turn>=0&&cur())?cur().id:'',order:S.turn>=0?S.order.filter(id=>{const c=byId(id);return c&&!c.hid&&(c.hp>0||c.side==='pj')}):[],sel:ui.sel||'',area,cam:(S.turn>=0&&S.tvAuto!==false&&cur())?autoCam(cur()):S.tvFollow?tvCam():null,snd:SD(),blk:ui.sb?1:0,idle:(S.tvIdle&&S.turn<0&&!S.tvNoIdle)?1:0};
+  const st={an:S.anims||{},ak:S.animKw||null,round:S.round||0,cur:(S.turn>=0&&cur())?cur().id:'',order:S.turn>=0?S.order.filter(id=>{const c=byId(id);return c&&!c.hid&&(c.hp>0||c.side==='pj')}):[],sel:ui.sel||'',area,cam:(S.turn>=0&&S.tvAuto!==false&&cur())?autoCam(cur()):S.tvFollow?tvCam():null,snd:SD(),blk:(ui.sb&&S.turn<0)?1:0,idle:(S.tvIdle&&S.turn<0&&!S.tvNoIdle)?1:0};
   sbSync();const j=JSON.stringify(st);if(TVS.cache.st===j)return;TVS.cache.st=j;Promise.resolve(T.set('st',st)).catch(()=>{delete TVS.cache.st})}
 function autoCam(c){const m=S.map,w=Math.min(m.cols,Math.max(10,S.tvZoom||14)),h=Math.min(m.rows,Math.max(7,Math.round(w*9/16)));
   const s=sz(c);let x=c.x+s/2-w/2,y=c.y+s/2-h/2;x=Math.max(0,Math.min(m.cols-w,x));y=Math.max(0,Math.min(m.rows-h,y));return {x:Math.round(x*2)/2,y:Math.round(y*2)/2,w,h}}

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='31/10-10h51';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='31/10-11h32';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -10173,7 +10173,7 @@ var __values = (this && this.__values) || function(o) {
             return;
         var a = ui.act, sel = byId(ui.sel);
         var area = ui.mode === 'target' && sel && a && a.area > 0 && ui.center ? { x: ui.center.x, y: ui.center.y, r: Math.floor(a.area / CELL_M + 1e-9), col: dcol(a), k: shapeOf(a) ? areaKeys(sel, a, ui.center).join(';') : '' } : null;
-        var st = { an: S.anims || {}, ak: S.animKw || null, round: S.round || 0, cur: (S.turn >= 0 && cur()) ? cur().id : '', order: S.turn >= 0 ? S.order.filter(function (id) { var c = byId(id); return c && !c.hid && (c.hp > 0 || c.side === 'pj'); }) : [], sel: ui.sel || '', area: area, cam: (S.turn >= 0 && S.tvAuto !== false && cur()) ? autoCam(cur()) : S.tvFollow ? tvCam() : null, snd: SD(), blk: ui.sb ? 1 : 0, idle: (S.tvIdle && S.turn < 0 && !S.tvNoIdle) ? 1 : 0 };
+        var st = { an: S.anims || {}, ak: S.animKw || null, round: S.round || 0, cur: (S.turn >= 0 && cur()) ? cur().id : '', order: S.turn >= 0 ? S.order.filter(function (id) { var c = byId(id); return c && !c.hid && (c.hp > 0 || c.side === 'pj'); }) : [], sel: ui.sel || '', area: area, cam: (S.turn >= 0 && S.tvAuto !== false && cur()) ? autoCam(cur()) : S.tvFollow ? tvCam() : null, snd: SD(), blk: (ui.sb && S.turn < 0) ? 1 : 0, idle: (S.tvIdle && S.turn < 0 && !S.tvNoIdle) ? 1 : 0 };
         sbSync();
         var j = JSON.stringify(st);
         if (TVS.cache.st === j)
