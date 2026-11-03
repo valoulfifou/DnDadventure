@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-16h45';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-17h30';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -329,6 +329,13 @@ a.npcl.lieul{color:#2a5a3a}
 .jent .check small{color:var(--muted)}
 .jent textarea{width:100%;box-sizing:border-box;margin-top:6px;border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;background:#fffdf7;font:15px/1.45 Georgia,serif;resize:vertical}
 .jent.on{background:rgba(120,170,100,.07)}
+
+.pgcard{border:1px solid #d9c9a5;background:#fffdf7;border-radius:12px;padding:12px 14px;margin:10px 0}
+.pgname{display:flex;align-items:center;gap:8px}.pgname b{font:700 24px var(--f-display);color:#3a2a14;flex:1}
+.pgsub{color:#8a7350;font-size:14px;margin:-2px 0 6px}
+.pgl{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid #eadcbc}
+.pgk{width:112px;flex:none;font:700 11px var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:#9a8460}
+.pgv{flex:1;font:15px/1.4 Georgia,serif;color:#2b2416}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -4600,7 +4607,7 @@ function stTocBuild(){const T=$('#stToc');if(!T)return;const c=stCamp();if(!c)re
   if(PL)h=sec('play','▶','En cours : session '+PL.n,null,btn(PL.title||'Session '+PL.n,'l1',()=>stOpen('sess',PL.id),ui.stS===PL.id)+scBtns(PL),null).replace('<details data-sec="play" ','<details data-sec="play" open ')+h;
   h+=sec('sess','📅','Sessions',(c.sess||[]).length,(c.sess||[]).slice().sort((a,b)=>a.n-b.n).map(x=>btn(x.n+' · '+(x.title||'Session '+x.n)+(c.play===x.id?' ▶':''),'l1',()=>stOpen('sess',x.id),ui.stS===x.id)+(x.id===c.play?'':scBtns(x))).join(''),'Nouvelle session');
   if(stHasScen(c))h+=sec('scen','🎬','Ancien scénario',(c.scen||[]).length,sb,null);
-  h+=sec('npc','👤','PNJ',(c.npcs||[]).length,(c.npcs||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(n=>btn(n.name,'l1',()=>stOpen('npc',n.id),ui.stN===n.id,`<span class="av" ${stPic(n)}>${n.img?'':stInit(n)}</span>`)).join(''),'Nouveau PNJ');
+  h+=sec('npc','👤','PNJ',(c.npcs||[]).length,(c.npcs||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(n=>btn(n.name,'l1',()=>stOpen('npc',n.id),ui.stN===n.id,`<span class="av" ${stPic(n)}>${n.img?'':stInit(n)}</span>`)).join(''),'Nouveau PNJ').replace('</div></details>',`<button type="button" class="add" data-g="${go.push(()=>npcGen(ui.stS?{sess:ui.stS}:ui.stL?{place:(stLieu()||{}).name||''}:{}))-1}">🎲 PNJ express</button></div></details>`);
   h+=sec('lieu','📍','Lieux',(c.places||[]).length,(c.places||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(p=>btn(p.name,'l1',()=>stOpen('lieu',p.id),ui.stL===p.id,`<span class="av" ${stPic(p)}>${p.img?'':'📍'}</span>`)).join(''),'Nouveau lieu');
   h+=`<button type="button" class="add" data-g="${go.push(()=>stOpen('camp',null,'notes'))-1}" style="margin-top:8px;border:0;background:none;cursor:pointer;padding:6px 4px">📜 Notes & lore</button>`;
   B.innerHTML=h;
@@ -4638,7 +4645,7 @@ function stLieuHTML(){const c=stCamp(),p=stLieu(),k=stFold(p.name.trim()),N=(c.n
       <div class="stact"><button class="btn ghost sm" type="button" id="lpDel">Supprimer le lieu</button></div></div>
     <div><input class="sttitle" id="lpN" value="${esc(p.name)}" aria-label="Nom du lieu" style="width:100%">
       <label class="fl" for="lp_kind">Type</label><input class="in" id="lp_kind" data-lk="kind" value="${esc(p.kind||'')}" placeholder="Village, auberge, forêt, donjon…">
-      <label class="fl">PNJ présents</label><div class="stchips">${N.map(n=>`<span class="stchip" data-open="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}</span>`).join('')||'<span class="hint">Aucun PNJ ici : dans une fiche PNJ, mets ce nom dans « Lieu ».</span>'}</div>
+      <label class="fl">PNJ présents</label><div class="stchips"><button type="button" class="btn sm" id="lpGen">🎲 PNJ improvisé ici</button>${N.map(n=>`<span class="stchip" data-open="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}</span>`).join('')||'<span class="hint">Aucun PNJ ici : dans une fiche PNJ, mets ce nom dans « Lieu ».</span>'}</div>
       ${ta('desc','Description (MJ)','Ce que les joueuses voient, entendent, sentent…','big')}${ta('secret','Secrets (MJ seulement)','Pièges, trésors cachés, passages secrets…','secret')}${ta('notes','Notes (MJ)','Ce qui s’y est passé…')}
       <div class="metbox"><label class="check"><input type="checkbox" id="lpMet" ${p.met?'checked':''}> 👁 Découvert par les joueuses <small>(il apparaît dans leur journal avec son image, son type et le texte ci-dessous)</small></label>${ta('pub','Ce que les joueuses en savent','Ce qu’elles ont appris sur ce lieu… (visible sur leur téléphone)')}</div>
     </div></div></div>`}
@@ -4646,6 +4653,7 @@ function stLieuBind(el){const c=stCamp(),p=stLieu();stCrumbBind(el);
   el.querySelector('#lpMet').onchange=e=>{p.met=e.target.checked;stSave();scheduleNet();toast(p.met?'👁 '+p.name+' apparaît chez les joueuses':p.name+' est caché aux joueuses')};
   stBind(el,'#lpN',p,'name');el.querySelectorAll('[data-lk]').forEach(i=>stBind(el,`#${i.id}`,p,i.dataset.lk));
   el.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>stOpen('npc',b.dataset.open));
+  el.querySelector('#lpGen').onclick=()=>npcGen({place:p.name});
   el.querySelector('#lpImg').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const u=await processImg(f,false);const id='p'+uid();IMGS.set(id,u);IDB.put(id,u);p.img='ref:'+id;stSave();ui.stKeep=1;stRender()}catch(er){toast('Image illisible')}};
   el.querySelector('#lpDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer ?';return}c.places=c.places.filter(x=>x.id!==p.id);ui.stL=null;ui.stTab='lieux';stSave();stRender()}}
 
@@ -4784,6 +4792,50 @@ function storyPub(){const D=S.story;if(!D||!(D.camps||[]).length)return null;con
   return {name:c.name||'',sess:(c.sess||[]).filter(x=>x.share!==false&&String(x.sum||'').trim()).sort((a,b)=>b.n-a.n).map(x=>({n:x.n,t:x.title||'',d:x.date||'',s:String(x.sum).slice(0,6000)})),
     npcs:(c.npcs||[]).filter(n=>n.met).sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(n=>({id:n.id,n:n.name,r:n.role||'',p:n.place||'',a:n.att||'neutre',k:String(n.pub||'').slice(0,2000),i:stThumb(n.img)||''})),
     lieux:(c.places||[]).filter(p=>p.met).sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(p=>({id:p.id,n:p.name,y:p.kind||'',k:String(p.pub||'').slice(0,2000),i:stThumb(p.img)||''}))}}
+/* ---------- Générateur de PNJ express ---------- */
+const PG={
+ races:{humain:'Humain',nain:'Nain',elfe:'Elfe',halfelin:'Halfelin',gnome:'Gnome','demi-elfe':'Demi-elfe','demi-orque':'Demi-orque',tieffelin:'Tieffelin','drakeide':'Drakéide'},
+ n:{
+  humain:{f:'Aline Brunehaut Clémence Edwige Élise Gisèle Hélène Isaure Jehanne Liesel Mahaut Margot Odile Perrine Rosalinde Sibylle Ysolde Bertille Albane Ombeline Maëlle Gaëlle',m:'Aldric Bastien Bertrand Corentin Eudes Gauthier Guilhem Hugues Jocelyn Lothaire Mathurin Odon Renaud Thibault Yvon Anselme Florent Gaspard Barnabé Clovis Enguerrand Godefroy',s:'Brisefer Calvel Dumoulin Fauconnier Grandpré Lachaux Morvan Rocheblanche Tisserand Valcourt Verdier Boisvert Fontaine Malbec Corbière Hautevent Pierrefeu Ventadour Roncière Chênebrun'},
+  nain:{f:'Brynja Dagny Eldrun Gunnlod Hilde Kathra Ragna Thorgrid Vistra Helja Audhild Bardryn Gurdis',m:'Torvald Durgan Ulfgar Rurik Baern Eberk Orsik Vondal Harbek Fargrim Brottor Kildrak Tordek',s:'Barbe-de-Fer Brisepierre Cœur-d’Enclume Forgefeu Martelroc Poing-de-Granit Fendroc Mine-Profonde Hache-Rouge'},
+  elfe:{f:'Aelith Caelynn Ilyana Lianthe Meriele Naivara Sariel Thessaly Valanthe Yllara Shava Keyleth Adrie',m:'Aelar Caladrel Erevan Galinndan Ivellios Mirandil Quarion Riardon Soveliss Thamior Varis Peren Heian',s:'Amakiir Galanodel Ilphelkiir Liadon Meliamne Siannodel Xiloscient Feuillelune Chantebrise Étoile-d’Argent'},
+  halfelin:{f:'Andry Bree Callie Kithri Lavinia Merla Nedda Seraphina Verna Rosie Pervenche Myrtille',m:'Alton Cade Eldon Garret Lyle Merric Milo Osborn Roscoe Wellby Perrin Corrin',s:'Brindoux Feuillethé Hautcolline Bonbaril Piedléger Sous-la-Colline Tendrefeuille Pommerond Bouclebrune'},
+  gnome:{f:'Bimpnottin Ellyjobell Nissa Orla Roywyn Zanna Carlin Lilli Ella',m:'Alston Boddynock Dimble Fonkin Glim Orryn Wrenn Zook Frug Gerbo',s:'Beren Daergel Garrick Nackle Timbers Turen Rouage Tintebrique Ressortfol'},
+  'demi-orque':{f:'Baggi Emen Engong Kansif Myev Neega Ovak Ownka Sutha Vola Yevelda',m:'Dench Feng Gell Henk Holg Imsh Keth Krusk Ront Shump Thokk Mhurren',s:'du clan Croc-Brisé|du clan Hurlevent|du clan Os-Rouge|du clan Mâchoire-Noire|du clan Cendre-Grise'},
+  tieffelin:{f:'Akta Bryseis Criella Damaia Kallista Lerissa Nemeia Orianna Ea Makaria',m:'Akmenos Barakas Damakos Ekemon Kairon Mordai Skamos Leucis Pelaios',s:'Espoir|Chant|Ferveur|Tourment|Pénitence|Braise|Silence|Promesse'},
+  drakeide:{f:'Akra Biri Daar Harann Kava Sora Thava Mishann Uadjit',m:'Arjhan Balasar Donaar Ghesh Kriv Medrash Nadarr Torinn Rhogar Pandjed',s:'Clethtinthiallor Kerrhylon Myastan Nemmonis Daardendrian Prexijandilin'}},
+ roles:[['aubergiste','aubergiste','Roturier'],['forgeron','forgeronne','Roturier'],['marchand ambulant','marchande ambulante','Roturier'],['garde du village','garde du village','Garde'],['capitaine de la garde','capitaine de la garde','Vétéran'],['prêtre','prêtresse','Prêtre'],['acolyte du temple','acolyte du temple','Acolyte'],['noble de passage','noble de passage','Noble'],['bourgmestre','bourgmestre','Noble'],['bandit','bandit','Bandit'],['malfrat des docks','malfrate des docks','Malfrat'],['espion','espionne','Espion'],['chasseur','chasseuse','Éclaireur'],['guide forestier','guide forestière','Éclaireur'],['herboriste','herboriste','Roturier'],['fermier','fermière','Roturier'],['mendiant','mendiante','Roturier'],['mage itinérant','mage itinérante','Mage'],['ménestrel','ménestrelle','Roturier'],['mercenaire','mercenaire','Vétéran'],['cultiste','cultiste','Cultiste'],['ermite druide','ermite druidesse','Druide'],['chevalier errant','chevalière errante','Chevalier'],['pêcheur','pêcheuse','Roturier'],['apothicaire','apothicaire','Roturier'],['contrebandier','contrebandière','Bandit'],['palefrenier','palefrenière','Roturier'],['scribe','scribe','Roturier'],['fossoyeur','fossoyeuse','Roturier'],['batelier','batelière','Roturier']],
+ look:['une cicatrice qui barre la joue','il lui manque une dent de devant','des avant-bras couverts de tatouages','de longues tresses ornées de perles','un bandeau sur l’œil','le visage couvert de taches de rousseur','très grand·e et voûté·e','une bague à chaque doigt','une odeur de fumée et de cuir','des vêtements rapiécés mais propres','des habits élégants mais usés','le crâne rasé','des cheveux argentés avant l’âge','des mains qui ne restent jamais tranquilles','des bottes couvertes de boue','une voix grave qui ne va pas avec sa silhouette','un sourire figé','des yeux de couleurs différentes','une brûlure ancienne sur la main','un chapeau à large bord','un collier de dents d’animaux','les ongles noirs de terre','un nez cassé plusieurs fois','une capuche toujours relevée'],
+ pers:[['jovial','joviale'],['méfiant','méfiante'],['avare','avare'],['curieux','curieuse'],['timide','timide'],['arrogant','arrogante'],['généreux','généreuse'],['superstitieux','superstitieuse'],['bavard','bavarde'],['colérique','colérique'],['mélancolique','mélancolique'],['flatteur','flatteuse'],['naïf','naïve'],['rancunier','rancunière'],['pieux','pieuse'],['cynique','cynique'],['nerveux','nerveuse'],['protecteur','protectrice'],['moqueur','moqueuse'],['fier','fière']],
+ tic:['parle très fort, comme s’il y avait du vent','chuchote même quand ce n’est pas nécessaire','finit chaque phrase par « hein ? »','a un proverbe pour chaque situation','rit nerveusement au mauvais moment','appelle tout le monde « mon petit »','tapote sans arrêt la table','mâchonne une pipe éteinte','bégaye dès qu’il ou elle ment','parle de soi à la troisième personne','invoque les dieux toutes les deux phrases','zézaie légèrement','a une voix rauque de fumeur','compte tout à voix haute','répète la dernière phrase de son interlocuteur','soupire avant de répondre','marchande même les compliments','raconte toujours la même histoire de sa jeunesse'],
+ goal:['rembourser une dette avant qu’il ne soit trop tard','retrouver un proche disparu','protéger sa famille coûte que coûte','devenir riche et quitter la région','se venger de celui qui l’a trahi·e','obtenir la reconnaissance du seigneur local','trouver un remède pour un enfant malade','servir son dieu jusqu’au bout','simplement rester en vie','racheter une faute passée','retrouver un objet de famille volé','être enfin pris·e au sérieux','fuir un mariage arrangé','découvrir ce qui se cache dans la forêt'],
+ secret:['doit beaucoup d’argent à des gens dangereux','a vu quelque chose d’étrange la nuit dernière','renseigne une guilde de voleurs','vole un peu dans la caisse chaque soir','est un·e noble déchu·e qui se cache','connaît un passage secret','protège un parent devenu monstre','porte une malédiction','travaille sans le savoir pour le grand méchant','cache un objet magique sous son lit','n’est pas la personne qu’il ou elle prétend être','a déjà tué quelqu’un, par accident','est épris·e de quelqu’un d’interdit','entend une voix la nuit']};
+const pgPick=L=>L[Math.floor(Math.random()*L.length)];
+const pgList=s=>s.includes('|')?s.split('|'):s.split(' ');
+function pgName(r,g){const R=r==='demi-elfe'?pgPick(['humain','elfe']):r,D=PG.n[R],first=pgPick(pgList(D[g])),last=pgPick(pgList(D.s));return R==='tieffelin'&&Math.random()<.5?last:(R==='demi-orque'?first+' '+last:first+' '+last)}
+function pgRoll(o,keep){const r=o.race||pgPick(Object.keys(PG.races)),g=o.g||pgPick(['f','m']),ro=o.role!=null&&o.role!==''?PG.roles[+o.role]:pgPick(PG.roles),k=keep||{};
+  const P=pgPick(PG.pers);return {race:r,g,role:ro[g==='f'?1:0],stat:ro[2],name:k.name||pgName(r,g),look:k.look||pgPick(PG.look).replace(/·e/g,g==='f'?'e':'').replace(/il ou elle/g,g==='f'?'elle':'il'),
+    pers:k.pers||P[g==='f'?1:0],tic:k.tic||pgPick(PG.tic).replace(/il ou elle/g,g==='f'?'elle':'il').replace(/·e/g,g==='f'?'e':''),goal:k.goal||pgPick(PG.goal).replace(/·e/g,g==='f'?'e':''),secret:k.secret||pgPick(PG.secret).replace(/·e/g,g==='f'?'e':'').replace(/un·e/g,g==='f'?'une':'un').replace(/il ou elle/g,g==='f'?'elle':'il').replace(/·se/g,g==='f'?'se':'')}}
+function npcGen(opt){opt=opt||{};const c=stCamp();if(!c){toast('Ouvre d’abord une campagne');return}const O=npcGen.o||(npcGen.o={race:'',g:'',role:''});let R=pgRoll(O);
+  const sel=(id,lbl,cur,L)=>`<label class="fld" style="flex:1;min-width:120px">${lbl}<select id="${id}"><option value="">Au hasard</option>${L.map(([v,t])=>`<option value="${v}" ${String(cur)===String(v)?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
+  const line=(k,lbl)=>`<div class="pgl"><span class="pgk">${lbl}</span><span class="pgv" data-v="${k}"></span><button type="button" class="stib" data-re="${k}" aria-label="Relancer : ${lbl}">🎲</button></div>`;
+  modal(`<h2>🎲 PNJ express</h2><div class="sub">Un PNJ improvisé en un toucher. Relance ce qui ne te plaît pas.</div>
+    <div class="row" style="gap:8px;flex-wrap:wrap">${sel('pgR','Race',O.race,Object.entries(PG.races))}${sel('pgG','Genre',O.g,[['f','Femme'],['m','Homme']])}${sel('pgO','Métier',O.role,PG.roles.map((r,i)=>[i,r[0]+(r[1]!==r[0]?' / '+r[1]:'')]))}</div>
+    <div class="pgcard"><div class="pgname"><b data-v="name"></b><button type="button" class="stib" data-re="name" aria-label="Autre nom">🎲</button></div><div class="pgsub" data-v="sub"></div>
+      ${line('look','Apparence')}${line('pers','Caractère')}${line('tic','Tic de langage')}${line('goal','Motivation')}${line('secret','Secret (MJ)')}</div>
+    ${opt.sess?`<label class="check"><input type="checkbox" id="pgS" checked> Ajouter aux PNJ de cette session</label>`:''}
+    <div class="row" style="flex-wrap:wrap"><button class="btn" type="button" id="mCancel">Annuler</button><button class="btn" type="button" id="pgAll">🎲 Tout relancer</button><button class="btn" type="button" id="pgOpen">Ajouter et ouvrir la fiche</button><button class="btn primary" type="button" id="mOk">Ajouter à la campagne</button></div>`,el=>{
+    const show=()=>{el.querySelector('[data-v=name]').textContent=R.name;el.querySelector('[data-v=sub]').textContent=`${PG.races[R.race]} · ${R.role}`;['look','pers','tic','goal','secret'].forEach(k=>{el.querySelector(`[data-v=${k}]`).textContent=R[k]})};show();
+    const opts=()=>{O.race=el.querySelector('#pgR').value;O.g=el.querySelector('#pgG').value;O.role=el.querySelector('#pgO').value};
+    ['#pgR','#pgG','#pgO'].forEach(q=>el.querySelector(q).onchange=()=>{opts();R=pgRoll(O);show()});
+    el.querySelector('#pgAll').onclick=()=>{opts();R=pgRoll(O);show()};
+    el.querySelectorAll('[data-re]').forEach(b=>b.onclick=()=>{const k=b.dataset.re,keep=Object.assign({},R);delete keep[k];const n=pgRoll({race:R.race,g:R.g,role:PG.roles.findIndex(r=>r[0]===R.role||r[1]===R.role)},keep);R=Object.assign({},R,{[k]:n[k]});show()});
+    const add=open=>{c.npcs=c.npcs||[];const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+      const n={id:'n'+uid(),name:R.name,role:cap(R.role),place:opt.place||'',att:'neutre',look:cap(R.look)+'.',pers:cap(R.pers)+' ; '+R.tic+'.',goal:cap(R.goal)+'.',secret:cap(R.secret)+'.',notes:'',stat:R.stat,race:PG.races[R.race]};
+      c.npcs.push(n);const x=opt.sess&&(c.sess||[]).find(z=>z.id===opt.sess);if(x&&el.querySelector('#pgS')&&el.querySelector('#pgS').checked)(x.npcs||(x.npcs=[])).push(n.id);
+      stSave();close();toast('👤 '+n.name+' ajouté·e à la campagne');if(open)stOpen('npc',n.id);else{ui.stKeep=1;stRender()}};
+    el.querySelector('#mCancel').onclick=close;el.querySelector('#mOk').onclick=()=>add(false);el.querySelector('#pgOpen').onclick=()=>add(true)})}
+
 /* ---------- Histoire : campagnes, sessions, scénario, PNJ, notes ---------- */
 const STD=()=>S.story||(S.story={camps:[]});
 const stCamp=()=>STD().camps.find(c=>c.id===ui.stC)||null;
@@ -4908,7 +4960,7 @@ function stCampHTML(){const c=stCamp();if(ui.stTab==='scen'&&!stHasScen(c))ui.st
         <div class="chb" ${h.fold?'hidden':''}><textarea data-chx="${h.id}" placeholder="Écris ici…">${esc(h.text)}</textarea></div></div>`).join('')}
       <button class="btn" type="button" id="chNew">+ Ajouter un chapitre</button>`}
   if(T==='pnj'){const L=(c.npcs||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
-    body=`<div class="stact" style="margin-top:0;margin-bottom:12px;align-items:center"><button class="btn primary" type="button" id="nNew">+ Nouveau PNJ</button>${L.length>6?`<input class="in stsearch" type="search" id="nQ" placeholder="Rechercher un PNJ…">`:''}</div>
+    body=`<div class="stact" style="margin-top:0;margin-bottom:12px;align-items:center"><button class="btn primary" type="button" id="nNew">+ Nouveau PNJ</button><button class="btn" type="button" id="nGen">🎲 PNJ express</button>${L.length>6?`<input class="in stsearch" type="search" id="nQ" placeholder="Rechercher un PNJ…">`:''}</div>
       ${L.length?`<div class="stgrid" id="nGrid">${L.map(n=>`<button type="button" class="stcard npccard" data-npc="${n.id}" data-q="${esc((n.name+' '+(n.role||'')+' '+(n.place||'')).toLowerCase())}"><span class="pic" ${stPic(n)}>${n.img?'':stInit(n)}</span><span class="tx"><h3>${esc(n.name)}${n.met?' <small title="Rencontré par les joueuses">👁</small>':''}</h3><span class="att ${n.att||'neutre'}">${esc(n.att||'neutre')}</span><span class="d">${esc([n.role,n.place].filter(Boolean).join(' · ')||'—')}</span></span></button>`).join('')}</div>`
         :`<div class="stempty">Aucun PNJ. Ajoute tes personnages non-joueurs : portrait, rôle, personnalité, secrets, statistiques…</div>`}`}
   if(T==='lieux'){const L=(c.places||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
@@ -4936,6 +4988,7 @@ function stCampBind(el){const c=stCamp();stCrumbBind(el);
   const ch=el.querySelector('#chNew');if(ch)ch.onclick=()=>{c.scen=c.scen||[];const h={id:'h'+uid(),title:'Chapitre '+(c.scen.length+1),text:''};c.scen.push(h);stSave();stRender();const t=$(`[data-cht="${h.id}"]`);if(t){t.focus();t.select()}};
   const ln=el.querySelector('#lNew');if(ln)ln.onclick=()=>{c.places=c.places||[];const p={id:'p'+uid(),name:'Nouveau lieu',kind:'',desc:'',secret:'',notes:''};c.places.push(p);stSave();stOpen('lieu',p.id);const t=$('#lpN');if(t){t.focus();t.select()}};
   el.querySelectorAll('[data-lieu]').forEach(b=>b.onclick=()=>stOpen('lieu',b.dataset.lieu));
+  {const g=el.querySelector('#nGen');if(g)g.onclick=()=>npcGen()}
   const nn=el.querySelector('#nNew');if(nn)nn.onclick=()=>{c.npcs=c.npcs||[];const n={id:'n'+uid(),name:'Nouveau PNJ',att:'neutre',role:'',place:'',look:'',pers:'',goal:'',secret:'',notes:'',stat:''};c.npcs.push(n);ui.stN=n.id;stSave();stRender();const t=$('#npN');if(t){t.focus();t.select()}};
   el.querySelectorAll('[data-npc]').forEach(b=>b.onclick=()=>{ui.stN=b.dataset.npc;ui.stBack=null;stRender()});
   const q=el.querySelector('#nQ');if(q)q.oninput=()=>{const v=q.value.trim().toLowerCase();el.querySelectorAll('[data-npc]').forEach(b=>b.hidden=v&&!b.dataset.q.includes(v))};
@@ -4946,7 +4999,7 @@ function stSessHTML(){const c=stCamp(),x=stSess(),N=(x.npcs||[]).map(id=>(c.npcs
     <div class="sthead"><input class="sttitle" id="sTitle" value="${esc(x.title||'')}" placeholder="Titre de la session" aria-label="Titre de la session"><input class="in" type="date" id="sDate" value="${esc(x.date||'')}" style="width:auto"><button class="btn ${c.play===x.id?'':'primary'}" type="button" id="sPlay">${c.play===x.id?'■ Arrêter la session':'▶ Jouer cette session'}</button><button class="btn ghost sm" type="button" id="sDel">Supprimer</button></div>${c.play===x.id?'<div class="playban">▶ Session en cours : l’onglet Histoire s’ouvre directement ici, et la scène où tu es est retenue toute seule.</div>':''}
     <div class="stcols"><div>
       <label class="fl" for="sPrep">Préparation / scénario de la session</label><textarea id="sPrep" class="big" placeholder="Ce qui doit se passer, les scènes prévues, les indices à donner…">${esc(x.prep||'')}</textarea>
-      <label class="fl">PNJ de la session</label><div class="stchips">${N.map(n=>`<span class="stchip" data-open="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}<span class="x" data-rm="${n.id}" role="button" aria-label="Retirer">✕</span></span>`).join('')}
+      <label class="fl">PNJ de la session</label><div class="stchips"><button type="button" class="btn sm" id="sGen">🎲 PNJ improvisé</button>${N.map(n=>`<span class="stchip" data-open="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}<span class="x" data-rm="${n.id}" role="button" aria-label="Retirer">✕</span></span>`).join('')}
         ${(c.npcs||[]).length>N.length?`<select class="in" id="sAddN" style="width:auto;max-width:240px"><option value="">+ Ajouter un PNJ…</option>${(c.npcs||[]).filter(n=>!(x.npcs||[]).includes(n.id)).map(n=>`<option value="${n.id}">${esc(n.name)}</option>`).join('')}</select>`:(c.npcs||[]).length?'':'<span class="hint">Crée d’abord des PNJ dans l’onglet PNJ de la campagne.</span>'}</div>
       <label class="fl" for="sSum">Résumé de la session (après la partie)</label><label class="check" style="margin:-2px 0 6px"><input type="checkbox" id="sShare" ${x.share!==false?'checked':''}> Les joueuses voient ce résumé sur leur téléphone</label><textarea id="sSum" placeholder="Ce qui s’est réellement passé, pour la prochaine fois…">${esc(x.sum||'')}</textarea>
     </div><div>
@@ -4960,6 +5013,7 @@ function stSessBind(el){const c=stCamp(),x=stSess();stCrumbBind(el);
   el.querySelector('#sPlay').onclick=()=>{if(c.play===x.id){c.play=null;toast('Session arrêtée')}else{c.play=x.id;if(!c.cur||c.cur.sid!==x.id)c.cur={sid:x.id,h:0};toast('▶ Session '+x.n+' en cours')}stSave();ui.stKeep=1;stRender()};
   stBind(el,'#sTitle',x,'title');stBind(el,'#sPrep',x,'prep');stBind(el,'#sSum',x,'sum');
   el.querySelector('#sDate').onchange=e=>{x.date=e.target.value;stSave()};
+  el.querySelector('#sGen').onclick=()=>npcGen({sess:x.id});
   el.querySelector('#sShare').onchange=e=>{x.share=e.target.checked;stSave();scheduleNet()};
   el.querySelector('#sDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer ?';return}c.sess=c.sess.filter(s2=>s2.id!==x.id);ui.stS=null;stSave();stRender()};
   const list=el.querySelector('#lList'),inp=el.querySelector('#lIn');
