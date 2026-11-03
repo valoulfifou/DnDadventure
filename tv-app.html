@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-10h50';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-11h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -253,12 +253,8 @@ body.mode-st .top .round{visibility:hidden}
 .stfab button{appearance:none;border:1px solid #c9a45c;background:#2b2416;color:#f2e6c8;border-radius:999px;min-width:48px;height:48px;padding:0 14px;font:700 14px var(--f-display);box-shadow:0 4px 12px rgba(0,0,0,.3);cursor:pointer}
 .stfab .tocb{display:none}
 .stfab button[hidden]{display:none}
-@media(max-width:1000px){
-  .stwrap{grid-template-columns:1fr}
-  .sttoc{position:fixed;left:0;top:0;bottom:0;width:min(330px,86vw);max-height:none;z-index:60;border-radius:0 14px 14px 0;transform:translateX(-105%);transition:transform .25s;box-shadow:4px 0 24px rgba(0,0,0,.3)}
-  .sttoc.open{transform:none}
-  .sttoc .x{display:block;margin-left:auto;appearance:none;border:0;background:none;font-size:22px;color:#6b5a3f;cursor:pointer;padding:0 4px}
-  .stfab .tocb{display:block}}
+.stfab .tocb{display:block}
+.sttoc .x{display:block;margin-left:auto;appearance:none;border:0;background:none;font-size:20px;color:#6b5a3f;cursor:pointer;padding:0 4px}
 .stchap .h .fold{width:30px;border:0;background:none;font-size:15px}
 .stchap .h small.chw{color:#9a8460;font-size:12px;white-space:nowrap}
 .stchap.folded{padding-bottom:10px}
@@ -269,6 +265,24 @@ body.mode-st .top .round{visibility:hidden}
 .sthl{position:absolute;z-index:70;pointer-events:none;background:rgba(243,211,107,.55);border-radius:3px;box-shadow:0 0 0 2px rgba(201,164,92,.8);animation:sthl 2.8s ease forwards}
 @keyframes sthl{0%,60%{opacity:1}100%{opacity:0}}
 .stfmt .mkb{margin-left:auto}
+
+.stwrap.nav-off{grid-template-columns:minmax(0,1fr)}
+.stwrap.nav-off .sttoc{display:none}
+@media(max-width:1000px){.stwrap{grid-template-columns:230px minmax(0,1fr);gap:12px}.stbook{padding:16px 14px 22px}}
+.sttoc details{margin-top:6px}
+.sttoc summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;font:700 11px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:#8a5a20;padding:8px 4px;border-top:1px solid #eadcbc}
+.sttoc summary::-webkit-details-marker{display:none}
+.sttoc summary::before{content:'▸';font-size:11px;transition:transform .15s}
+.sttoc details[open]>summary::before{transform:rotate(90deg)}
+.sttoc summary small{margin-left:auto;font:12px Georgia,serif;letter-spacing:0;text-transform:none;color:#9a8460}
+.sttoc .tl button .av{display:inline-block;width:20px;height:20px;border-radius:50%;background:#3a2a14 center/cover;vertical-align:-5px;margin-right:6px;color:#f2e6c8;font:10px/20px var(--f-display);text-align:center}
+.sttoc .add{font:13px Georgia,serif;color:#8a5a20}
+.lieupic{font-size:30px;background-color:#2f4a3a!important}
+a.npcl.lieul{color:#2a5a3a}
+.stchips .lieu i{background:#2f4a3a}
+
+.stfmt{flex-wrap:wrap;row-gap:4px}
+.stview .sttitle{min-width:0;max-width:100%;box-sizing:border-box}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -9508,8 +9522,8 @@ var __values = (this && this.__values) || function(o) {
     $('#tSb').onclick = function () { if (ui.sb)
         return; ui.st = false; ui.sb = true; render(); scheduleTV(); tvPublishSt(); };
     $('#tSt').onclick = function () { if (ui.st) {
-        if (ui.stS || ui.stN || ui.stC) {
-            ui.stS = ui.stN = null;
+        if (ui.stS || ui.stN || ui.stL || ui.stC) {
+            ui.stS = ui.stN = ui.stL = null;
             ui.stC = null;
             stRender();
         }
@@ -11832,12 +11846,15 @@ var __values = (this && this.__values) || function(o) {
             return 'sess:' + obj.id + ':' + key;
         if ((c.npcs || []).includes(obj))
             return 'npc:' + obj.id + ':' + key;
+        if ((c.places || []).includes(obj))
+            return 'lieu:' + obj.id + ':' + key;
         return '';
     }
     var stFold = function (t) { return String(t || '').split('').map(function (ch) { return (ch.normalize('NFD')[0] || ch).toLowerCase(); }).join(''); };
+    function stPlaceOf(n) { var c = stCamp(), k = stFold((n && n.place || '').trim()); if (!c || !k)
+        return null; return (c.places || []).find(function (p) { return stFold(p.name.trim()) === k; }) || (c.places || []).find(function (p) { return p.name.trim().length >= 3 && k.includes(stFold(p.name.trim())); }) || null; }
     function stTexts(root) { var L = [], tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); while (tw.nextNode())
         L.push(tw.currentNode); return L; }
-    // position (en caractères) -> range dans un bloc de texte
     function stRangeAt(root, off, len) {
         var e_21, _c;
         var L = stTexts(root);
@@ -11902,7 +11919,7 @@ var __values = (this && this.__values) || function(o) {
         var c = stCamp();
         if (!c)
             return '';
-        var _c = __read(fid.split(':'), 3), k = _c[0], id = _c[1], f = _c[2], F = { prep: 'Préparation', sum: 'Résumé', title: 'Titre', text: '', look: 'Apparence', pers: 'Personnalité', goal: 'Motivations', secret: 'Secrets', notes: 'Notes', role: 'Rôle', place: 'Lieu', name: 'Nom' };
+        var _c = __read(fid.split(':'), 3), k = _c[0], id = _c[1], f = _c[2], F = { prep: 'Préparation', sum: 'Résumé', title: 'Titre', text: '', look: 'Apparence', pers: 'Personnalité', goal: 'Motivations', secret: 'Secrets', notes: 'Notes', role: 'Rôle', place: 'Lieu', name: 'Nom', kind: 'Type', desc: 'Description' };
         if (k === 'desc')
             return 'Résumé de la campagne';
         if (k === 'notes')
@@ -11921,8 +11938,21 @@ var __values = (this && this.__values) || function(o) {
             var n = (c.npcs || []).find(function (z) { return z.id === id; });
             return 'PNJ ' + (n ? n.name : '?') + (F[f] ? ' › ' + F[f] : '');
         }
+        if (k === 'lieu') {
+            var n = (c.places || []).find(function (z) { return z.id === id; });
+            return 'Lieu ' + (n ? n.name : '?') + (F[f] ? ' › ' + F[f] : '');
+        }
         return fid;
     }
+    // ouvrir une page de la campagne
+    function stOpen(kind, id, tab) { ui.stS = ui.stN = ui.stL = null; ui.stBack = null; if (kind === 'sess')
+        ui.stS = id;
+    else if (kind === 'npc')
+        ui.stN = id;
+    else if (kind === 'lieu')
+        ui.stL = id;
+    else if (tab)
+        ui.stTab = tab; stRender(); }
     // marque-page
     function stMarkSet(ed, saved) {
         var c = stCamp();
@@ -11938,6 +11968,7 @@ var __values = (this && this.__values) || function(o) {
         stSave();
         toast('🔖 Marque-page posé : ' + stFidLabel(c.mark.fid));
         stNavFab();
+        stTocBuild();
     }
     // aller à un endroit précis
     function stGo(fid, o) {
@@ -11948,6 +11979,7 @@ var __values = (this && this.__values) || function(o) {
         var _c = __read(fid.split(':'), 2), k = _c[0], id = _c[1];
         ui.stN = null;
         ui.stS = null;
+        ui.stL = null;
         ui.stBack = null;
         if (k === 'scen') {
             ui.stTab = 'scen';
@@ -11963,6 +11995,8 @@ var __values = (this && this.__values) || function(o) {
             ui.stS = id;
         else if (k === 'npc')
             ui.stN = id;
+        else if (k === 'lieu')
+            ui.stL = id;
         ui.stKeep = 1;
         stRender();
         setTimeout(function () { return stLocate(fid, o); }, 60);
@@ -11973,7 +12007,14 @@ var __values = (this && this.__values) || function(o) {
         if (!el)
             return;
         var r = null;
-        if (o.q != null && el.tagName !== 'INPUT') {
+        if (o.h != null) {
+            var H = el.querySelectorAll('h3,h4')[o.h];
+            if (H) {
+                r = document.createRange();
+                r.selectNodeContents(H);
+            }
+        }
+        else if (o.q != null && el.tagName !== 'INPUT') {
             var L = stTexts(el), txt = stFold(L.map(function (n) { return n.nodeValue; }).join('')), q = stFold(o.q);
             var i = -1, k = 0;
             do {
@@ -11995,7 +12036,7 @@ var __values = (this && this.__values) || function(o) {
                     while (s0 > 0 && !/\s/.test(t[s0 - 1]))
                         s0--;
                     r.setStart(n, s0);
-                    r.setEnd(n, Math.max(b, s0 + 1 > t.length ? t.length : b));
+                    r.setEnd(n, Math.max(b, Math.min(t.length, s0 + 1)));
                 }
             }
         }
@@ -12009,7 +12050,10 @@ var __values = (this && this.__values) || function(o) {
         window.scrollTo({ top: Math.max(0, top - innerHeight * .3), behavior: RM ? 'auto' : 'smooth' });
         rects.slice(0, 6).forEach(function (x) { var d = document.createElement('div'); d.className = 'sthl'; d.style.cssText = "left:".concat(x.left + scrollX - 2, "px;top:").concat(x.top + scrollY - 1, "px;width:").concat(x.width + 4, "px;height:").concat(x.height + 2, "px"); document.body.appendChild(d); setTimeout(function () { return d.remove(); }, 3000); });
     }
-    // sommaire
+    // titres (T1/T2) d'un texte enregistré, sans l'afficher
+    function stHeads(o, key) { var h = o && o[key + '_h']; if (!h || o[key + '_t'] !== (o[key] || ''))
+        return []; var d = document.createElement('div'); d.innerHTML = h; return __spreadArray([], __read(d.querySelectorAll('h3,h4')), false).map(function (e, i) { return ({ t: e.textContent.trim(), l: e.tagName === 'H3' ? 2 : 3, i: i }); }).filter(function (x) { return x.t; }); }
+    // sommaire de la page affichée (titres, rubriques)
     var STTOC = 0;
     function stTocSoon() { clearTimeout(STTOC); STTOC = setTimeout(stTocBuild, 700); }
     function stTocItems() {
@@ -12017,7 +12061,7 @@ var __values = (this && this.__values) || function(o) {
         if (!m)
             return [];
         var out = [];
-        m.querySelectorAll('[data-toc],.stsrow,.npccard,label.fl,.stlive h3,.stedit h3,.stedit h4,.stread h3,.stread h4').forEach(function (e) {
+        m.querySelectorAll('[data-toc],label.fl,.stlive h3,.stedit h3,.stedit h4,.stread h3,.stread h4').forEach(function (e) {
             if (e.closest('[hidden]') && !e.matches('[data-toc]'))
                 return;
             var t = '', l = 1, fo = false;
@@ -12025,10 +12069,6 @@ var __values = (this && this.__values) || function(o) {
                 t = (e.querySelector('[data-cht]') || {}).value || 'Chapitre';
                 fo = e.classList.contains('folded');
             }
-            else if (e.matches('.stsrow'))
-                t = e.querySelector('.n').textContent + ' · ' + e.querySelector('.t b').textContent;
-            else if (e.matches('.npccard'))
-                t = e.querySelector('h3').textContent;
             else if (e.matches('label.fl,.stlive h3'))
                 t = e.textContent.replace(/^✎\s*/, '');
             else {
@@ -12043,53 +12083,117 @@ var __values = (this && this.__values) || function(o) {
         });
         return out;
     }
+    // la barre de navigation : recherche, cette page, scénario, sessions, PNJ, lieux
     function stTocBuild() {
         var T = $('#stToc');
         if (!T)
             return;
-        var q = (T.querySelector('.sq') || {}).value || '';
+        var c = stCamp();
+        if (!c)
+            return;
+        ui.stSec = ui.stSec || { scen: 1, sess: 1, npc: 1, lieu: 1, page: 1 };
         if (!T.dataset.ok) {
             T.dataset.ok = 1;
-            T.innerHTML = "<div style=\"display:flex;align-items:center;gap:6px\"><input class=\"sq\" type=\"search\" placeholder=\"\uD83D\uDD0D Rechercher\u2026\" aria-label=\"Rechercher dans la campagne\" enterkeyhint=\"search\"><button type=\"button\" class=\"x\" aria-label=\"Fermer\">\u2715</button></div><div class=\"tbody\"></div>";
+            T.innerHTML = "<div style=\"display:flex;align-items:center;gap:6px\"><input class=\"sq\" type=\"search\" placeholder=\"\uD83D\uDD0D Rechercher\u2026\" aria-label=\"Rechercher dans la campagne\" enterkeyhint=\"search\"><button type=\"button\" class=\"x\" aria-label=\"Masquer la navigation\">\u2715</button></div><div class=\"tbody\"></div>";
             var inp = T.querySelector('.sq');
             var t0_1 = 0;
             inp.oninput = function () { clearTimeout(t0_1); t0_1 = setTimeout(stTocBuild, 180); };
-            T.querySelector('.x').onclick = function () { return T.classList.remove('open'); };
-            if (ui.stQ) {
+            T.querySelector('.x').onclick = stNavToggle;
+            if (ui.stQ)
                 inp.value = ui.stQ;
-            }
         }
         var B = T.querySelector('.tbody'), qq = T.querySelector('.sq').value.trim();
         ui.stQ = qq;
         if (qq.length >= 2) {
             var R_1 = stSearch(qq);
             B.innerHTML = "<h4>".concat(R_1.length ? R_1.length + (R_1.length >= 80 ? '+' : '') + ' résultat' + (R_1.length > 1 ? 's' : '') : 'Aucun résultat', "</h4><div class=\"res\">").concat(R_1.map(function (r, i) { return "<button type=\"button\" data-r=\"".concat(i, "\"><b>").concat(esc(stFidLabel(r.fid)), "</b>").concat(r.snip, "</button>"); }).join(''), "</div>");
-            B.querySelectorAll('[data-r]').forEach(function (b) { return b.onclick = function () { var r = R_1[+b.dataset.r]; T.classList.remove('open'); stGo(r.fid, { q: qq, nth: r.nth }); }; });
+            B.querySelectorAll('[data-r]').forEach(function (b) { return b.onclick = function () { var r = R_1[+b.dataset.r]; stGo(r.fid, { q: qq, nth: r.nth }); }; });
             return;
         }
-        var L = stTocItems();
-        B.innerHTML = "<h4>Sommaire</h4>".concat(L.length ? "<div class=\"tl\">".concat(L.map(function (x, i) { return "<button type=\"button\" data-ti=\"".concat(i, "\" class=\"l").concat(x.l, " ").concat(x.fo ? 'fo' : '', "\">").concat(x.fo ? '▸ ' : '').concat(esc(x.t), "</button>"); }).join(''), "</div>") : '<div class="none">Ajoute des titres (T1, T2) dans ton texte pour qu’ils apparaissent ici.</div>') + (function () { var c = stCamp(); return c && c.mark ? "<button type=\"button\" class=\"mk\" data-mk2=\"1\">\uD83D\uDD16 Reprendre : ".concat(esc(stFidLabel(c.mark.fid)), "</button>") : ''; })();
-        B.querySelectorAll('[data-ti]').forEach(function (b) { return b.onclick = function () { var x = L[+b.dataset.ti]; T.classList.remove('open'); if (x.fo) {
-            var f = x.e.querySelector('[data-fold]');
-            if (f)
-                f.click();
-        } x.e.scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); }; });
+        var onScen = !ui.stS && !ui.stN && !ui.stL && ui.stTab === 'scen', onPage = ui.stS || ui.stN || ui.stL || (!onScen && ui.stTab === 'notes');
+        var P = stTocItems(), go = [];
+        var h = '';
+        var sec = function (k, ic, t, n, body, add) { return "<details data-sec=\"".concat(k, "\" ").concat(ui.stSec[k] ? 'open' : '', "><summary>").concat(ic, " ").concat(t).concat(n != null ? "<small>".concat(n, "</small>") : '', "</summary><div class=\"tl\">").concat(body || '').concat(add ? "<button type=\"button\" class=\"add\" data-add=\"".concat(k, "\">+ ").concat(add, "</button>") : '', "</div></details>"); };
+        var btn = function (lbl, cl, act, on, av) { go.push(act); return "<button type=\"button\" data-g=\"".concat(go.length - 1, "\" class=\"").concat(cl || '', " ").concat(on ? 'on' : '', "\">").concat(av || '').concat(esc(lbl), "</button>"); };
+        if (c.mark)
+            h += "<button type=\"button\" class=\"mk\" data-mk2=\"1\">\uD83D\uDD16 Reprendre : ".concat(esc(stFidLabel(c.mark.fid)), "</button>");
+        if (onPage && P.length)
+            h += sec('page', '📄', 'Cette page', null, P.map(function (x) { return btn(x.t, 'l' + x.l, function () { return x.e.scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); }, false); }).join(''));
+        // scénario
+        var sb = '';
+        if (onScen) {
+            STTOCL = P;
+            sb = P.map(function (x, i) { go.push(function () { if (x.fo) {
+                var f = x.e.querySelector('[data-fold]');
+                if (f)
+                    f.click();
+            } x.e.scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); }); return "<button type=\"button\" data-g=\"".concat(go.length - 1, "\" data-ti=\"").concat(i, "\" class=\"l").concat(x.l, " ").concat(x.fo ? 'fo' : '', "\">").concat(x.fo ? '▸ ' : '').concat(esc(x.t), "</button>"); }).join('');
+        }
+        else {
+            STTOCL = [];
+            (c.scen || []).forEach(function (ch) { sb += btn(ch.title || 'Chapitre', 'l1', function () { return stGo('scen:' + ch.id + ':title'); }); stHeads(ch, 'text').forEach(function (x) { sb += btn(x.t, 'l' + x.l, function () { return stGo('scen:' + ch.id + ':text', { h: x.i }); }); }); });
+        }
+        h += sec('scen', '🎬', 'Scénario', (c.scen || []).length, sb, onScen ? '' : null);
+        h += sec('sess', '📅', 'Sessions', (c.sess || []).length, (c.sess || []).slice().sort(function (a, b) { return b.n - a.n; }).map(function (x) { return btn(x.n + ' · ' + (x.title || 'Session ' + x.n), 'l1', function () { return stOpen('sess', x.id); }, ui.stS === x.id); }).join(''), 'Nouvelle session');
+        h += sec('npc', '👤', 'PNJ', (c.npcs || []).length, (c.npcs || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); }).map(function (n) { return btn(n.name, 'l1', function () { return stOpen('npc', n.id); }, ui.stN === n.id, "<span class=\"av\" ".concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "</span>")); }).join(''), 'Nouveau PNJ');
+        h += sec('lieu', '📍', 'Lieux', (c.places || []).length, (c.places || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); }).map(function (p) { return btn(p.name, 'l1', function () { return stOpen('lieu', p.id); }, ui.stL === p.id, "<span class=\"av\" ".concat(stPic(p), ">").concat(p.img ? '' : '📍', "</span>")); }).join(''), 'Nouveau lieu');
+        h += "<button type=\"button\" class=\"add\" data-g=\"".concat(go.push(function () { return stOpen('camp', null, 'notes'); }) - 1, "\" style=\"margin-top:8px;border:0;background:none;cursor:pointer;padding:6px 4px\">\uD83D\uDCDC Notes & lore</button>");
+        B.innerHTML = h;
+        B.querySelectorAll('[data-g]').forEach(function (b) { return b.onclick = function () { return go[+b.dataset.g](); }; });
+        B.querySelectorAll('details[data-sec]').forEach(function (d) { return d.ontoggle = function () { ui.stSec[d.dataset.sec] = d.open ? 1 : 0; }; });
+        B.querySelectorAll('[data-add]').forEach(function (b) { return b.onclick = function () {
+            var k = b.dataset.add;
+            if (k === 'sess') {
+                c.sess = c.sess || [];
+                var n = c.sess.reduce(function (m, x) { return Math.max(m, x.n || 0); }, 0) + 1, x = { id: 's' + uid(), n: n, title: 'Session ' + n, date: stToday(), prep: '', live: [], sum: '', npcs: [] };
+                c.sess.push(x);
+                stSave();
+                stOpen('sess', x.id);
+            }
+            if (k === 'npc') {
+                c.npcs = c.npcs || [];
+                var n = { id: 'n' + uid(), name: 'Nouveau PNJ', att: 'neutre', role: '', place: '', look: '', pers: '', goal: '', secret: '', notes: '', stat: '' };
+                c.npcs.push(n);
+                stSave();
+                stOpen('npc', n.id);
+                var t = $('#npN');
+                if (t) {
+                    t.focus();
+                    t.select();
+                }
+            }
+            if (k === 'lieu') {
+                c.places = c.places || [];
+                var p = { id: 'p' + uid(), name: 'Nouveau lieu', kind: '', desc: '', secret: '', notes: '' };
+                c.places.push(p);
+                stSave();
+                stOpen('lieu', p.id);
+                var t = $('#lpN');
+                if (t) {
+                    t.focus();
+                    t.select();
+                }
+            }
+        }; });
         var m2 = B.querySelector('[data-mk2]');
         if (m2)
-            m2.onclick = function () { T.classList.remove('open'); stMarkGo(); };
-        STTOCL = L;
+            m2.onclick = stMarkGo;
         requestAnimationFrame(stTocSpy);
     }
     var STTOCL = [];
     function stTocSpy() { var T = $('#stToc'); if (!T || !STTOCL.length)
         return; var k = -1; STTOCL.forEach(function (x, i) { if (x.e.offsetParent && x.e.getBoundingClientRect().top < 140)
-        k = i; }); T.querySelectorAll('[data-ti]').forEach(function (b, i) { return b.classList.toggle('on', i === k); }); }
+        k = i; }); T.querySelectorAll('[data-ti]').forEach(function (b) { return b.classList.toggle('on', +b.dataset.ti === k); }); }
     function stMarkGo() { var c = stCamp(); if (c && c.mark)
         stGo(c.mark.fid, { off: c.mark.off }); }
     function stNavFab() { var c = stCamp(), b = $('#stMkB'); if (b) {
         b.hidden = !(c && c.mark);
         b.title = c && c.mark ? 'Reprendre : ' + stFidLabel(c.mark.fid) : '';
     } }
+    function stNavToggle() { S.stNav = !S.stNav; save(); var w = $('#stView .stwrap'); if (w)
+        w.classList.toggle('nav-off', !S.stNav); var b = $('#stTocB'); if (b)
+        b.textContent = S.stNav ? '✕ Masquer' : '☰ Navigation'; if (S.stNav)
+        stTocBuild(); }
     // recherche dans toute la campagne
     function stSearch(q) {
         var c = stCamp();
@@ -12110,13 +12214,13 @@ var __values = (this && this.__values) || function(o) {
         (c.scen || []).forEach(function (h) { add('scen:' + h.id + ':title', h.title); add('scen:' + h.id + ':text', h.text); });
         (c.sess || []).slice().sort(function (a, b) { return b.n - a.n; }).forEach(function (x) { add('sess:' + x.id + ':title', x.title); add('sess:' + x.id + ':prep', x.prep); add('sess:' + x.id + ':sum', x.sum); add('live:' + x.id, (x.live || []).map(function (n) { return n.t; }).join('\n')); });
         (c.npcs || []).forEach(function (n) { return ['name', 'role', 'place', 'look', 'pers', 'goal', 'secret', 'notes'].forEach(function (k) { return add('npc:' + n.id + ':' + k, n[k]); }); });
+        (c.places || []).forEach(function (p) { return ['name', 'kind', 'desc', 'secret', 'notes'].forEach(function (k) { return add('lieu:' + p.id + ':' + k, p[k]); }); });
         return out;
     }
     function stNavBind(el) {
         stTocBuild();
         stNavFab();
-        var T = el.querySelector('#stToc');
-        el.querySelector('#stTocB').onclick = function () { T.classList.add('open'); setTimeout(function () { return T.querySelector('.sq').focus({ preventScroll: true }); }, 260); };
+        el.querySelector('#stTocB').onclick = stNavToggle;
         el.querySelector('#stMkB').onclick = stMarkGo;
         el.querySelector('#stTopB').onclick = function () { return window.scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); };
     }
@@ -12125,6 +12229,52 @@ var __values = (this && this.__values) || function(o) {
         b.hidden = scrollY < 500; if (!stTocSpy._r) {
         stTocSpy._r = requestAnimationFrame(function () { stTocSpy._r = 0; stTocSpy(); });
     } }, { passive: true });
+    /* fiche d'un lieu */
+    function stLieuHTML() {
+        var c = stCamp(), p = stLieu(), k = stFold(p.name.trim()), N = (c.npcs || []).filter(function (n) { var pl = stPlaceOf(n); return pl && pl.id === p.id; });
+        var ta = function (q, l, ph, cls) { return "<label class=\"fl\" for=\"lp_".concat(q, "\">").concat(l, "</label><textarea id=\"lp_").concat(q, "\" data-lk=\"").concat(q, "\" class=\"").concat(cls || '', "\" placeholder=\"").concat(ph, "\">").concat(esc(p[q] || ''), "</textarea>"); };
+        return "<div class=\"stbook\">".concat(stCrumb([['Campagnes', 'list'], [c.name, 'camp'], ['Lieux', 'lieux'], [p.name, '']]), "\n    <div class=\"npcsheet\"><div><div class=\"por lieupic\" ").concat(stPic(p), ">").concat(p.img ? '' : '📍', "<label>").concat(p.img ? 'Changer l’image' : 'Ajouter une image', "<input type=\"file\" accept=\"image/*\" id=\"lpImg\"></label></div>\n      <div class=\"stact\"><button class=\"btn ghost sm\" type=\"button\" id=\"lpDel\">Supprimer le lieu</button></div></div>\n    <div><input class=\"sttitle\" id=\"lpN\" value=\"").concat(esc(p.name), "\" aria-label=\"Nom du lieu\" style=\"width:100%\">\n      <label class=\"fl\" for=\"lp_kind\">Type</label><input class=\"in\" id=\"lp_kind\" data-lk=\"kind\" value=\"").concat(esc(p.kind || ''), "\" placeholder=\"Village, auberge, for\u00EAt, donjon\u2026\">\n      <label class=\"fl\">PNJ pr\u00E9sents</label><div class=\"stchips\">").concat(N.map(function (n) { return "<span class=\"stchip\" data-open=\"".concat(n.id, "\"><i ").concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "</i>").concat(esc(n.name), "</span>"); }).join('') || '<span class="hint">Aucun PNJ ici : dans une fiche PNJ, mets ce nom dans « Lieu ».</span>', "</div>\n      ").concat(ta('desc', 'Description', 'Ce que les joueuses voient, entendent, sentent…', 'big')).concat(ta('secret', 'Secrets (MJ seulement)', 'Pièges, trésors cachés, passages secrets…', 'secret')).concat(ta('notes', 'Notes', 'Ce qui s’y est passé, ce que le groupe sait…'), "\n    </div></div></div>");
+    }
+    function stLieuBind(el) {
+        var _this = this;
+        var c = stCamp(), p = stLieu();
+        stCrumbBind(el);
+        stBind(el, '#lpN', p, 'name');
+        el.querySelectorAll('[data-lk]').forEach(function (i) { return stBind(el, "#".concat(i.id), p, i.dataset.lk); });
+        el.querySelectorAll('[data-open]').forEach(function (b) { return b.onclick = function () { return stOpen('npc', b.dataset.open); }; });
+        el.querySelector('#lpImg').onchange = function (e) { return __awaiter(_this, void 0, void 0, function () { var f, u, id, er_1; return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    f = e.target.files[0];
+                    if (!f)
+                        return [2 /*return*/];
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, processImg(f, false)];
+                case 2:
+                    u = _c.sent();
+                    id = 'p' + uid();
+                    IMGS.set(id, u);
+                    IDB.put(id, u);
+                    p.img = 'ref:' + id;
+                    stSave();
+                    ui.stKeep = 1;
+                    stRender();
+                    return [3 /*break*/, 4];
+                case 3:
+                    er_1 = _c.sent();
+                    toast('Image illisible');
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        }); }); };
+        el.querySelector('#lpDel').onclick = function (e) { var b = e.target; if (!b.dataset.ok) {
+            b.dataset.ok = 1;
+            b.textContent = 'Confirmer ?';
+            return;
+        } c.places = c.places.filter(function (x) { return x.id !== p.id; }); ui.stL = null; ui.stTab = 'lieux'; stSave(); stRender(); };
+    }
     /* ---------- Capacités de classe : ressources, actions, passifs ---------- */
     var cfLeft = function (c, k) { var v = c && c.cres && c.cres[k]; return v ? Math.max(0, +v[0] - (+v[1] || 0)) : 0; };
     var cfIncap = function (c) { return ['neutralisé', 'paralysé', 'étourdi', 'inconscient', 'pétrifié'].some(function (k) { return has(c, k); }); };
@@ -12337,6 +12487,7 @@ var __values = (this && this.__values) || function(o) {
     var STD = function () { return S.story || (S.story = { camps: [] }); };
     var stCamp = function () { return STD().camps.find(function (c) { return c.id === ui.stC; }) || null; };
     var stSess = function () { var c = stCamp(); return c && (c.sess || []).find(function (x) { return x.id === ui.stS; }) || null; };
+    var stLieu = function () { var c = stCamp(); return c && (c.places || []).find(function (x) { return x.id === ui.stL; }) || null; };
     var stNpc = function () { var c = stCamp(); return c && (c.npcs || []).find(function (x) { return x.id === ui.stN; }) || null; };
     var STCOL = ['#8a2a22', '#2a5a8a', '#4f7a2a', '#7a2a6a', '#a8841f', '#2a7a6a', '#5a5048'];
     function stSave() { var c = stCamp(); if (c)
@@ -12373,10 +12524,13 @@ var __values = (this && this.__values) || function(o) {
     }
     var ST_FS = [13, 14, 16, 18, 20, 24, 28, 32];
     var ST_AL = [['left', 'M1 1.5h14M1 4.5h9M1 7.5h14M1 10.5h9', 'Aligné à gauche', 'justifyLeft'], ['center', 'M1 1.5h14M4 4.5h8M1 7.5h14M4 10.5h8', 'Centré', 'justifyCenter'], ['right', 'M1 1.5h14M6 4.5h9M1 7.5h14M6 10.5h9', 'Aligné à droite', 'justifyRight'], ['justify', 'M1 1.5h14M1 4.5h14M1 7.5h14M1 10.5h14', 'Justifié', 'justifyFull']];
-    function stNames() { var c = stCamp(), L = []; if (c)
+    function stNames() { var c = stCamp(), L = []; if (c) {
         (c.npcs || []).forEach(function (n) { var nm = (n.name || '').trim(); if (nm.length < 2)
-            return; L.push([nm, n.id]); var f = nm.split(/\s+/)[0]; if (f && f !== nm && f.length >= 3)
-            L.push([f, n.id]); }); return L.sort(function (a, b) { return b[0].length - a[0].length; }); }
+            return; L.push([nm, n.id, 'npc']); var f = nm.split(/\s+/)[0]; if (f && f !== nm && f.length >= 3)
+            L.push([f, n.id, 'npc']); });
+        (c.places || []).forEach(function (p) { var nm = (p.name || '').trim(); if (nm.length >= 3)
+            L.push([nm, p.id, 'lieu']); });
+    } return L.sort(function (a, b) { return b[0].length - a[0].length; }); }
     /* texte enrichi : gras, alignement et taille sur la sélection (le texte brut reste dans obj[key], le HTML dans obj[key_h]) */
     function stClean(html) {
         var d = document.createElement('div');
@@ -12433,7 +12587,7 @@ var __values = (this && this.__values) || function(o) {
         }
         var map = {};
         L.forEach(function (x) { var k = x[0].toLowerCase(); if (!map[k])
-            map[k] = x[1]; });
+            map[k] = x; });
         var d = document.createElement('div');
         d.innerHTML = html;
         var hit = 0;
@@ -12449,10 +12603,13 @@ var __values = (this && this.__values) || function(o) {
                     frag = document.createDocumentFragment();
                 var st = m.index + m[1].length;
                 frag.appendChild(document.createTextNode(t.slice(last, st)));
-                var a = document.createElement('a');
-                a.className = 'npcl';
+                var X = map[m[2].toLowerCase()], a = document.createElement('a');
+                a.className = 'npcl' + (X[2] === 'lieu' ? ' lieul' : '');
                 a.href = '#';
-                a.dataset.npc = map[m[2].toLowerCase()];
+                if (X[2] === 'lieu')
+                    a.dataset.lieu = X[1];
+                else
+                    a.dataset.npc = X[1];
                 a.textContent = m[2];
                 frag.appendChild(a);
                 last = st + m[2].length;
@@ -12521,7 +12678,12 @@ var __values = (this && this.__values) || function(o) {
                 ed.insertAdjacentElement('afterend', rd);
                 rd.addEventListener('click', function (e) { var a = e.target.closest('a.npcl'); if (a) {
                     e.preventDefault();
+                    if (a.dataset.lieu) {
+                        stOpen('lieu', a.dataset.lieu);
+                        return;
+                    }
                     ui.stBack = ui.stN ? ui.stBack : (ui.stS ? 'sess' : 'camp');
+                    ui.stL = null;
                     ui.stN = a.dataset.npc;
                     stRender();
                     return;
@@ -12619,13 +12781,21 @@ var __values = (this && this.__values) || function(o) {
             stListBind(el);
             return;
         }
-        var W = function (h) { return "<div class=\"stwrap\"><aside class=\"sttoc\" id=\"stToc\" aria-label=\"Sommaire et recherche\"></aside><div class=\"stmain\">".concat(h, "</div></div><div class=\"stfab\"><button type=\"button\" class=\"tocb\" id=\"stTocB\" aria-label=\"Sommaire\">\u2630 Sommaire</button><button type=\"button\" id=\"stMkB\" hidden>\uD83D\uDD16 Reprendre</button><button type=\"button\" id=\"stTopB\" aria-label=\"Haut de la page\" hidden>\u2191</button></div>"); };
+        if (S.stNav == null)
+            S.stNav = innerWidth >= 1000;
+        var W = function (h) { return "<div class=\"stwrap ".concat(S.stNav ? '' : 'nav-off', "\"><aside class=\"sttoc\" id=\"stToc\" aria-label=\"Navigation dans la campagne\"></aside><div class=\"stmain\">").concat(h, "</div></div><div class=\"stfab\"><button type=\"button\" class=\"tocb\" id=\"stTocB\" aria-label=\"Navigation\">").concat(S.stNav ? '✕ Masquer' : '☰ Navigation', "</button><button type=\"button\" id=\"stMkB\" hidden>\uD83D\uDD16 Reprendre</button><button type=\"button\" id=\"stTopB\" aria-label=\"Haut de la page\" hidden>\u2191</button></div>"); };
         if (ui.stN && stNpc()) {
             el.innerHTML = W(stNpcHTML());
             stNpcBind(el);
         }
+        else if (ui.stL && stLieu()) {
+            ui.stN = null;
+            el.innerHTML = W(stLieuHTML());
+            stLieuBind(el);
+        }
         else {
             ui.stN = null;
+            ui.stL = null;
             if (ui.stS && stSess()) {
                 el.innerHTML = W(stSessHTML());
                 stSessBind(el);
@@ -12676,9 +12846,10 @@ var __values = (this && this.__values) || function(o) {
     function stCrumb(parts) { return "<div class=\"stcrumb\">".concat(parts.map(function (p, i) { return i < parts.length - 1 ? "<button type=\"button\" data-crumb=\"".concat(p[1], "\">").concat(esc(p[0]), "</button><span class=\"sep\">\u203A</span>") : "<span>".concat(esc(p[0]), "</span>"); }).join(''), "</div>"); }
     function stCrumbBind(el) { el.querySelectorAll('[data-crumb]').forEach(function (b) { return b.onclick = function () { var k = b.dataset.crumb; if (k === 'list') {
         ui.stC = null;
-    } ui.stS = null; ui.stN = null; stRender(); }; }); }
+    } if (k === 'lieux')
+        ui.stTab = 'lieux'; ui.stS = null; ui.stN = null; ui.stL = null; stRender(); }; }); }
     function stCampHTML() {
-        var c = stCamp(), T = ui.stTab || 'sess', tabs = [['sess', 'Sessions'], ['scen', 'Scénario'], ['pnj', 'PNJ'], ['notes', 'Notes & lore']];
+        var c = stCamp(), T = ui.stTab || 'sess', tabs = [['sess', 'Sessions'], ['scen', 'Scénario'], ['pnj', 'PNJ'], ['lieux', 'Lieux'], ['notes', 'Notes & lore']];
         var body = '';
         if (T === 'sess') {
             var L = (c.sess || []).slice().sort(function (a, b) { return b.n - a.n; });
@@ -12693,11 +12864,16 @@ var __values = (this && this.__values) || function(o) {
             body = "<div class=\"stact\" style=\"margin-top:0;margin-bottom:12px;align-items:center\"><button class=\"btn primary\" type=\"button\" id=\"nNew\">+ Nouveau PNJ</button>".concat(L.length > 6 ? "<input class=\"in stsearch\" type=\"search\" id=\"nQ\" placeholder=\"Rechercher un PNJ\u2026\">" : '', "</div>\n      ").concat(L.length ? "<div class=\"stgrid\" id=\"nGrid\">".concat(L.map(function (n) { return "<button type=\"button\" class=\"stcard npccard\" data-npc=\"".concat(n.id, "\" data-q=\"").concat(esc((n.name + ' ' + (n.role || '') + ' ' + (n.place || '')).toLowerCase()), "\"><span class=\"pic\" ").concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "</span><span class=\"tx\"><h3>").concat(esc(n.name), "</h3><span class=\"att ").concat(n.att || 'neutre', "\">").concat(esc(n.att || 'neutre'), "</span><span class=\"d\">").concat(esc([n.role, n.place].filter(Boolean).join(' · ') || '—'), "</span></span></button>"); }).join(''), "</div>")
                 : "<div class=\"stempty\">Aucun PNJ. Ajoute tes personnages non-joueurs : portrait, r\u00F4le, personnalit\u00E9, secrets, statistiques\u2026</div>");
         }
+        if (T === 'lieux') {
+            var L = (c.places || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); });
+            body = "<div class=\"stact\" style=\"margin-top:0;margin-bottom:12px\"><button class=\"btn primary\" type=\"button\" id=\"lNew\">+ Nouveau lieu</button></div>\n      ".concat(L.length ? "<div class=\"stgrid\">".concat(L.map(function (p) { return "<button type=\"button\" class=\"stcard npccard\" data-lieu=\"".concat(p.id, "\"><span class=\"pic lieupic\" ").concat(stPic(p), ">").concat(p.img ? '' : '📍', "</span><span class=\"tx\"><h3>").concat(esc(p.name), "</h3>").concat(p.kind ? "<span class=\"att neutre\">".concat(esc(p.kind), "</span>") : '', "<span class=\"d\">").concat(esc(String(p.desc || '').slice(0, 90) || '—'), "</span></span></button>"); }).join(''), "</div>")
+                : "<div class=\"stempty\">Aucun lieu. Ajoute tes villages, auberges, donjons, for\u00EAts\u2026 Leur nom deviendra cliquable dans tes textes.</div>");
+        }
         if (T === 'notes')
             body = "<p class=\"hint\" style=\"margin-top:0\">Lore, id\u00E9es en vrac, liens entre les personnages, rumeurs, objets\u2026</p><textarea class=\"big\" id=\"cNotes\" placeholder=\"\u00C9cris librement\u2026\">".concat(esc(c.notes || ''), "</textarea>");
         return "<div class=\"stbook\">".concat(stCrumb([['Campagnes', 'list'], [c.name, '']]), "\n    <div class=\"sthead\"><input class=\"sttitle\" id=\"cTitle\" value=\"").concat(esc(c.name), "\" aria-label=\"Nom de la campagne\"><button class=\"btn ghost sm\" type=\"button\" id=\"cDel\">Supprimer la campagne</button></div>\n    <textarea id=\"cDesc\" placeholder=\"R\u00E9sum\u00E9 de la campagne\u2026\" style=\"min-height:60px\">").concat(esc(c.desc || ''), "</textarea>\n    <div class=\"sttabs\" role=\"tablist\">").concat(tabs.map(function (_c) {
             var _e = __read(_c, 2), k = _e[0], v = _e[1];
-            return "<button type=\"button\" data-stt=\"".concat(k, "\" class=\"").concat(T === k ? 'on' : '', "\">").concat(v).concat(k === 'sess' && (c.sess || []).length ? " (".concat(c.sess.length, ")") : k === 'pnj' && (c.npcs || []).length ? " (".concat(c.npcs.length, ")") : '', "</button>");
+            return "<button type=\"button\" data-stt=\"".concat(k, "\" class=\"").concat(T === k ? 'on' : '', "\">").concat(v).concat(k === 'sess' && (c.sess || []).length ? " (".concat(c.sess.length, ")") : k === 'pnj' && (c.npcs || []).length ? " (".concat(c.npcs.length, ")") : k === 'lieux' && (c.places || []).length ? " (".concat(c.places.length, ")") : '', "</button>");
         }).join(''), "</div>\n    ").concat(body, "</div>");
     }
     function stCampBind(el) {
@@ -12742,6 +12918,13 @@ var __values = (this && this.__values) || function(o) {
                 t.focus();
                 t.select();
             } };
+        var ln = el.querySelector('#lNew');
+        if (ln)
+            ln.onclick = function () { c.places = c.places || []; var p = { id: 'p' + uid(), name: 'Nouveau lieu', kind: '', desc: '', secret: '', notes: '' }; c.places.push(p); stSave(); stOpen('lieu', p.id); var t = $('#lpN'); if (t) {
+                t.focus();
+                t.select();
+            } };
+        el.querySelectorAll('[data-lieu]').forEach(function (b) { return b.onclick = function () { return stOpen('lieu', b.dataset.lieu); }; });
         var nn = el.querySelector('#nNew');
         if (nn)
             nn.onclick = function () { c.npcs = c.npcs || []; var n = { id: 'n' + uid(), name: 'Nouveau PNJ', att: 'neutre', role: '', place: '', look: '', pers: '', goal: '', secret: '', notes: '', stat: '' }; c.npcs.push(n); ui.stN = n.id; stSave(); stRender(); var t = $('#npN'); if (t) {
@@ -12793,12 +12976,12 @@ var __values = (this && this.__values) || function(o) {
         var crumb = back ? [['Campagnes', 'list'], [c.name, 'camp'], ['Session ' + stSess().n, 'sessb'], [n.name, '']] : [['Campagnes', 'list'], [c.name, 'camp'], ['PNJ', 'pnj'], [n.name, '']];
         var ta = function (k, l, ph, cls) { return "<label class=\"fl\" for=\"np_".concat(k, "\">").concat(l, "</label><textarea id=\"np_").concat(k, "\" data-nk=\"").concat(k, "\" class=\"").concat(cls || '', "\" placeholder=\"").concat(ph, "\">").concat(esc(n[k] || ''), "</textarea>"); };
         var m = n.stat && typeof BESTIARY !== 'undefined' ? BESTIARY.find(function (b) { return b[0] === n.stat; }) : null;
-        return "<div class=\"stbook\">".concat(stCrumb(crumb), "\n    <div class=\"npcsheet\"><div><div class=\"por\" ").concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "<label>").concat(n.img ? 'Changer le portrait' : 'Ajouter un portrait', "<input type=\"file\" accept=\"image/*\" id=\"npImg\"></label></div>\n      <div class=\"stact\"><button class=\"btn primary\" type=\"button\" id=\"npMap\">Placer sur la carte</button><button class=\"btn ghost sm\" type=\"button\" id=\"npDel\">Supprimer le PNJ</button></div></div>\n    <div><input class=\"sttitle\" id=\"npN\" value=\"").concat(esc(n.name), "\" aria-label=\"Nom du PNJ\" style=\"width:100%\">\n      <div class=\"nrow\"><div><label class=\"fl\" for=\"np_role\">R\u00F4le / m\u00E9tier</label><input class=\"in\" id=\"np_role\" data-nk=\"role\" value=\"").concat(esc(n.role || ''), "\" placeholder=\"Aubergiste, chef des bandits\u2026\"></div>\n        <div><label class=\"fl\" for=\"np_place\">Lieu</label><input class=\"in\" id=\"np_place\" data-nk=\"place\" value=\"").concat(esc(n.place || ''), "\" placeholder=\"O\u00F9 le trouver\"></div></div>\n      <label class=\"fl\">Attitude envers le groupe</label><div class=\"seg\">").concat(['allié', 'neutre', 'hostile'].map(function (a) { return "<button type=\"button\" data-att=\"".concat(a, "\" class=\"").concat((n.att || 'neutre') === a ? 'on' : '', "\">").concat(a[0].toUpperCase() + a.slice(1), "</button>"); }).join(''), "</div>\n      ").concat(ta('look', 'Apparence', 'Âge, allure, voix, tics…')).concat(ta('pers', 'Personnalité', 'Traits, manières de parler…')).concat(ta('goal', 'Motivations', 'Ce qu’il veut, ce qu’il craint…'), "\n      ").concat(ta('secret', 'Secrets (MJ seulement)', 'Ce que les joueurs ne savent pas…', 'secret')).concat(ta('notes', 'Notes', 'Relations, ce que le groupe sait de lui…'), "\n      <label class=\"fl\" for=\"npStat\">Statistiques (cr\u00E9ature du bestiaire)</label><input class=\"in\" id=\"npStat\" list=\"npBest\" value=\"").concat(esc(n.stat || ''), "\" placeholder=\"Ex. : V\u00E9t\u00E9ran, Mage, Bandit\u2026 (facultatif)\"><datalist id=\"npBest\">").concat((typeof BESTIARY !== 'undefined' ? BESTIARY : []).map(function (b) { return "<option value=\"".concat(esc(b[0]), "\">"); }).join(''), "</datalist>\n      <p class=\"hint\" id=\"npStatI\">").concat(m ? "".concat(esc(m[1]), " \u00B7 CA ").concat(m[3], " \u00B7 PV ").concat(esc(m[4]), " \u00B7 FP ").concat(esc(m[11] || '?')) : 'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).', "</p>\n    </div></div></div>");
+        return "<div class=\"stbook\">".concat(stCrumb(crumb), "\n    <div class=\"npcsheet\"><div><div class=\"por\" ").concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "<label>").concat(n.img ? 'Changer le portrait' : 'Ajouter un portrait', "<input type=\"file\" accept=\"image/*\" id=\"npImg\"></label></div>\n      <div class=\"stact\"><button class=\"btn primary\" type=\"button\" id=\"npMap\">Placer sur la carte</button><button class=\"btn ghost sm\" type=\"button\" id=\"npDel\">Supprimer le PNJ</button></div></div>\n    <div><input class=\"sttitle\" id=\"npN\" value=\"").concat(esc(n.name), "\" aria-label=\"Nom du PNJ\" style=\"width:100%\">\n      <div class=\"nrow\"><div><label class=\"fl\" for=\"np_role\">R\u00F4le / m\u00E9tier</label><input class=\"in\" id=\"np_role\" data-nk=\"role\" value=\"").concat(esc(n.role || ''), "\" placeholder=\"Aubergiste, chef des bandits\u2026\"></div>\n        <div><label class=\"fl\" for=\"np_place\">Lieu</label><input class=\"in\" id=\"np_place\" data-nk=\"place\" value=\"").concat(esc(n.place || ''), "\" placeholder=\"O\u00F9 le trouver\" list=\"npLieux\"><datalist id=\"npLieux\">").concat((c.places || []).map(function (p) { return "<option value=\"".concat(esc(p.name), "\">"); }).join(''), "</datalist>").concat((function () { var p = stPlaceOf(n); return p ? "<button type=\"button\" class=\"btn sm\" data-golieu=\"".concat(p.id, "\" style=\"margin-top:6px\">\uD83D\uDCCD Ouvrir ").concat(esc(p.name), "</button>") : ''; })(), "</div></div>\n      <label class=\"fl\">Attitude envers le groupe</label><div class=\"seg\">").concat(['allié', 'neutre', 'hostile'].map(function (a) { return "<button type=\"button\" data-att=\"".concat(a, "\" class=\"").concat((n.att || 'neutre') === a ? 'on' : '', "\">").concat(a[0].toUpperCase() + a.slice(1), "</button>"); }).join(''), "</div>\n      ").concat(ta('look', 'Apparence', 'Âge, allure, voix, tics…')).concat(ta('pers', 'Personnalité', 'Traits, manières de parler…')).concat(ta('goal', 'Motivations', 'Ce qu’il veut, ce qu’il craint…'), "\n      ").concat(ta('secret', 'Secrets (MJ seulement)', 'Ce que les joueurs ne savent pas…', 'secret')).concat(ta('notes', 'Notes', 'Relations, ce que le groupe sait de lui…'), "\n      <label class=\"fl\" for=\"npStat\">Statistiques (cr\u00E9ature du bestiaire)</label><input class=\"in\" id=\"npStat\" list=\"npBest\" value=\"").concat(esc(n.stat || ''), "\" placeholder=\"Ex. : V\u00E9t\u00E9ran, Mage, Bandit\u2026 (facultatif)\"><datalist id=\"npBest\">").concat((typeof BESTIARY !== 'undefined' ? BESTIARY : []).map(function (b) { return "<option value=\"".concat(esc(b[0]), "\">"); }).join(''), "</datalist>\n      <p class=\"hint\" id=\"npStatI\">").concat(m ? "".concat(esc(m[1]), " \u00B7 CA ").concat(m[3], " \u00B7 PV ").concat(esc(m[4]), " \u00B7 FP ").concat(esc(m[11] || '?')) : 'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).', "</p>\n    </div></div></div>");
     }
     function stNpcBind(el) {
         var _this = this;
         var c = stCamp(), n = stNpc();
-        el.querySelectorAll('[data-crumb]').forEach(function (b) { return b.onclick = function () { var k = b.dataset.crumb; ui.stN = null; if (k === 'list') {
+        el.querySelectorAll('[data-crumb]').forEach(function (b) { return b.onclick = function () { var k = b.dataset.crumb; ui.stN = null; ui.stL = null; if (k === 'list') {
             ui.stC = null;
             ui.stS = null;
         }
@@ -12811,12 +12994,13 @@ var __values = (this && this.__values) || function(o) {
             ui.stS = null;
             ui.stTab = 'pnj';
         } ui.stBack = null; stRender(); }; });
+        el.querySelectorAll('[data-golieu]').forEach(function (b) { return b.onclick = function () { return stOpen('lieu', b.dataset.golieu); }; });
         stBind(el, '#npN', n, 'name');
         el.querySelectorAll('[data-nk]').forEach(function (i) { return stBind(el, "#".concat(i.id), n, i.dataset.nk); });
         el.querySelectorAll('[data-att]').forEach(function (b) { return b.onclick = function () { n.att = b.dataset.att; stSave(); el.querySelectorAll('[data-att]').forEach(function (x) { return x.classList.toggle('on', x === b); }); }; });
         var st = el.querySelector('#npStat');
         st.oninput = function () { n.stat = st.value.trim(); stSave(); var m = BESTIARY.find(function (b) { return b[0] === n.stat; }); el.querySelector('#npStatI').textContent = m ? "".concat(m[1], " \u00B7 CA ").concat(m[3], " \u00B7 PV ").concat(m[4], " \u00B7 FP ").concat(m[11] || '?') : n.stat ? 'Créature introuvable dans le bestiaire.' : 'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).'; };
-        el.querySelector('#npImg').onchange = function (e) { return __awaiter(_this, void 0, void 0, function () { var f, u, id, er_1; return __generator(this, function (_c) {
+        el.querySelector('#npImg').onchange = function (e) { return __awaiter(_this, void 0, void 0, function () { var f, u, id, er_2; return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
                     f = e.target.files[0];
@@ -12836,7 +13020,7 @@ var __values = (this && this.__values) || function(o) {
                     stRender();
                     return [3 /*break*/, 4];
                 case 3:
-                    er_1 = _c.sent();
+                    er_2 = _c.sent();
                     toast('Image illisible');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
@@ -13313,7 +13497,7 @@ var __values = (this && this.__values) || function(o) {
         } }; });
         el.querySelectorAll('[data-sbed]').forEach(function (b) { return b.onclick = function (e) { e.stopPropagation(); sbEdit(b.dataset.sbed); }; });
         el.querySelectorAll('[data-sbadd]').forEach(function (i) { return i.onchange = function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var k, n, _c, _e, f, id, er_2, e_26_1;
+            var k, n, _c, _e, f, id, er_3, e_26_1;
             var e_26, _f;
             return __generator(this, function (_g) {
                 switch (_g.label) {
@@ -13337,7 +13521,7 @@ var __values = (this && this.__values) || function(o) {
                         _g.sent();
                         return [3 /*break*/, 6];
                     case 5:
-                        er_2 = _g.sent();
+                        er_3 = _g.sent();
                         toast('Impossible d’enregistrer ' + f.name);
                         return [3 /*break*/, 7];
                     case 6:

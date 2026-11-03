@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-10h50';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-11h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -253,12 +253,8 @@ body.mode-st .top .round{visibility:hidden}
 .stfab button{appearance:none;border:1px solid #c9a45c;background:#2b2416;color:#f2e6c8;border-radius:999px;min-width:48px;height:48px;padding:0 14px;font:700 14px var(--f-display);box-shadow:0 4px 12px rgba(0,0,0,.3);cursor:pointer}
 .stfab .tocb{display:none}
 .stfab button[hidden]{display:none}
-@media(max-width:1000px){
-  .stwrap{grid-template-columns:1fr}
-  .sttoc{position:fixed;left:0;top:0;bottom:0;width:min(330px,86vw);max-height:none;z-index:60;border-radius:0 14px 14px 0;transform:translateX(-105%);transition:transform .25s;box-shadow:4px 0 24px rgba(0,0,0,.3)}
-  .sttoc.open{transform:none}
-  .sttoc .x{display:block;margin-left:auto;appearance:none;border:0;background:none;font-size:22px;color:#6b5a3f;cursor:pointer;padding:0 4px}
-  .stfab .tocb{display:block}}
+.stfab .tocb{display:block}
+.sttoc .x{display:block;margin-left:auto;appearance:none;border:0;background:none;font-size:20px;color:#6b5a3f;cursor:pointer;padding:0 4px}
 .stchap .h .fold{width:30px;border:0;background:none;font-size:15px}
 .stchap .h small.chw{color:#9a8460;font-size:12px;white-space:nowrap}
 .stchap.folded{padding-bottom:10px}
@@ -269,6 +265,24 @@ body.mode-st .top .round{visibility:hidden}
 .sthl{position:absolute;z-index:70;pointer-events:none;background:rgba(243,211,107,.55);border-radius:3px;box-shadow:0 0 0 2px rgba(201,164,92,.8);animation:sthl 2.8s ease forwards}
 @keyframes sthl{0%,60%{opacity:1}100%{opacity:0}}
 .stfmt .mkb{margin-left:auto}
+
+.stwrap.nav-off{grid-template-columns:minmax(0,1fr)}
+.stwrap.nav-off .sttoc{display:none}
+@media(max-width:1000px){.stwrap{grid-template-columns:230px minmax(0,1fr);gap:12px}.stbook{padding:16px 14px 22px}}
+.sttoc details{margin-top:6px}
+.sttoc summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;font:700 11px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:#8a5a20;padding:8px 4px;border-top:1px solid #eadcbc}
+.sttoc summary::-webkit-details-marker{display:none}
+.sttoc summary::before{content:'▸';font-size:11px;transition:transform .15s}
+.sttoc details[open]>summary::before{transform:rotate(90deg)}
+.sttoc summary small{margin-left:auto;font:12px Georgia,serif;letter-spacing:0;text-transform:none;color:#9a8460}
+.sttoc .tl button .av{display:inline-block;width:20px;height:20px;border-radius:50%;background:#3a2a14 center/cover;vertical-align:-5px;margin-right:6px;color:#f2e6c8;font:10px/20px var(--f-display);text-align:center}
+.sttoc .add{font:13px Georgia,serif;color:#8a5a20}
+.lieupic{font-size:30px;background-color:#2f4a3a!important}
+a.npcl.lieul{color:#2a5a3a}
+.stchips .lieu i{background:#2f4a3a}
+
+.stfmt{flex-wrap:wrap;row-gap:4px}
+.stview .sttitle{min-width:0;max-width:100%;box-sizing:border-box}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -3850,7 +3864,7 @@ $('#bJour').onclick=journalModal;$('#bAnim').onclick=animModal;
 const leaveSide=()=>{const was=ui.sb||ui.st,wasSb=ui.sb;ui.sb=false;ui.st=false;if(wasSb){scheduleTV();tvPublishSt()}return was};
 $('#tCombat').onclick=()=>{if(leaveSide()){render();if(!ui.ed)return}if(ui.ed)closeEditor()};
 $('#tSb').onclick=()=>{if(ui.sb)return;ui.st=false;ui.sb=true;render();scheduleTV();tvPublishSt()};
-$('#tSt').onclick=()=>{if(ui.st){if(ui.stS||ui.stN||ui.stC){ui.stS=ui.stN=null;ui.stC=null;stRender()}return}const wasSb=ui.sb;ui.sb=false;ui.st=true;stRender();render();if(wasSb){scheduleTV();tvPublishSt()}};
+$('#tSt').onclick=()=>{if(ui.st){if(ui.stS||ui.stN||ui.stL||ui.stC){ui.stS=ui.stN=ui.stL=null;ui.stC=null;stRender()}return}const wasSb=ui.sb;ui.sb=false;ui.st=true;stRender();render();if(wasSb){scheduleTV();tvPublishSt()}};
 $('#tCrea').onclick=()=>{if(leaveSide()){render();if(ui.ed)return}if(ui.ed){if(!ui.pick){ui.pick=true;render()}return}if(!endTest(true))return;openEditor();ui.pick=true;render()};
 $('#bFoe').onclick=bestiaryModal;
 const THUMBS={};
@@ -4426,10 +4440,10 @@ function sndModal(){const d=SD(),M=MD();let impMood=sndModal.mood||'exploration'
 
 /* ---------- Histoire : navigation ---------- */
 function stFid(obj,key){const c=stCamp();if(!c||!obj)return '';if(obj===c)return key;
-  if((c.scen||[]).includes(obj))return 'scen:'+obj.id+':'+key;if((c.sess||[]).includes(obj))return 'sess:'+obj.id+':'+key;if((c.npcs||[]).includes(obj))return 'npc:'+obj.id+':'+key;return ''}
+  if((c.scen||[]).includes(obj))return 'scen:'+obj.id+':'+key;if((c.sess||[]).includes(obj))return 'sess:'+obj.id+':'+key;if((c.npcs||[]).includes(obj))return 'npc:'+obj.id+':'+key;if((c.places||[]).includes(obj))return 'lieu:'+obj.id+':'+key;return ''}
 const stFold=t=>String(t||'').split('').map(ch=>(ch.normalize('NFD')[0]||ch).toLowerCase()).join('');
+function stPlaceOf(n){const c=stCamp(),k=stFold((n&&n.place||'').trim());if(!c||!k)return null;return (c.places||[]).find(p=>stFold(p.name.trim())===k)||(c.places||[]).find(p=>p.name.trim().length>=3&&k.includes(stFold(p.name.trim())))||null}
 function stTexts(root){const L=[],tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);while(tw.nextNode())L.push(tw.currentNode);return L}
-// position (en caractères) -> range dans un bloc de texte
 function stRangeAt(root,off,len){const L=stTexts(root);let p=0,r=document.createRange(),st=null;
   for(const n of L){const l=n.nodeValue.length;if(!st&&off<=p+l){r.setStart(n,Math.max(0,off-p));st=1;if(!len){r.collapse(true);return r}}
     if(st&&off+len<=p+l){r.setEnd(n,off+len-p);return r}p+=l}
@@ -4438,53 +4452,77 @@ function stOffsetOf(root,node,off){const r=document.createRange();r.selectNodeCo
 function stOffsetAtPoint(root,x,y){let n=null,o=0;if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);if(r){n=r.startContainer;o=r.startOffset}}
   else if(document.caretPositionFromPoint){const p=document.caretPositionFromPoint(x,y);if(p){n=p.offsetNode;o=p.offset}}
   return n&&root.contains(n)?stOffsetOf(root,n,o):null}
-function stFidLabel(fid){const c=stCamp();if(!c)return '';const [k,id,f]=fid.split(':'),F={prep:'Préparation',sum:'Résumé',title:'Titre',text:'',look:'Apparence',pers:'Personnalité',goal:'Motivations',secret:'Secrets',notes:'Notes',role:'Rôle',place:'Lieu',name:'Nom'};
+function stFidLabel(fid){const c=stCamp();if(!c)return '';const [k,id,f]=fid.split(':'),F={prep:'Préparation',sum:'Résumé',title:'Titre',text:'',look:'Apparence',pers:'Personnalité',goal:'Motivations',secret:'Secrets',notes:'Notes',role:'Rôle',place:'Lieu',name:'Nom',kind:'Type',desc:'Description'};
   if(k==='desc')return 'Résumé de la campagne';if(k==='notes')return 'Notes & lore';if(k==='name')return 'Nom de la campagne';
   if(k==='scen'){const h=(c.scen||[]).find(z=>z.id===id);return 'Scénario › '+(h?h.title:'?')}
   if(k==='sess'||k==='live'){const x=(c.sess||[]).find(z=>z.id===id);return 'Session '+(x?x.n:'?')+' › '+(k==='live'?'Notes en direct':F[f]||f)}
-  if(k==='npc'){const n=(c.npcs||[]).find(z=>z.id===id);return 'PNJ '+(n?n.name:'?')+(F[f]?' › '+F[f]:'')}return fid}
+  if(k==='npc'){const n=(c.npcs||[]).find(z=>z.id===id);return 'PNJ '+(n?n.name:'?')+(F[f]?' › '+F[f]:'')}
+  if(k==='lieu'){const n=(c.places||[]).find(z=>z.id===id);return 'Lieu '+(n?n.name:'?')+(F[f]?' › '+F[f]:'')}return fid}
+// ouvrir une page de la campagne
+function stOpen(kind,id,tab){ui.stS=ui.stN=ui.stL=null;ui.stBack=null;if(kind==='sess')ui.stS=id;else if(kind==='npc')ui.stN=id;else if(kind==='lieu')ui.stL=id;else if(tab)ui.stTab=tab;stRender()}
 // marque-page
 function stMarkSet(ed,saved){const c=stCamp();if(!c||!ed.dataset.fid)return;let off=0;if(saved&&ed.contains(saved.startContainer)){const o=stOffsetOf(ed,saved.startContainer,saved.startOffset);if(o!=null)off=o}
-  c.mark={fid:ed.dataset.fid,off,ts:Date.now()};stSave();toast('🔖 Marque-page posé : '+stFidLabel(c.mark.fid));stNavFab()}
+  c.mark={fid:ed.dataset.fid,off,ts:Date.now()};stSave();toast('🔖 Marque-page posé : '+stFidLabel(c.mark.fid));stNavFab();stTocBuild()}
 // aller à un endroit précis
 function stGo(fid,o){const c=stCamp();if(!c||!fid)return;o=o||{};const [k,id]=fid.split(':');
-  ui.stN=null;ui.stS=null;ui.stBack=null;
+  ui.stN=null;ui.stS=null;ui.stL=null;ui.stBack=null;
   if(k==='scen'){ui.stTab='scen';const h=(c.scen||[]).find(z=>z.id===id);if(h&&h.fold){h.fold=false;stSave()}}
-  else if(k==='notes')ui.stTab='notes';else if(k==='sess'||k==='live')ui.stS=id;else if(k==='npc')ui.stN=id;
+  else if(k==='notes')ui.stTab='notes';else if(k==='sess'||k==='live')ui.stS=id;else if(k==='npc')ui.stN=id;else if(k==='lieu')ui.stL=id;
   ui.stKeep=1;stRender();setTimeout(()=>stLocate(fid,o),60)}
 function stLocate(fid,o){const sel=fid.startsWith('live:')?'#lList':`[data-fid="${fid}"]`;const el=[...document.querySelectorAll('#stView '+sel)].find(e=>!e.hidden&&e.offsetParent);if(!el)return;
   let r=null;
-  if(o.q!=null&&el.tagName!=='INPUT'){const L=stTexts(el),txt=stFold(L.map(n=>n.nodeValue).join('')),q=stFold(o.q);let i=-1,k=0;do{i=txt.indexOf(q,i+1)}while(i>=0&&k++<(o.nth||0));if(i>=0)r=stRangeAt(el,i,q.length)}
-  else if(o.off!=null&&el.tagName!=='INPUT'){r=stRangeAt(el,o.off,0);if(r){const n=r.startContainer;if(n.nodeType===3){const t=n.nodeValue,a=r.startOffset;let b=a;while(b<t.length&&!/\s/.test(t[b]))b++;let s0=a;while(s0>0&&!/\s/.test(t[s0-1]))s0--;r.setStart(n,s0);r.setEnd(n,Math.max(b,s0+1>t.length?t.length:b))}}}
+  if(o.h!=null){const H=el.querySelectorAll('h3,h4')[o.h];if(H){r=document.createRange();r.selectNodeContents(H)}}
+  else if(o.q!=null&&el.tagName!=='INPUT'){const L=stTexts(el),txt=stFold(L.map(n=>n.nodeValue).join('')),q=stFold(o.q);let i=-1,k=0;do{i=txt.indexOf(q,i+1)}while(i>=0&&k++<(o.nth||0));if(i>=0)r=stRangeAt(el,i,q.length)}
+  else if(o.off!=null&&el.tagName!=='INPUT'){r=stRangeAt(el,o.off,0);if(r){const n=r.startContainer;if(n.nodeType===3){const t=n.nodeValue,a=r.startOffset;let b=a;while(b<t.length&&!/\s/.test(t[b]))b++;let s0=a;while(s0>0&&!/\s/.test(t[s0-1]))s0--;r.setStart(n,s0);r.setEnd(n,Math.max(b,Math.min(t.length,s0+1)))}}}
   stFlash(r,el)}
 function stFlash(r,el){let rects=r?[...r.getClientRects()].filter(x=>x.width||x.height):[];if(!rects.length)rects=[el.getBoundingClientRect()];
   const top=rects[0].top+scrollY;window.scrollTo({top:Math.max(0,top-innerHeight*.3),behavior:RM?'auto':'smooth'});
   rects.slice(0,6).forEach(x=>{const d=document.createElement('div');d.className='sthl';d.style.cssText=`left:${x.left+scrollX-2}px;top:${x.top+scrollY-1}px;width:${x.width+4}px;height:${x.height+2}px`;document.body.appendChild(d);setTimeout(()=>d.remove(),3000)})}
-// sommaire
+// titres (T1/T2) d'un texte enregistré, sans l'afficher
+function stHeads(o,key){const h=o&&o[key+'_h'];if(!h||o[key+'_t']!==(o[key]||''))return [];const d=document.createElement('div');d.innerHTML=h;return [...d.querySelectorAll('h3,h4')].map((e,i)=>({t:e.textContent.trim(),l:e.tagName==='H3'?2:3,i})).filter(x=>x.t)}
+// sommaire de la page affichée (titres, rubriques)
 let STTOC=0;function stTocSoon(){clearTimeout(STTOC);STTOC=setTimeout(stTocBuild,700)}
 function stTocItems(){const m=$('#stView .stmain');if(!m)return [];const out=[];
-  m.querySelectorAll('[data-toc],.stsrow,.npccard,label.fl,.stlive h3,.stedit h3,.stedit h4,.stread h3,.stread h4').forEach(e=>{if(e.closest('[hidden]')&&!e.matches('[data-toc]'))return;
+  m.querySelectorAll('[data-toc],label.fl,.stlive h3,.stedit h3,.stedit h4,.stread h3,.stread h4').forEach(e=>{if(e.closest('[hidden]')&&!e.matches('[data-toc]'))return;
     let t='',l=1,fo=false;
     if(e.matches('.stchap')){t=(e.querySelector('[data-cht]')||{}).value||'Chapitre';fo=e.classList.contains('folded')}
-    else if(e.matches('.stsrow'))t=e.querySelector('.n').textContent+' · '+e.querySelector('.t b').textContent;
-    else if(e.matches('.npccard'))t=e.querySelector('h3').textContent;
     else if(e.matches('label.fl,.stlive h3'))t=e.textContent.replace(/^✎\s*/,'');
     else{t=e.textContent;l=e.tagName==='H3'?2:3;if(!e.closest('.stchap'))l--}
     t=t.trim();if(t)out.push({e,t,l:Math.max(1,l),fo})});return out}
-function stTocBuild(){const T=$('#stToc');if(!T)return;const q=(T.querySelector('.sq')||{}).value||'';
-  if(!T.dataset.ok){T.dataset.ok=1;T.innerHTML=`<div style="display:flex;align-items:center;gap:6px"><input class="sq" type="search" placeholder="🔍 Rechercher…" aria-label="Rechercher dans la campagne" enterkeyhint="search"><button type="button" class="x" aria-label="Fermer">✕</button></div><div class="tbody"></div>`;
-    const inp=T.querySelector('.sq');let t0=0;inp.oninput=()=>{clearTimeout(t0);t0=setTimeout(stTocBuild,180)};T.querySelector('.x').onclick=()=>T.classList.remove('open');if(ui.stQ){inp.value=ui.stQ}}
+// la barre de navigation : recherche, cette page, scénario, sessions, PNJ, lieux
+function stTocBuild(){const T=$('#stToc');if(!T)return;const c=stCamp();if(!c)return;ui.stSec=ui.stSec||{scen:1,sess:1,npc:1,lieu:1,page:1};
+  if(!T.dataset.ok){T.dataset.ok=1;T.innerHTML=`<div style="display:flex;align-items:center;gap:6px"><input class="sq" type="search" placeholder="🔍 Rechercher…" aria-label="Rechercher dans la campagne" enterkeyhint="search"><button type="button" class="x" aria-label="Masquer la navigation">✕</button></div><div class="tbody"></div>`;
+    const inp=T.querySelector('.sq');let t0=0;inp.oninput=()=>{clearTimeout(t0);t0=setTimeout(stTocBuild,180)};T.querySelector('.x').onclick=stNavToggle;if(ui.stQ)inp.value=ui.stQ}
   const B=T.querySelector('.tbody'),qq=T.querySelector('.sq').value.trim();ui.stQ=qq;
   if(qq.length>=2){const R=stSearch(qq);B.innerHTML=`<h4>${R.length?R.length+(R.length>=80?'+':'')+' résultat'+(R.length>1?'s':''):'Aucun résultat'}</h4><div class="res">${R.map((r,i)=>`<button type="button" data-r="${i}"><b>${esc(stFidLabel(r.fid))}</b>${r.snip}</button>`).join('')}</div>`;
-    B.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=R[+b.dataset.r];T.classList.remove('open');stGo(r.fid,{q:qq,nth:r.nth})});return}
-  const L=stTocItems();
-  B.innerHTML=`<h4>Sommaire</h4>${L.length?`<div class="tl">${L.map((x,i)=>`<button type="button" data-ti="${i}" class="l${x.l} ${x.fo?'fo':''}">${x.fo?'▸ ':''}${esc(x.t)}</button>`).join('')}</div>`:'<div class="none">Ajoute des titres (T1, T2) dans ton texte pour qu’ils apparaissent ici.</div>'}`+(()=>{const c=stCamp();return c&&c.mark?`<button type="button" class="mk" data-mk2="1">🔖 Reprendre : ${esc(stFidLabel(c.mark.fid))}</button>`:''})();
-  B.querySelectorAll('[data-ti]').forEach(b=>b.onclick=()=>{const x=L[+b.dataset.ti];T.classList.remove('open');if(x.fo){const f=x.e.querySelector('[data-fold]');if(f)f.click()}x.e.scrollIntoView({block:'start',behavior:RM?'auto':'smooth'})});
-  const m2=B.querySelector('[data-mk2]');if(m2)m2.onclick=()=>{T.classList.remove('open');stMarkGo()};
-  STTOCL=L;requestAnimationFrame(stTocSpy)}
-let STTOCL=[];function stTocSpy(){const T=$('#stToc');if(!T||!STTOCL.length)return;let k=-1;STTOCL.forEach((x,i)=>{if(x.e.offsetParent&&x.e.getBoundingClientRect().top<140)k=i});T.querySelectorAll('[data-ti]').forEach((b,i)=>b.classList.toggle('on',i===k))}
+    B.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=R[+b.dataset.r];stGo(r.fid,{q:qq,nth:r.nth})});return}
+  const onScen=!ui.stS&&!ui.stN&&!ui.stL&&ui.stTab==='scen',onPage=ui.stS||ui.stN||ui.stL||(!onScen&&ui.stTab==='notes');
+  const P=stTocItems(),go=[];let h='';
+  const sec=(k,ic,t,n,body,add)=>`<details data-sec="${k}" ${ui.stSec[k]?'open':''}><summary>${ic} ${t}${n!=null?`<small>${n}</small>`:''}</summary><div class="tl">${body||''}${add?`<button type="button" class="add" data-add="${k}">+ ${add}</button>`:''}</div></details>`;
+  const btn=(lbl,cl,act,on,av)=>{go.push(act);return `<button type="button" data-g="${go.length-1}" class="${cl||''} ${on?'on':''}">${av||''}${esc(lbl)}</button>`};
+  if(c.mark)h+=`<button type="button" class="mk" data-mk2="1">🔖 Reprendre : ${esc(stFidLabel(c.mark.fid))}</button>`;
+  if(onPage&&P.length)h+=sec('page','📄','Cette page',null,P.map(x=>btn(x.t,'l'+x.l,()=>x.e.scrollIntoView({block:'start',behavior:RM?'auto':'smooth'}),false)).join(''));
+  // scénario
+  let sb='';if(onScen){STTOCL=P;sb=P.map((x,i)=>{go.push(()=>{if(x.fo){const f=x.e.querySelector('[data-fold]');if(f)f.click()}x.e.scrollIntoView({block:'start',behavior:RM?'auto':'smooth'})});return `<button type="button" data-g="${go.length-1}" data-ti="${i}" class="l${x.l} ${x.fo?'fo':''}">${x.fo?'▸ ':''}${esc(x.t)}</button>`}).join('')}
+  else{STTOCL=[];(c.scen||[]).forEach(ch=>{sb+=btn(ch.title||'Chapitre','l1',()=>stGo('scen:'+ch.id+':title'));stHeads(ch,'text').forEach(x=>{sb+=btn(x.t,'l'+x.l,()=>stGo('scen:'+ch.id+':text',{h:x.i}))})})}
+  h+=sec('scen','🎬','Scénario',(c.scen||[]).length,sb,onScen?'':null);
+  h+=sec('sess','📅','Sessions',(c.sess||[]).length,(c.sess||[]).slice().sort((a,b)=>b.n-a.n).map(x=>btn(x.n+' · '+(x.title||'Session '+x.n),'l1',()=>stOpen('sess',x.id),ui.stS===x.id)).join(''),'Nouvelle session');
+  h+=sec('npc','👤','PNJ',(c.npcs||[]).length,(c.npcs||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(n=>btn(n.name,'l1',()=>stOpen('npc',n.id),ui.stN===n.id,`<span class="av" ${stPic(n)}>${n.img?'':stInit(n)}</span>`)).join(''),'Nouveau PNJ');
+  h+=sec('lieu','📍','Lieux',(c.places||[]).length,(c.places||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(p=>btn(p.name,'l1',()=>stOpen('lieu',p.id),ui.stL===p.id,`<span class="av" ${stPic(p)}>${p.img?'':'📍'}</span>`)).join(''),'Nouveau lieu');
+  h+=`<button type="button" class="add" data-g="${go.push(()=>stOpen('camp',null,'notes'))-1}" style="margin-top:8px;border:0;background:none;cursor:pointer;padding:6px 4px">📜 Notes & lore</button>`;
+  B.innerHTML=h;
+  B.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>go[+b.dataset.g]());
+  B.querySelectorAll('details[data-sec]').forEach(d=>d.ontoggle=()=>{ui.stSec[d.dataset.sec]=d.open?1:0});
+  B.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const k=b.dataset.add;
+    if(k==='sess'){c.sess=c.sess||[];const n=c.sess.reduce((m,x)=>Math.max(m,x.n||0),0)+1,x={id:'s'+uid(),n,title:'Session '+n,date:stToday(),prep:'',live:[],sum:'',npcs:[]};c.sess.push(x);stSave();stOpen('sess',x.id)}
+    if(k==='npc'){c.npcs=c.npcs||[];const n={id:'n'+uid(),name:'Nouveau PNJ',att:'neutre',role:'',place:'',look:'',pers:'',goal:'',secret:'',notes:'',stat:''};c.npcs.push(n);stSave();stOpen('npc',n.id);const t=$('#npN');if(t){t.focus();t.select()}}
+    if(k==='lieu'){c.places=c.places||[];const p={id:'p'+uid(),name:'Nouveau lieu',kind:'',desc:'',secret:'',notes:''};c.places.push(p);stSave();stOpen('lieu',p.id);const t=$('#lpN');if(t){t.focus();t.select()}}});
+  const m2=B.querySelector('[data-mk2]');if(m2)m2.onclick=stMarkGo;
+  requestAnimationFrame(stTocSpy)}
+let STTOCL=[];function stTocSpy(){const T=$('#stToc');if(!T||!STTOCL.length)return;let k=-1;STTOCL.forEach((x,i)=>{if(x.e.offsetParent&&x.e.getBoundingClientRect().top<140)k=i});T.querySelectorAll('[data-ti]').forEach(b=>b.classList.toggle('on',+b.dataset.ti===k))}
 function stMarkGo(){const c=stCamp();if(c&&c.mark)stGo(c.mark.fid,{off:c.mark.off})}
 function stNavFab(){const c=stCamp(),b=$('#stMkB');if(b){b.hidden=!(c&&c.mark);b.title=c&&c.mark?'Reprendre : '+stFidLabel(c.mark.fid):''}}
+function stNavToggle(){S.stNav=!S.stNav;save();const w=$('#stView .stwrap');if(w)w.classList.toggle('nav-off',!S.stNav);const b=$('#stTocB');if(b)b.textContent=S.stNav?'✕ Masquer':'☰ Navigation';if(S.stNav)stTocBuild()}
 // recherche dans toute la campagne
 function stSearch(q){const c=stCamp();if(!c)return [];const Q=stFold(q),out=[];
   const add=(fid,t)=>{t=String(t||'');const F=stFold(t);let i=-1,n=0;while((i=F.indexOf(Q,i+1))>=0&&out.length<80){const a=Math.max(0,i-40),b=Math.min(t.length,i+Q.length+60);
@@ -4493,11 +4531,28 @@ function stSearch(q){const c=stCamp();if(!c)return [];const Q=stFold(q),out=[];
   (c.scen||[]).forEach(h=>{add('scen:'+h.id+':title',h.title);add('scen:'+h.id+':text',h.text)});
   (c.sess||[]).slice().sort((a,b)=>b.n-a.n).forEach(x=>{add('sess:'+x.id+':title',x.title);add('sess:'+x.id+':prep',x.prep);add('sess:'+x.id+':sum',x.sum);add('live:'+x.id,(x.live||[]).map(n=>n.t).join('\n'))});
   (c.npcs||[]).forEach(n=>['name','role','place','look','pers','goal','secret','notes'].forEach(k=>add('npc:'+n.id+':'+k,n[k])));
+  (c.places||[]).forEach(p=>['name','kind','desc','secret','notes'].forEach(k=>add('lieu:'+p.id+':'+k,p[k])));
   return out}
 function stNavBind(el){stTocBuild();stNavFab();
-  const T=el.querySelector('#stToc');el.querySelector('#stTocB').onclick=()=>{T.classList.add('open');setTimeout(()=>T.querySelector('.sq').focus({preventScroll:true}),260)};
+  el.querySelector('#stTocB').onclick=stNavToggle;
   el.querySelector('#stMkB').onclick=stMarkGo;el.querySelector('#stTopB').onclick=()=>window.scrollTo({top:0,behavior:RM?'auto':'smooth'})}
 addEventListener('scroll',()=>{if(!ui.st)return;const b=$('#stTopB');if(b)b.hidden=scrollY<500;if(!stTocSpy._r){stTocSpy._r=requestAnimationFrame(()=>{stTocSpy._r=0;stTocSpy()})}},{passive:true});
+/* fiche d'un lieu */
+function stLieuHTML(){const c=stCamp(),p=stLieu(),k=stFold(p.name.trim()),N=(c.npcs||[]).filter(n=>{const pl=stPlaceOf(n);return pl&&pl.id===p.id});
+  const ta=(q,l,ph,cls)=>`<label class="fl" for="lp_${q}">${l}</label><textarea id="lp_${q}" data-lk="${q}" class="${cls||''}" placeholder="${ph}">${esc(p[q]||'')}</textarea>`;
+  return `<div class="stbook">${stCrumb([['Campagnes','list'],[c.name,'camp'],['Lieux','lieux'],[p.name,'']])}
+    <div class="npcsheet"><div><div class="por lieupic" ${stPic(p)}>${p.img?'':'📍'}<label>${p.img?'Changer l’image':'Ajouter une image'}<input type="file" accept="image/*" id="lpImg"></label></div>
+      <div class="stact"><button class="btn ghost sm" type="button" id="lpDel">Supprimer le lieu</button></div></div>
+    <div><input class="sttitle" id="lpN" value="${esc(p.name)}" aria-label="Nom du lieu" style="width:100%">
+      <label class="fl" for="lp_kind">Type</label><input class="in" id="lp_kind" data-lk="kind" value="${esc(p.kind||'')}" placeholder="Village, auberge, forêt, donjon…">
+      <label class="fl">PNJ présents</label><div class="stchips">${N.map(n=>`<span class="stchip" data-open="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}</span>`).join('')||'<span class="hint">Aucun PNJ ici : dans une fiche PNJ, mets ce nom dans « Lieu ».</span>'}</div>
+      ${ta('desc','Description','Ce que les joueuses voient, entendent, sentent…','big')}${ta('secret','Secrets (MJ seulement)','Pièges, trésors cachés, passages secrets…','secret')}${ta('notes','Notes','Ce qui s’y est passé, ce que le groupe sait…')}
+    </div></div></div>`}
+function stLieuBind(el){const c=stCamp(),p=stLieu();stCrumbBind(el);
+  stBind(el,'#lpN',p,'name');el.querySelectorAll('[data-lk]').forEach(i=>stBind(el,`#${i.id}`,p,i.dataset.lk));
+  el.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>stOpen('npc',b.dataset.open));
+  el.querySelector('#lpImg').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const u=await processImg(f,false);const id='p'+uid();IMGS.set(id,u);IDB.put(id,u);p.img='ref:'+id;stSave();ui.stKeep=1;stRender()}catch(er){toast('Image illisible')}};
+  el.querySelector('#lpDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer ?';return}c.places=c.places.filter(x=>x.id!==p.id);ui.stL=null;ui.stTab='lieux';stSave();stRender()}}
 /* ---------- Capacités de classe : ressources, actions, passifs ---------- */
 const cfLeft=(c,k)=>{const v=c&&c.cres&&c.cres[k];return v?Math.max(0,+v[0]-(+v[1]||0)):0};
 const cfIncap=c=>['neutralisé','paralysé','étourdi','inconscient','pétrifié'].some(k=>has(c,k));
@@ -4567,6 +4622,7 @@ Object.assign(SPXX,{
 const STD=()=>S.story||(S.story={camps:[]});
 const stCamp=()=>STD().camps.find(c=>c.id===ui.stC)||null;
 const stSess=()=>{const c=stCamp();return c&&(c.sess||[]).find(x=>x.id===ui.stS)||null};
+const stLieu=()=>{const c=stCamp();return c&&(c.places||[]).find(x=>x.id===ui.stL)||null};
 const stNpc=()=>{const c=stCamp();return c&&(c.npcs||[]).find(x=>x.id===ui.stN)||null};
 const STCOL=['#8a2a22','#2a5a8a','#4f7a2a','#7a2a6a','#a8841f','#2a7a6a','#5a5048'];
 function stSave(){const c=stCamp();if(c)c.upd=Date.now();if(!saveT)saveT=setTimeout(saveNow,600)}
@@ -4580,7 +4636,7 @@ function stGrow(t){const sv=[];for(let e=t.parentElement;e;e=e.parentElement)if(
   sv.forEach(a=>{if(Math.abs(a[0].scrollTop-a[1])>1)a[0].scrollTop=a[1]})}
 const ST_FS=[13,14,16,18,20,24,28,32];
 const ST_AL=[['left','M1 1.5h14M1 4.5h9M1 7.5h14M1 10.5h9','Aligné à gauche','justifyLeft'],['center','M1 1.5h14M4 4.5h8M1 7.5h14M4 10.5h8','Centré','justifyCenter'],['right','M1 1.5h14M6 4.5h9M1 7.5h14M6 10.5h9','Aligné à droite','justifyRight'],['justify','M1 1.5h14M1 4.5h14M1 7.5h14M1 10.5h14','Justifié','justifyFull']];
-function stNames(){const c=stCamp(),L=[];if(c)(c.npcs||[]).forEach(n=>{const nm=(n.name||'').trim();if(nm.length<2)return;L.push([nm,n.id]);const f=nm.split(/\s+/)[0];if(f&&f!==nm&&f.length>=3)L.push([f,n.id])});return L.sort((a,b)=>b[0].length-a[0].length)}
+function stNames(){const c=stCamp(),L=[];if(c){(c.npcs||[]).forEach(n=>{const nm=(n.name||'').trim();if(nm.length<2)return;L.push([nm,n.id,'npc']);const f=nm.split(/\s+/)[0];if(f&&f!==nm&&f.length>=3)L.push([f,n.id,'npc'])});(c.places||[]).forEach(p=>{const nm=(p.name||'').trim();if(nm.length>=3)L.push([nm,p.id,'lieu'])})}return L.sort((a,b)=>b[0].length-a[0].length)}
 /* texte enrichi : gras, alignement et taille sur la sélection (le texte brut reste dans obj[key], le HTML dans obj[key_h]) */
 function stClean(html){const d=document.createElement('div');d.innerHTML=html;const OK={B:1,STRONG:1,I:1,EM:1,U:1,BR:1,DIV:1,P:1,SPAN:1,H3:1,H4:1};
   const walk=n=>{Array.prototype.slice.call(n.childNodes).forEach(c=>{if(c.nodeType===3)return;if(c.nodeType!==1){c.remove();return}
@@ -4592,11 +4648,11 @@ function stClean(html){const d=document.createElement('div');d.innerHTML=html;co
 function stFromText(t){return String(t||'').split('\n').map(l=>l?'<div>'+esc(l)+'</div>':'<div><br></div>').join('')}
 function stLinkify(html,skip){const L=stNames().filter(x=>x[1]!==skip);if(!L.length)return null;let re;
   try{re=new RegExp('(^|[^\\p{L}\\p{N}_])('+L.map(x=>x[0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')(?![\\p{L}\\p{N}_])','giu')}catch(e){return null}
-  const map={};L.forEach(x=>{const k=x[0].toLowerCase();if(!map[k])map[k]=x[1]});
+  const map={};L.forEach(x=>{const k=x[0].toLowerCase();if(!map[k])map[k]=x});
   const d=document.createElement('div');d.innerHTML=html;let hit=0;const tw=document.createTreeWalker(d,NodeFilter.SHOW_TEXT),nodes=[];while(tw.nextNode())nodes.push(tw.currentNode);
   nodes.forEach(n=>{const t=n.nodeValue;re.lastIndex=0;let last=0,m,frag=null;
     while((m=re.exec(t))){if(!frag)frag=document.createDocumentFragment();const st=m.index+m[1].length;frag.appendChild(document.createTextNode(t.slice(last,st)));
-      const a=document.createElement('a');a.className='npcl';a.href='#';a.dataset.npc=map[m[2].toLowerCase()];a.textContent=m[2];frag.appendChild(a);last=st+m[2].length;hit++}
+      const X=map[m[2].toLowerCase()],a=document.createElement('a');a.className='npcl'+(X[2]==='lieu'?' lieul':'');a.href='#';if(X[2]==='lieu')a.dataset.lieu=X[1];else a.dataset.npc=X[1];a.textContent=m[2];frag.appendChild(a);last=st+m[2].length;hit++}
     if(frag){frag.appendChild(document.createTextNode(t.slice(last)));n.parentNode.replaceChild(frag,n)}});
   return hit?d.innerHTML:null}
 function stRich(ta,obj,key,after){ta.style.display='none';
@@ -4620,7 +4676,7 @@ function stRich(ta,obj,key,after){ta.style.display='none';
   const sync=()=>{const h=document.activeElement===ed?null:stLinkify(stClean(ed.innerHTML),ui.stN);
     if(h===null){if(rd)rd.hidden=true;ed.hidden=false;return}
     if(!rd){rd=document.createElement('div');rd.className='stread';rd.tabIndex=0;rd.dataset.fid=ed.dataset.fid;ed.insertAdjacentElement('afterend',rd);
-      rd.addEventListener('click',e=>{const a=e.target.closest('a.npcl');if(a){e.preventDefault();ui.stBack=ui.stN?ui.stBack:(ui.stS?'sess':'camp');ui.stN=a.dataset.npc;stRender();return}edit(stOffsetAtPoint(rd,e.clientX,e.clientY))});
+      rd.addEventListener('click',e=>{const a=e.target.closest('a.npcl');if(a){e.preventDefault();if(a.dataset.lieu){stOpen('lieu',a.dataset.lieu);return}ui.stBack=ui.stN?ui.stBack:(ui.stS?'sess':'camp');ui.stL=null;ui.stN=a.dataset.npc;stRender();return}edit(stOffsetAtPoint(rd,e.clientX,e.clientY))});
       rd.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('a')){e.preventDefault();edit()}})}
     rd.innerHTML=h;rd.hidden=false;ed.hidden=true};
   bar.addEventListener('mousedown',e=>{if(e.target.closest('button'))e.preventDefault()});
@@ -4647,9 +4703,10 @@ function stBind(el,sel,obj,key,after){el.querySelectorAll(sel).forEach(i=>{if(i.
 function stRender(){const el=$('#stView');if(!el)return;const D=STD();
   const C=stCamp();if(ui.stC&&!C){ui.stC=ui.stS=ui.stN=null}
   if(!stCamp()){el.innerHTML=stListHTML();stListBind(el);return}
-  const W=h=>`<div class="stwrap"><aside class="sttoc" id="stToc" aria-label="Sommaire et recherche"></aside><div class="stmain">${h}</div></div><div class="stfab"><button type="button" class="tocb" id="stTocB" aria-label="Sommaire">☰ Sommaire</button><button type="button" id="stMkB" hidden>🔖 Reprendre</button><button type="button" id="stTopB" aria-label="Haut de la page" hidden>↑</button></div>`;
+  if(S.stNav==null)S.stNav=innerWidth>=1000;const W=h=>`<div class="stwrap ${S.stNav?'':'nav-off'}"><aside class="sttoc" id="stToc" aria-label="Navigation dans la campagne"></aside><div class="stmain">${h}</div></div><div class="stfab"><button type="button" class="tocb" id="stTocB" aria-label="Navigation">${S.stNav?'✕ Masquer':'☰ Navigation'}</button><button type="button" id="stMkB" hidden>🔖 Reprendre</button><button type="button" id="stTopB" aria-label="Haut de la page" hidden>↑</button></div>`;
   if(ui.stN&&stNpc()){el.innerHTML=W(stNpcHTML());stNpcBind(el)}
-  else{ui.stN=null;if(ui.stS&&stSess()){el.innerHTML=W(stSessHTML());stSessBind(el)}else{ui.stS=null;el.innerHTML=W(stCampHTML());stCampBind(el)}}
+  else if(ui.stL&&stLieu()){ui.stN=null;el.innerHTML=W(stLieuHTML());stLieuBind(el)}
+  else{ui.stN=null;ui.stL=null;if(ui.stS&&stSess()){el.innerHTML=W(stSessHTML());stSessBind(el)}else{ui.stS=null;el.innerHTML=W(stCampHTML());stCampBind(el)}}
   stNavBind(el);if(!ui.stKeep)window.scrollTo({top:0});ui.stKeep=0}
 /* liste des campagnes */
 function stListHTML(){const L=STD().camps.slice().sort((a,b)=>(b.upd||0)-(a.upd||0));
@@ -4669,8 +4726,8 @@ function stListBind(el){el.querySelectorAll('[data-camp]').forEach(b=>b.onclick=
         STD().camps.push(c);close();ui.stC=c.id;ui.stTab='sess';stSave();stRender()}})}}
 /* une campagne */
 function stCrumb(parts){return `<div class="stcrumb">${parts.map((p,i)=>i<parts.length-1?`<button type="button" data-crumb="${p[1]}">${esc(p[0])}</button><span class="sep">›</span>`:`<span>${esc(p[0])}</span>`).join('')}</div>`}
-function stCrumbBind(el){el.querySelectorAll('[data-crumb]').forEach(b=>b.onclick=()=>{const k=b.dataset.crumb;if(k==='list'){ui.stC=null}ui.stS=null;ui.stN=null;stRender()})}
-function stCampHTML(){const c=stCamp(),T=ui.stTab||'sess',tabs=[['sess','Sessions'],['scen','Scénario'],['pnj','PNJ'],['notes','Notes & lore']];
+function stCrumbBind(el){el.querySelectorAll('[data-crumb]').forEach(b=>b.onclick=()=>{const k=b.dataset.crumb;if(k==='list'){ui.stC=null}if(k==='lieux')ui.stTab='lieux';ui.stS=null;ui.stN=null;ui.stL=null;stRender()})}
+function stCampHTML(){const c=stCamp(),T=ui.stTab||'sess',tabs=[['sess','Sessions'],['scen','Scénario'],['pnj','PNJ'],['lieux','Lieux'],['notes','Notes & lore']];
   let body='';
   if(T==='sess'){const L=(c.sess||[]).slice().sort((a,b)=>b.n-a.n);
     body=`<div class="stact" style="margin-top:0;margin-bottom:12px"><button class="btn primary" type="button" id="sNew">+ Nouvelle session</button></div>
@@ -4686,11 +4743,15 @@ function stCampHTML(){const c=stCamp(),T=ui.stTab||'sess',tabs=[['sess','Session
     body=`<div class="stact" style="margin-top:0;margin-bottom:12px;align-items:center"><button class="btn primary" type="button" id="nNew">+ Nouveau PNJ</button>${L.length>6?`<input class="in stsearch" type="search" id="nQ" placeholder="Rechercher un PNJ…">`:''}</div>
       ${L.length?`<div class="stgrid" id="nGrid">${L.map(n=>`<button type="button" class="stcard npccard" data-npc="${n.id}" data-q="${esc((n.name+' '+(n.role||'')+' '+(n.place||'')).toLowerCase())}"><span class="pic" ${stPic(n)}>${n.img?'':stInit(n)}</span><span class="tx"><h3>${esc(n.name)}</h3><span class="att ${n.att||'neutre'}">${esc(n.att||'neutre')}</span><span class="d">${esc([n.role,n.place].filter(Boolean).join(' · ')||'—')}</span></span></button>`).join('')}</div>`
         :`<div class="stempty">Aucun PNJ. Ajoute tes personnages non-joueurs : portrait, rôle, personnalité, secrets, statistiques…</div>`}`}
+  if(T==='lieux'){const L=(c.places||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
+    body=`<div class="stact" style="margin-top:0;margin-bottom:12px"><button class="btn primary" type="button" id="lNew">+ Nouveau lieu</button></div>
+      ${L.length?`<div class="stgrid">${L.map(p=>`<button type="button" class="stcard npccard" data-lieu="${p.id}"><span class="pic lieupic" ${stPic(p)}>${p.img?'':'📍'}</span><span class="tx"><h3>${esc(p.name)}</h3>${p.kind?`<span class="att neutre">${esc(p.kind)}</span>`:''}<span class="d">${esc(String(p.desc||'').slice(0,90)||'—')}</span></span></button>`).join('')}</div>`
+        :`<div class="stempty">Aucun lieu. Ajoute tes villages, auberges, donjons, forêts… Leur nom deviendra cliquable dans tes textes.</div>`}`}
   if(T==='notes')body=`<p class="hint" style="margin-top:0">Lore, idées en vrac, liens entre les personnages, rumeurs, objets…</p><textarea class="big" id="cNotes" placeholder="Écris librement…">${esc(c.notes||'')}</textarea>`;
   return `<div class="stbook">${stCrumb([['Campagnes','list'],[c.name,'']])}
     <div class="sthead"><input class="sttitle" id="cTitle" value="${esc(c.name)}" aria-label="Nom de la campagne"><button class="btn ghost sm" type="button" id="cDel">Supprimer la campagne</button></div>
     <textarea id="cDesc" placeholder="Résumé de la campagne…" style="min-height:60px">${esc(c.desc||'')}</textarea>
-    <div class="sttabs" role="tablist">${tabs.map(([k,v])=>`<button type="button" data-stt="${k}" class="${T===k?'on':''}">${v}${k==='sess'&&(c.sess||[]).length?` (${c.sess.length})`:k==='pnj'&&(c.npcs||[]).length?` (${c.npcs.length})`:''}</button>`).join('')}</div>
+    <div class="sttabs" role="tablist">${tabs.map(([k,v])=>`<button type="button" data-stt="${k}" class="${T===k?'on':''}">${v}${k==='sess'&&(c.sess||[]).length?` (${c.sess.length})`:k==='pnj'&&(c.npcs||[]).length?` (${c.npcs.length})`:k==='lieux'&&(c.places||[]).length?` (${c.places.length})`:''}</button>`).join('')}</div>
     ${body}</div>`}
 function stCampBind(el){const c=stCamp();stCrumbBind(el);
   stBind(el,'#cTitle',c,'name');stBind(el,'#cDesc',c,'desc');
@@ -4705,6 +4766,8 @@ function stCampBind(el){const c=stCamp();stCrumbBind(el);
   el.querySelectorAll('[data-foldall]').forEach(b=>b.onclick=()=>{const f=b.dataset.foldall==='1';c.scen.forEach(h=>h.fold=f);stSave();ui.stKeep=1;stRender()});
   el.querySelectorAll('[data-chdel]').forEach(b=>b.onclick=()=>{if(!b.dataset.ok){b.dataset.ok=1;b.textContent='?';b.title='Toucher encore pour supprimer';return}c.scen=c.scen.filter(h=>h.id!==b.dataset.chdel);stSave();stRender()});
   const ch=el.querySelector('#chNew');if(ch)ch.onclick=()=>{c.scen=c.scen||[];const h={id:'h'+uid(),title:'Chapitre '+(c.scen.length+1),text:''};c.scen.push(h);stSave();stRender();const t=$(`[data-cht="${h.id}"]`);if(t){t.focus();t.select()}};
+  const ln=el.querySelector('#lNew');if(ln)ln.onclick=()=>{c.places=c.places||[];const p={id:'p'+uid(),name:'Nouveau lieu',kind:'',desc:'',secret:'',notes:''};c.places.push(p);stSave();stOpen('lieu',p.id);const t=$('#lpN');if(t){t.focus();t.select()}};
+  el.querySelectorAll('[data-lieu]').forEach(b=>b.onclick=()=>stOpen('lieu',b.dataset.lieu));
   const nn=el.querySelector('#nNew');if(nn)nn.onclick=()=>{c.npcs=c.npcs||[];const n={id:'n'+uid(),name:'Nouveau PNJ',att:'neutre',role:'',place:'',look:'',pers:'',goal:'',secret:'',notes:'',stat:''};c.npcs.push(n);ui.stN=n.id;stSave();stRender();const t=$('#npN');if(t){t.focus();t.select()}};
   el.querySelectorAll('[data-npc]').forEach(b=>b.onclick=()=>{ui.stN=b.dataset.npc;ui.stBack=null;stRender()});
   const q=el.querySelector('#nQ');if(q)q.oninput=()=>{const v=q.value.trim().toLowerCase();el.querySelectorAll('[data-npc]').forEach(b=>b.hidden=v&&!b.dataset.q.includes(v))};
@@ -4747,7 +4810,7 @@ function stNpcHTML(){const c=stCamp(),n=stNpc(),back=ui.stBack==='sess'&&stSess(
       <div class="stact"><button class="btn primary" type="button" id="npMap">Placer sur la carte</button><button class="btn ghost sm" type="button" id="npDel">Supprimer le PNJ</button></div></div>
     <div><input class="sttitle" id="npN" value="${esc(n.name)}" aria-label="Nom du PNJ" style="width:100%">
       <div class="nrow"><div><label class="fl" for="np_role">Rôle / métier</label><input class="in" id="np_role" data-nk="role" value="${esc(n.role||'')}" placeholder="Aubergiste, chef des bandits…"></div>
-        <div><label class="fl" for="np_place">Lieu</label><input class="in" id="np_place" data-nk="place" value="${esc(n.place||'')}" placeholder="Où le trouver"></div></div>
+        <div><label class="fl" for="np_place">Lieu</label><input class="in" id="np_place" data-nk="place" value="${esc(n.place||'')}" placeholder="Où le trouver" list="npLieux"><datalist id="npLieux">${(c.places||[]).map(p=>`<option value="${esc(p.name)}">`).join('')}</datalist>${(()=>{const p=stPlaceOf(n);return p?`<button type="button" class="btn sm" data-golieu="${p.id}" style="margin-top:6px">📍 Ouvrir ${esc(p.name)}</button>`:''})()}</div></div>
       <label class="fl">Attitude envers le groupe</label><div class="seg">${['allié','neutre','hostile'].map(a=>`<button type="button" data-att="${a}" class="${(n.att||'neutre')===a?'on':''}">${a[0].toUpperCase()+a.slice(1)}</button>`).join('')}</div>
       ${ta('look','Apparence','Âge, allure, voix, tics…')}${ta('pers','Personnalité','Traits, manières de parler…')}${ta('goal','Motivations','Ce qu’il veut, ce qu’il craint…')}
       ${ta('secret','Secrets (MJ seulement)','Ce que les joueurs ne savent pas…','secret')}${ta('notes','Notes','Relations, ce que le groupe sait de lui…')}
@@ -4755,7 +4818,8 @@ function stNpcHTML(){const c=stCamp(),n=stNpc(),back=ui.stBack==='sess'&&stSess(
       <p class="hint" id="npStatI">${m?`${esc(m[1])} · CA ${m[3]} · PV ${esc(m[4])} · FP ${esc(m[11]||'?')}`:'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).'}</p>
     </div></div></div>`}
 function stNpcBind(el){const c=stCamp(),n=stNpc();
-  el.querySelectorAll('[data-crumb]').forEach(b=>b.onclick=()=>{const k=b.dataset.crumb;ui.stN=null;if(k==='list'){ui.stC=null;ui.stS=null}else if(k==='camp'){ui.stS=null;if(ui.stBack!=='sess')ui.stTab=ui.stTab||'pnj'}else if(k==='pnj'){ui.stS=null;ui.stTab='pnj'}ui.stBack=null;stRender()});
+  el.querySelectorAll('[data-crumb]').forEach(b=>b.onclick=()=>{const k=b.dataset.crumb;ui.stN=null;ui.stL=null;if(k==='list'){ui.stC=null;ui.stS=null}else if(k==='camp'){ui.stS=null;if(ui.stBack!=='sess')ui.stTab=ui.stTab||'pnj'}else if(k==='pnj'){ui.stS=null;ui.stTab='pnj'}ui.stBack=null;stRender()});
+  el.querySelectorAll('[data-golieu]').forEach(b=>b.onclick=()=>stOpen('lieu',b.dataset.golieu));
   stBind(el,'#npN',n,'name');el.querySelectorAll('[data-nk]').forEach(i=>stBind(el,`#${i.id}`,n,i.dataset.nk));
   el.querySelectorAll('[data-att]').forEach(b=>b.onclick=()=>{n.att=b.dataset.att;stSave();el.querySelectorAll('[data-att]').forEach(x=>x.classList.toggle('on',x===b))});
   const st=el.querySelector('#npStat');st.oninput=()=>{n.stat=st.value.trim();stSave();const m=BESTIARY.find(b=>b[0]===n.stat);el.querySelector('#npStatI').textContent=m?`${m[1]} · CA ${m[3]} · PV ${m[4]} · FP ${m[11]||'?'}`:n.stat?'Créature introuvable dans le bestiaire.':'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).'};
