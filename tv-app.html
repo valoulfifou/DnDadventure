@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-16h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-16h45';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -317,6 +317,18 @@ a.npcl.lieul{color:#2a5a3a}
 
 .metbox{margin-top:16px;padding:10px 12px 12px;border:1px dashed #9ab88f;border-radius:12px;background:#f3f8ef}
 .metbox .check small{color:#6b7a5f}
+
+.jacc{border:1px solid var(--line);border-radius:12px;margin:8px 0;background:var(--surface)}
+.jacc>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:12px 14px;font:700 16px var(--f-display);letter-spacing:.03em}
+.jacc>summary::-webkit-details-marker{display:none}
+.jacc>summary::before{content:'▸';font-size:13px;transition:transform .15s;color:var(--muted)}
+.jacc[open]>summary::before{transform:rotate(90deg)}
+.jacc>summary small{margin-left:auto;font:13px Georgia,serif;color:var(--muted);letter-spacing:0}
+.jaccb{padding:0 12px 12px}
+.jent{border-top:1px solid var(--line);padding:8px 2px}
+.jent .check small{color:var(--muted)}
+.jent textarea{width:100%;box-sizing:border-box;margin-top:6px;border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;background:#fffdf7;font:15px/1.45 Georgia,serif;resize:vertical}
+.jent.on{background:rgba(120,170,100,.07)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -9607,20 +9619,53 @@ var __values = (this && this.__values) || function(o) {
     }
     /* ---------- Journal de quête (partagé avec les joueurs) ---------- */
     function journalModal() {
-        var L = S.journal || (S.journal = []);
+        var L = S.journal || (S.journal = []), D = STD(), op = journalModal.op || (journalModal.op = { npc: 1 });
+        var c = D.camps.find(function (x) { return x.id === D.cur; }) || D.camps.slice().sort(function (x, y) { return (y.upd || 0) - (x.upd || 0); })[0];
         var row = function (e, i) { return "<div class=\"sect\" style=\"border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0\"><div class=\"row\" style=\"gap:6px;align-items:center\"><input class=\"in\" data-jt=\"".concat(i, "\" value=\"").concat(esc(e.t || ''), "\" placeholder=\"Titre (ex. Retrouver l\u2019amulette)\" style=\"flex:1;min-width:0;border:1px solid var(--line-2);border-radius:6px;padding:7px 10px;background:var(--surface);font-weight:700\"><button class=\"btn sm danger\" type=\"button\" data-jd=\"").concat(i, "\">\u2715</button></div>\n    <textarea data-jx=\"").concat(i, "\" placeholder=\"D\u00E9tails, indices, PNJ rencontr\u00E9s\u2026\" style=\"width:100%;min-height:70px;margin-top:6px;border:1px solid var(--line-2);border-radius:6px;padding:7px 10px;background:var(--surface);font:inherit\">").concat(esc(e.x || ''), "</textarea>\n    <div class=\"row\" style=\"justify-content:flex-start;gap:14px;align-items:center\"><label class=\"fld\" style=\"margin:0\">Pour<select data-jto=\"").concat(i, "\" style=\"border:1px solid var(--line-2);border-radius:6px;padding:5px;background:var(--surface)\"><option value=\"\">Tout le groupe</option>").concat(S.chars.filter(function (c) { return c.side === 'pj' && !c.petOf; }).map(function (c) { return "<option value=\"".concat(c.id, "\" ").concat(e.to === c.id ? 'selected' : '', ">").concat(esc(c.name), " (priv\u00E9)</option>"); }).join(''), "</select></label><label class=\"check\"><input type=\"checkbox\" data-jv=\"").concat(i, "\" ").concat(e.vis ? 'checked' : '', "> Visible par les joueurs</label><label class=\"check\"><input type=\"checkbox\" data-jk=\"").concat(i, "\" ").concat(e.done ? 'checked' : '', "> Termin\u00E9e</label></div></div>"); };
-        modal("<h2>Journal de qu\u00EAte</h2><div class=\"sub\">Les entr\u00E9es \u00AB visibles \u00BB apparaissent sur le t\u00E9l\u00E9phone des joueurs (onglet Notes). Choisis \u00AB Tout le groupe \u00BB pour le journal commun, ou un personnage pour une qu\u00EAte personnelle que lui seul voit.</div>\n    <div id=\"jl\">".concat(L.length ? L.map(row).join('') : '<p class="empty">Aucune entrée pour l’instant.</p>', "</div>\n    <div class=\"row\"><button class=\"btn\" id=\"jAdd\" type=\"button\">+ Nouvelle entr\u00E9e</button><button class=\"btn primary\" id=\"mOk\" type=\"button\">Fermer</button></div>"), function (el) {
+        var ar = function (k, ic, t, n, body) { return "<details class=\"jacc\" data-k=\"".concat(k, "\" ").concat(op[k] ? 'open' : '', "><summary>").concat(ic, " ").concat(t, "<small>").concat(n, "</small></summary><div class=\"jaccb\">").concat(body, "</div></details>"); };
+        var ent = function (kind, o, lbl, sub, on, txt, ph) { return "<div class=\"jent ".concat(on ? 'on' : '', "\"><label class=\"check\"><input type=\"checkbox\" data-jon=\"").concat(kind, ":").concat(o.id, "\" ").concat(on ? 'checked' : '', "> <b>").concat(esc(lbl), "</b>").concat(sub ? " <small>".concat(esc(sub), "</small>") : '', "</label>\n    <textarea data-jtx=\"").concat(kind, ":").concat(o.id, "\" placeholder=\"").concat(ph, "\" ").concat(on ? '' : 'hidden', ">").concat(esc(txt || ''), "</textarea></div>"); };
+        var NN = c ? (c.npcs || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); }) : [], PL = c ? (c.places || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); }) : [], SS = c ? (c.sess || []).slice().sort(function (a, b) { return b.n - a.n; }) : [];
+        var none = function (t) { return "<p class=\"empty\" style=\"margin:4px 0\">".concat(t, "</p>"); };
+        var body = !c ? none('Crée d’abord une campagne dans l’onglet Histoire.') :
+            ar('npc', '👥', 'PNJ rencontrés', "".concat(NN.filter(function (n) { return n.met; }).length, " / ").concat(NN.length), NN.length ? NN.map(function (n) { return ent('npc', n, n.name, [n.role, n.place].filter(Boolean).join(' · '), !!n.met, n.pub, 'Ce que les joueuses savent de lui…'); }).join('') : none('Aucun PNJ dans la campagne.')) +
+                ar('lieu', '📍', 'Lieux découverts', "".concat(PL.filter(function (p) { return p.met; }).length, " / ").concat(PL.length), PL.length ? PL.map(function (p) { return ent('lieu', p, p.name, p.kind || '', !!p.met, p.pub, 'Ce que les joueuses savent de ce lieu…'); }).join('') : none('Aucun lieu dans la campagne.')) +
+                ar('sess', '📖', 'Résumés de session', "".concat(SS.filter(function (x) { return x.share !== false && String(x.sum || '').trim(); }).length, " / ").concat(SS.length), SS.length ? SS.map(function (x) { return ent('sess', x, 'Session ' + x.n + (x.title ? ' · ' + x.title : ''), x.date ? stDate(x.date + 'T12:00') : '', x.share !== false, x.sum, 'Ce qui s’est passé pendant la session…'); }).join('') : none('Aucune session.'));
+        modal("<h2>Journal des joueuses</h2><div class=\"sub\">Ce que tu coches ici appara\u00EEt dans l\u2019onglet <b>Journal</b> de leur t\u00E9l\u00E9phone.</div>\n    ".concat(D.camps.length > 1 ? "<label class=\"fld\">Campagne partag\u00E9e<select id=\"jCamp\">".concat(D.camps.map(function (x) { return "<option value=\"".concat(x.id, "\" ").concat(c && x.id === c.id ? 'selected' : '', ">").concat(esc(x.name), "</option>"); }).join(''), "</select></label>") : '', "\n    ").concat(body, "\n    ").concat(ar('quest', '📜', 'Quêtes', "".concat(L.length), "<p class=\"hint\" style=\"margin:0 0 4px\">\u00AB Tout le groupe \u00BB pour le journal commun, ou un personnage pour une qu\u00EAte personnelle que lui seul voit.</p><div id=\"jl\">".concat(L.length ? L.map(row).join('') : '<p class="empty">Aucune quête pour l’instant.</p>', "</div><div class=\"row\" style=\"justify-content:flex-start\"><button class=\"btn sm\" id=\"jAdd\" type=\"button\">+ Nouvelle qu\u00EAte</button></div>")), "\n    <div class=\"row\"><button class=\"btn primary\" id=\"mOk\" type=\"button\">Fermer</button></div>"), function (el) {
+            el.querySelectorAll('details.jacc').forEach(function (d) { return d.ontoggle = function () { op[d.dataset.k] = d.open ? 1 : 0; }; });
+            var cs = el.querySelector('#jCamp');
+            if (cs)
+                cs.onchange = function () { D.cur = cs.value; stSave(); journalModal(); };
+            var find = function (k) { var _c = __read(k.split(':'), 2), t = _c[0], id = _c[1]; return t === 'npc' ? (c.npcs || []).find(function (z) { return z.id === id; }) : t === 'lieu' ? (c.places || []).find(function (z) { return z.id === id; }) : (c.sess || []).find(function (z) { return z.id === id; }); };
+            el.querySelectorAll('[data-jon]').forEach(function (i) { return i.onchange = function () {
+                var k = i.dataset.jon, o = find(k);
+                if (!o)
+                    return;
+                if (k.startsWith('sess'))
+                    o.share = i.checked;
+                else
+                    o.met = i.checked;
+                var box = i.closest('.jent');
+                box.classList.toggle('on', i.checked);
+                box.querySelector('textarea').hidden = !i.checked;
+                stSave();
+                scheduleNet();
+            }; });
+            el.querySelectorAll('[data-jtx]').forEach(function (t) { t.oninput = function () { var k = t.dataset.jtx, o = find(k); if (!o)
+                return; if (k.startsWith('sess'))
+                o.sum = t.value;
+            else
+                o.pub = t.value; stSave(); }; t.style.height = 'auto'; t.style.height = Math.max(60, t.scrollHeight + 2) + 'px'; t.addEventListener('input', function () { t.style.height = 'auto'; t.style.height = (t.scrollHeight + 2) + 'px'; }); });
             var bind = function () {
                 el.querySelectorAll('[data-jt]').forEach(function (i) { return i.oninput = function () { L[+i.dataset.jt].t = i.value; save(); }; });
                 el.querySelectorAll('[data-jx]').forEach(function (i) { return i.oninput = function () { L[+i.dataset.jx].x = i.value; save(); }; });
                 el.querySelectorAll('[data-jv]').forEach(function (i) { return i.onchange = function () { L[+i.dataset.jv].vis = i.checked; save(); }; });
                 el.querySelectorAll('[data-jto]').forEach(function (i) { return i.onchange = function () { L[+i.dataset.jto].to = i.value; save(); }; });
                 el.querySelectorAll('[data-jk]').forEach(function (i) { return i.onchange = function () { L[+i.dataset.jk].done = i.checked; save(); }; });
-                el.querySelectorAll('[data-jd]').forEach(function (b) { return b.onclick = function () { if (!confirm('Supprimer cette entrée ?'))
+                el.querySelectorAll('[data-jd]').forEach(function (b) { return b.onclick = function () { if (!confirm('Supprimer cette quête ?'))
                     return; L.splice(+b.dataset.jd, 1); save(); journalModal(); }; });
             };
             bind();
-            el.querySelector('#jAdd').onclick = function () { L.unshift({ id: uid(), t: '', x: '', vis: true, done: false }); save(); journalModal(); setTimeout(function () { var _c; return (_c = $('[data-jt="0"]')) === null || _c === void 0 ? void 0 : _c.focus(); }, 50); };
+            el.querySelector('#jAdd').onclick = function () { op.quest = 1; L.unshift({ id: uid(), t: '', x: '', vis: true, done: false }); save(); journalModal(); setTimeout(function () { var _c; return (_c = $('[data-jt="0"]')) === null || _c === void 0 ? void 0 : _c.focus(); }, 50); };
             el.querySelector('#mOk').onclick = close;
         });
     }
