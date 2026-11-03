@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-11h55';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-12h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -283,6 +283,29 @@ a.npcl.lieul{color:#2a5a3a}
 
 .stfmt{flex-wrap:wrap;row-gap:4px}
 .stview .sttitle{min-width:0;max-width:100%;box-sizing:border-box}
+
+.stedit blockquote,.stread blockquote{margin:10px 0;padding:10px 14px;background:#f5ecd6;border:1px solid #d9c9a5;border-left:5px solid #8a5a20;border-radius:8px;font-size:1.08em;font-style:italic;color:#2b2416}
+.stedit blockquote::before,.stread blockquote::before{content:'📖 À lire';display:block;font:700 10px var(--f-display);letter-spacing:.12em;text-transform:uppercase;font-style:normal;color:#8a5a20;margin-bottom:3px}
+.stedit h5,.stread h5{margin:8px 0;padding:6px 10px;background:#eef0f4;border-left:4px solid #5a6a8a;border-radius:6px;font:14px/1.45 Georgia,serif;color:#3a4458}
+.stedit h5::before,.stread h5::before{content:'🗝 ';font-style:normal}
+.playban{margin:-4px 0 12px;padding:8px 12px;border-radius:10px;background:#e3f0dc;color:#2f6b2a;font-size:14px}
+.sttoc .tl button.cur{background:#e3f0dc;border-left-color:#2f6b2a;font-weight:700}
+.sttoc .tl button.cur::before{content:'▶ ';color:#2f6b2a}
+.sttoc details[data-sec=play]>summary{color:#2f6b2a}
+.sttoc .cast{display:flex;flex-wrap:wrap;gap:5px;padding:4px 8px 8px 20px}
+.sttoc .cast button{appearance:none;display:inline-flex;align-items:center;gap:5px;border:1px solid #d9c9a5;background:#fffdf7;border-radius:999px;padding:2px 9px 2px 2px;font:12.5px Georgia,serif;color:#3a2a14;cursor:pointer}
+.sttoc .cast button.lieu{color:#2a5a3a}
+.sttoc .cast .av{display:inline-block;width:22px;height:22px;border-radius:50%;background:#3a2a14 center/cover;color:#f2e6c8;font:10px/22px var(--f-display);text-align:center}
+.stpeek{position:fixed;inset:0;z-index:80;background:rgba(20,14,6,.35);display:flex;justify-content:flex-end}
+.stpeek>div{width:min(420px,92vw);height:100%;overflow:auto;background:#fbf6ea;box-shadow:-6px 0 24px rgba(0,0,0,.3);padding:16px 18px 30px;animation:stpk .2s ease}
+@keyframes stpk{from{transform:translateX(40px);opacity:.4}to{transform:none;opacity:1}}
+.stpeek .ph{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.stpeek .ph .pic{width:84px;height:104px;border-radius:10px;background:#3a2a14 center/cover;flex:none;display:grid;place-items:center;color:#f2e6c8;font:700 26px var(--f-display);border:2px solid #c9a45c}
+.stpeek h2{margin:0;font-family:var(--f-display);font-size:24px;color:#3a2a14}
+.stpeek h4{margin:12px 0 3px;font:700 11px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:#9a8460}
+.stpeek .tx{font:15px/1.5 Georgia,serif;color:#2b2416;white-space:pre-wrap}
+.stpeek .tx.sec{background:#fff4f0;border:1px solid #e5b9ae;border-radius:8px;padding:6px 9px}
+.stpeek .x{position:sticky;top:0;float:right;appearance:none;border:0;background:#fbf6ea;font-size:24px;cursor:pointer;color:#6b5a3f}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -3864,7 +3887,7 @@ $('#bJour').onclick=journalModal;$('#bAnim').onclick=animModal;
 const leaveSide=()=>{const was=ui.sb||ui.st,wasSb=ui.sb;ui.sb=false;ui.st=false;if(wasSb){scheduleTV();tvPublishSt()}return was};
 $('#tCombat').onclick=()=>{if(leaveSide()){render();if(!ui.ed)return}if(ui.ed)closeEditor()};
 $('#tSb').onclick=()=>{if(ui.sb)return;ui.st=false;ui.sb=true;render();scheduleTV();tvPublishSt()};
-$('#tSt').onclick=()=>{if(ui.st){if(ui.stS||ui.stN||ui.stL||ui.stC){ui.stS=ui.stN=ui.stL=null;ui.stC=null;stRender()}return}const wasSb=ui.sb;ui.sb=false;ui.st=true;stRender();render();if(wasSb){scheduleTV();tvPublishSt()}};
+$('#tSt').onclick=()=>{if(ui.st){if(ui.stS||ui.stN||ui.stL||ui.stC){ui.stS=ui.stN=ui.stL=null;ui.stC=null;stRender()}return}const wasSb=ui.sb;ui.sb=false;ui.st=true;if(!ui.stC&&STD().cur&&STD().camps.some(c=>c.id===STD().cur))ui.stC=STD().cur;render();if(!stResume())stRender();if(wasSb){scheduleTV();tvPublishSt()}};
 $('#tCrea').onclick=()=>{if(leaveSide()){render();if(ui.ed)return}if(ui.ed){if(!ui.pick){ui.pick=true;render()}return}if(!endTest(true))return;openEditor();ui.pick=true;render()};
 $('#bFoe').onclick=bestiaryModal;
 const THUMBS={};
@@ -4488,7 +4511,7 @@ function stTocItems(){const m=$('#stView .stmain');if(!m)return [];const out=[];
     if(e.matches('.stchap')){t=(e.querySelector('[data-cht]')||{}).value||'Chapitre';fo=e.classList.contains('folded')}
     else if(e.matches('label.fl,.stlive h3'))t=e.textContent.replace(/^✎\s*/,'');
     else{t=e.textContent;l=e.tagName==='H3'?2:3;if(!e.closest('.stchap'))l--}
-    t=t.trim();if(t)out.push({e,t,l:Math.max(1,l),fo})});return out}
+    t=t.trim();if(t)out.push({e,t,l:Math.max(1,l),fo,hd:/^H[34]$/.test(e.tagName)})});return out}
 // la barre de navigation : recherche, cette page, scénario, sessions, PNJ, lieux
 function stTocBuild(){const T=$('#stToc');if(!T)return;const c=stCamp();if(!c)return;ui.stSec=ui.stSec||{scen:1,sess:1,npc:1,lieu:1,page:1};
   if(!T.dataset.ok){T.dataset.ok=1;T.innerHTML=`<div style="display:flex;align-items:center;gap:6px"><input class="sq" type="search" placeholder="🔍 Rechercher…" aria-label="Rechercher dans la campagne" enterkeyhint="search"><button type="button" class="x" aria-label="Masquer la navigation">✕</button></div><div class="tbody"></div>`;
@@ -4501,11 +4524,16 @@ function stTocBuild(){const T=$('#stToc');if(!T)return;const c=stCamp();if(!c)re
   const sec=(k,ic,t,n,body,add)=>`<details data-sec="${k}" ${ui.stSec[k]?'open':''}><summary>${ic} ${t}${n!=null?`<small>${n}</small>`:''}</summary><div class="tl">${body||''}${add?`<button type="button" class="add" data-add="${k}">+ ${add}</button>`:''}</div></details>`;
   const btn=(lbl,cl,act,on,av)=>{go.push(act);return `<button type="button" data-g="${go.length-1}" class="${cl||''} ${on?'on':''}">${av||''}${esc(lbl)}</button>`};
   if(c.mark)h+=`<button type="button" class="mk" data-mk2="1">🔖 Reprendre : ${esc(stFidLabel(c.mark.fid))}</button>`;
-  if(onPage&&P.length)h+=sec('page','📄','Cette page',null,P.map(x=>btn(x.t,'l'+x.l,()=>x.e.scrollIntoView({block:'start',behavior:RM?'auto':'smooth'}),false)).join(''));
+  const PP=c.play&&ui.stS===c.play?P.filter(x=>!x.hd):P;
+  if(onPage&&PP.length)h+=sec('page','📄','Cette page',null,PP.map(x=>btn(x.t,'l'+x.l,()=>x.e.scrollIntoView({block:'start',behavior:RM?'auto':'smooth'}),false)).join(''));
   // scénario
   let sb='';if(onScen){STTOCL=P;sb=P.map((x,i)=>{go.push(()=>{if(x.fo){const f=x.e.querySelector('[data-fold]');if(f)f.click()}x.e.scrollIntoView({block:'start',behavior:RM?'auto':'smooth'})});return `<button type="button" data-g="${go.length-1}" data-ti="${i}" class="l${x.l} ${x.fo?'fo':''}">${x.fo?'▸ ':''}${esc(x.t)}</button>`}).join('')}
   else{STTOCL=[];(c.scen||[]).forEach(ch=>{sb+=btn(ch.title||'Chapitre','l1',()=>stGo('scen:'+ch.id+':title'));stHeads(ch,'text').forEach(x=>{sb+=btn(x.t,'l'+x.l,()=>stGo('scen:'+ch.id+':text',{h:x.i}))})})}
-  h+=sec('sess','📅','Sessions',(c.sess||[]).length,(c.sess||[]).slice().sort((a,b)=>a.n-b.n).map(x=>btn(x.n+' · '+(x.title||'Session '+x.n),'l1',()=>stOpen('sess',x.id),ui.stS===x.id)+stHeads(x,'prep').map(q=>btn(q.t,'l'+q.l,()=>stGo('sess:'+x.id+':prep',{h:q.i}))).join('')).join(''),'Nouvelle session');
+  const scBtns=x=>stScenes(x).map(q=>{const isCur=c.cur&&c.cur.sid===x.id&&c.cur.h===q.i;let b=btn(q.t,'l'+q.l+(isCur?' cur':''),()=>{if(c.play===x.id)stSetCur(x.id,q.i);stGo('sess:'+x.id+':prep',{h:q.i})});
+      if(isCur&&c.play===x.id){const K=stCast(q.txt);if(K.length)b+=`<div class="cast">${K.map(k=>{const o=k.ty==='lieu'?(c.places||[]).find(p=>p.id===k.id):(c.npcs||[]).find(n=>n.id===k.id);if(!o)return '';go.push(()=>stPeek(k.ty,k.id));return `<button type="button" data-g="${go.length-1}" class="${k.ty==='lieu'?'lieu':''}"><span class="av" ${stPic(o)}>${o.img?'':k.ty==='lieu'?'📍':stInit(o)}</span>${esc(o.name)}</button>`}).join('')}</div>`}return b}).join('');
+  const PL=c.play&&(c.sess||[]).find(x=>x.id===c.play);
+  if(PL)h=sec('play','▶','En cours : session '+PL.n,null,btn(PL.title||'Session '+PL.n,'l1',()=>stOpen('sess',PL.id),ui.stS===PL.id)+scBtns(PL),null).replace('<details data-sec="play" ','<details data-sec="play" open ')+h;
+  h+=sec('sess','📅','Sessions',(c.sess||[]).length,(c.sess||[]).slice().sort((a,b)=>a.n-b.n).map(x=>btn(x.n+' · '+(x.title||'Session '+x.n)+(c.play===x.id?' ▶':''),'l1',()=>stOpen('sess',x.id),ui.stS===x.id)+(x.id===c.play?'':scBtns(x))).join(''),'Nouvelle session');
   if(stHasScen(c))h+=sec('scen','🎬','Ancien scénario',(c.scen||[]).length,sb,null);
   h+=sec('npc','👤','PNJ',(c.npcs||[]).length,(c.npcs||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(n=>btn(n.name,'l1',()=>stOpen('npc',n.id),ui.stN===n.id,`<span class="av" ${stPic(n)}>${n.img?'':stInit(n)}</span>`)).join(''),'Nouveau PNJ');
   h+=sec('lieu','📍','Lieux',(c.places||[]).length,(c.places||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(p=>btn(p.name,'l1',()=>stOpen('lieu',p.id),ui.stL===p.id,`<span class="av" ${stPic(p)}>${p.img?'':'📍'}</span>`)).join(''),'Nouveau lieu');
@@ -4521,7 +4549,7 @@ function stTocBuild(){const T=$('#stToc');if(!T)return;const c=stCamp();if(!c)re
   requestAnimationFrame(stTocSpy)}
 let STTOCL=[];function stTocSpy(){const T=$('#stToc');if(!T||!STTOCL.length)return;let k=-1;STTOCL.forEach((x,i)=>{if(x.e.offsetParent&&x.e.getBoundingClientRect().top<140)k=i});T.querySelectorAll('[data-ti]').forEach(b=>b.classList.toggle('on',+b.dataset.ti===k))}
 function stMarkGo(){const c=stCamp();if(c&&c.mark)stGo(c.mark.fid,{off:c.mark.off})}
-function stNavFab(){const c=stCamp(),b=$('#stMkB');if(b){b.hidden=!(c&&c.mark);b.title=c&&c.mark?'Reprendre : '+stFidLabel(c.mark.fid):''}}
+function stNavFab(){const c=stCamp(),b=$('#stMkB');if(b){b.hidden=!(c&&c.mark);b.title=c&&c.mark?'Reprendre : '+stFidLabel(c.mark.fid):''}const s2=$('#stScB');if(s2)s2.hidden=!(c&&c.play&&c.cur)}
 function stNavToggle(){S.stNav=!S.stNav;save();const w=$('#stView .stwrap');if(w)w.classList.toggle('nav-off',!S.stNav);const b=$('#stTocB');if(b)b.textContent=S.stNav?'✕ Masquer':'☰ Navigation';if(S.stNav)stTocBuild()}
 // recherche dans toute la campagne
 function stSearch(q){const c=stCamp();if(!c)return [];const Q=stFold(q),out=[];
@@ -4535,7 +4563,7 @@ function stSearch(q){const c=stCamp();if(!c)return [];const Q=stFold(q),out=[];
   return out}
 function stNavBind(el){stTocBuild();stNavFab();
   el.querySelector('#stTocB').onclick=stNavToggle;
-  el.querySelector('#stMkB').onclick=stMarkGo;el.querySelector('#stTopB').onclick=()=>window.scrollTo({top:0,behavior:RM?'auto':'smooth'})}
+  el.querySelector('#stMkB').onclick=stMarkGo;el.querySelector('#stScB').onclick=stResume;el.querySelector('#stTopB').onclick=()=>window.scrollTo({top:0,behavior:RM?'auto':'smooth'})}
 addEventListener('scroll',()=>{if(!ui.st)return;const b=$('#stTopB');if(b)b.hidden=scrollY<500;if(!stTocSpy._r){stTocSpy._r=requestAnimationFrame(()=>{stTocSpy._r=0;stTocSpy()})}},{passive:true});
 /* fiche d'un lieu */
 function stLieuHTML(){const c=stCamp(),p=stLieu(),k=stFold(p.name.trim()),N=(c.npcs||[]).filter(n=>{const pl=stPlaceOf(n);return pl&&pl.id===p.id});
@@ -4553,6 +4581,43 @@ function stLieuBind(el){const c=stCamp(),p=stLieu();stCrumbBind(el);
   el.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>stOpen('npc',b.dataset.open));
   el.querySelector('#lpImg').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const u=await processImg(f,false);const id='p'+uid();IMGS.set(id,u);IDB.put(id,u);p.img='ref:'+id;stSave();ui.stKeep=1;stRender()}catch(er){toast('Image illisible')}};
   el.querySelector('#lpDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer ?';return}c.places=c.places.filter(x=>x.id!==p.id);ui.stL=null;ui.stTab='lieux';stSave();stRender()}}
+
+/* ---------- Histoire : session en cours, scène actuelle, aperçu PNJ/lieu ---------- */
+// scènes d'une session (titres T1/T2 de la préparation) avec le texte de chacune
+function stScenes(x){const h=x&&x.prep_h;if(!h||x.prep_t!==(x.prep||''))return [];const d=document.createElement('div');d.innerHTML=h;const H=[...d.querySelectorAll('h3,h4')];
+  return H.map((e,i)=>{const r=document.createRange();r.setStartAfter(e);const nx=H.slice(i+1).find(z=>e.tagName==='H4'||z.tagName==='H3');if(nx)r.setEndBefore(nx);else r.setEndAfter(d.lastChild);
+    const f=r.cloneContents();return {t:e.textContent.trim(),l:e.tagName==='H3'?2:3,i,txt:e.textContent+'\n'+[...f.childNodes].map(n=>n.textContent).join('\n')}}).filter(x=>x.t)}
+// PNJ et lieux cités dans un texte
+function stCast(txt){const L=stNames();if(!L.length||!txt)return [];const F=stFold(txt),seen=new Set(),out=[];
+  L.forEach(([nm,id,ty])=>{if(seen.has(id))return;const k=stFold(nm);let i=F.indexOf(k);while(i>=0){const a=F[i-1],b=F[i+k.length];if(!(a&&/[\p{L}\p{N}]/u.test(a))&&!(b&&/[\p{L}\p{N}]/u.test(b))){seen.add(id);out.push({id,ty});break}i=F.indexOf(k,i+1)}});
+  return out}
+// revenir à la session en cours et à la scène actuelle
+function stResume(){const c=stCamp();if(!c||!c.play||!(c.sess||[]).some(x=>x.id===c.play))return false;const cur=c.cur&&c.cur.sid===c.play?c.cur:null;
+  if(cur&&stScenes((c.sess||[]).find(x=>x.id===c.play))[cur.h])stGo('sess:'+c.play+':prep',{h:cur.h});else stOpen('sess',c.play);return true}
+function stSetCur(sid,h){const c=stCamp();if(!c)return;if(c.cur&&c.cur.sid===sid&&c.cur.h===h)return;c.cur={sid,h};stSave();stTocSoon()}
+// défilement dans la session en cours : la scène lue devient la scène actuelle
+function stCurSpy(){const c=stCamp();if(!c||!c.play||ui.stS!==c.play||ui.stN||ui.stL)return;const el=[...document.querySelectorAll(`#stView [data-fid="sess:${c.play}:prep"]`)].find(e=>!e.hidden&&e.offsetParent);if(!el)return;
+  const H=[...el.querySelectorAll('h3,h4')];let k=-1;const lim=innerHeight*.4;H.forEach((e,i)=>{if(e.getBoundingClientRect().top<lim)k=i});if(k>=0)stSetCur(c.play,k)}
+addEventListener('scroll',()=>{if(!ui.st)return;clearTimeout(stCurSpy._t);stCurSpy._t=setTimeout(stCurSpy,350);const b=$('#stScB'),c=stCamp();if(b)b.hidden=!(c&&c.play&&c.cur)},{passive:true});
+// aperçu d'un PNJ ou d'un lieu par-dessus le texte
+function stPeek(ty,id){const c=stCamp();if(!c)return;const o=ty==='lieu'?(c.places||[]).find(p=>p.id===id):(c.npcs||[]).find(n=>n.id===id);if(!o)return;
+  const tx=(k,lbl,cls)=>{const v=String(o[k]||'').trim();return v?`<h4>${lbl}</h4><div class="tx ${cls||''}">${o[k+'_h']&&o[k+'_t']===o[k]?stClean(o[k+'_h']):esc(v)}</div>`:''};
+  const m=ty==='npc'&&o.stat&&typeof BESTIARY!=='undefined'?BESTIARY.find(b=>b[0]===o.stat):null,pl=ty==='npc'?stPlaceOf(o):null;
+  const N=ty==='lieu'?(c.npcs||[]).filter(n=>{const p=stPlaceOf(n);return p&&p.id===o.id}):[];
+  const d=document.createElement('div');d.className='stpeek';
+  d.innerHTML=`<div role="dialog" aria-label="${esc(o.name)}"><button type="button" class="x" aria-label="Fermer">✕</button>
+    <div class="ph"><span class="pic" ${stPic(o)}>${o.img?'':ty==='lieu'?'📍':stInit(o)}</span><div><h2>${esc(o.name)}</h2>
+      ${ty==='npc'?`<span class="att ${o.att||'neutre'}">${esc(o.att||'neutre')}</span><div class="hint" style="margin-top:4px">${esc([o.role,o.place].filter(Boolean).join(' · '))}</div>`:o.kind?`<span class="att neutre">${esc(o.kind)}</span>`:''}
+      ${m?`<div class="hint">${esc(m[1])} · CA ${m[3]} · PV ${esc(m[4])}</div>`:''}</div></div>
+    ${ty==='npc'?tx('look','Apparence')+tx('pers','Personnalité')+tx('goal','Motivations')+tx('secret','Secrets (MJ)','sec')+tx('notes','Notes'):tx('desc','Description')+tx('secret','Secrets (MJ)','sec')+tx('notes','Notes')}
+    ${N.length?`<h4>PNJ présents</h4><div class="stchips">${N.map(n=>`<span class="stchip" data-pk="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}</span>`).join('')}</div>`:''}
+    <div class="stact">${pl?`<button class="btn sm" type="button" data-pl="${pl.id}">📍 ${esc(pl.name)}</button>`:''}<button class="btn sm" type="button" data-full="1">Ouvrir la fiche complète</button>${ty==='npc'?'<button class="btn sm primary" type="button" data-map="1">Placer sur la carte</button>':''}</div></div>`;
+  const shut=()=>d.remove();d.onclick=e=>{if(e.target===d)shut()};d.querySelector('.x').onclick=shut;
+  d.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{shut();stPeek('npc',b.dataset.pk)});
+  const pb=d.querySelector('[data-pl]');if(pb)pb.onclick=()=>{shut();stPeek('lieu',pb.dataset.pl)};
+  d.querySelector('[data-full]').onclick=()=>{shut();stOpen(ty,id)};
+  const mb=d.querySelector('[data-map]');if(mb)mb.onclick=()=>{shut();stOpen('npc',id);setTimeout(()=>{const b=$('#npMap');if(b)b.click()},80)};
+  document.querySelectorAll('.stpeek').forEach(x=>x.remove());document.body.appendChild(d)}
 /* ---------- Capacités de classe : ressources, actions, passifs ---------- */
 const cfLeft=(c,k)=>{const v=c&&c.cres&&c.cres[k];return v?Math.max(0,+v[0]-(+v[1]||0)):0};
 const cfIncap=c=>['neutralisé','paralysé','étourdi','inconscient','pétrifié'].some(k=>has(c,k));
@@ -4638,7 +4703,7 @@ const ST_FS=[13,14,16,18,20,24,28,32];
 const ST_AL=[['left','M1 1.5h14M1 4.5h9M1 7.5h14M1 10.5h9','Aligné à gauche','justifyLeft'],['center','M1 1.5h14M4 4.5h8M1 7.5h14M4 10.5h8','Centré','justifyCenter'],['right','M1 1.5h14M6 4.5h9M1 7.5h14M6 10.5h9','Aligné à droite','justifyRight'],['justify','M1 1.5h14M1 4.5h14M1 7.5h14M1 10.5h14','Justifié','justifyFull']];
 function stNames(){const c=stCamp(),L=[];if(c){(c.npcs||[]).forEach(n=>{const nm=(n.name||'').trim();if(nm.length<2)return;L.push([nm,n.id,'npc']);const f=nm.split(/\s+/)[0];if(f&&f!==nm&&f.length>=3)L.push([f,n.id,'npc'])});(c.places||[]).forEach(p=>{const nm=(p.name||'').trim();if(nm.length>=3)L.push([nm,p.id,'lieu'])})}return L.sort((a,b)=>b[0].length-a[0].length)}
 /* texte enrichi : gras, alignement et taille sur la sélection (le texte brut reste dans obj[key], le HTML dans obj[key_h]) */
-function stClean(html){const d=document.createElement('div');d.innerHTML=html;const OK={B:1,STRONG:1,I:1,EM:1,U:1,BR:1,DIV:1,P:1,SPAN:1,H3:1,H4:1};
+function stClean(html){const d=document.createElement('div');d.innerHTML=html;const OK={B:1,STRONG:1,I:1,EM:1,U:1,BR:1,DIV:1,P:1,SPAN:1,H3:1,H4:1,H5:1,BLOCKQUOTE:1};
   const walk=n=>{Array.prototype.slice.call(n.childNodes).forEach(c=>{if(c.nodeType===3)return;if(c.nodeType!==1){c.remove();return}
     if(!OK[c.tagName]){walk(c);while(c.firstChild)c.parentNode.insertBefore(c.firstChild,c);c.remove();return}
     const keep=[];(c.getAttribute('style')||'').split(';').forEach(x=>{const m=x.split(':');if(m.length<2)return;const k=m[0].trim().toLowerCase(),v=m.slice(1).join(':').trim();
@@ -4661,7 +4726,7 @@ function stRich(ta,obj,key,after){ta.style.display='none';
   ed.innerHTML=(obj[key+'_h']&&obj[key+'_t']===(obj[key]||''))?stClean(obj[key+'_h']):stFromText(obj[key]);if(!ed.firstChild)ed.innerHTML='<div><br></div>';
   ta.insertAdjacentElement('afterend',ed);
   const bar=document.createElement('div');bar.className='stfmt';
-  bar.innerHTML='<button type="button" data-blk="h3" title="Grand titre (apparaît dans le sommaire)" aria-label="Grand titre">T1</button><button type="button" data-blk="h4" title="Petit titre (apparaît dans le sommaire)" aria-label="Petit titre">T2</button><span class="sep"></span><button type="button" data-cmd="bold" title="Gras" aria-label="Gras" style="font-weight:900">G</button><span class="sep"></span><button type="button" data-sz="-" title="Texte plus petit" aria-label="Texte plus petit">A−</button><button type="button" data-sz="+" title="Texte plus grand" aria-label="Texte plus grand">A+</button><span class="sep"></span>'+
+  bar.innerHTML='<button type="button" data-blk="h3" title="Grand titre (apparaît dans le sommaire)" aria-label="Grand titre">T1</button><button type="button" data-blk="h4" title="Petit titre (apparaît dans le sommaire)" aria-label="Petit titre">T2</button><span class="sep"></span><button type="button" data-blk="blockquote" title="Encadré à lire aux joueuses" aria-label="Encadré à lire">📖 À lire</button><button type="button" data-blk="h5" title="Note pour toi (MJ)" aria-label="Note MJ">🗝 Note MJ</button><span class="sep"></span><button type="button" data-cmd="bold" title="Gras" aria-label="Gras" style="font-weight:900">G</button><span class="sep"></span><button type="button" data-sz="-" title="Texte plus petit" aria-label="Texte plus petit">A−</button><button type="button" data-sz="+" title="Texte plus grand" aria-label="Texte plus grand">A+</button><span class="sep"></span>'+
     ST_AL.map(a=>`<button type="button" data-cmd="${a[3]}" title="${a[2]}" aria-label="${a[2]}"><svg viewBox="0 0 16 12" width="16" height="12"><path d="${a[1]}" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>`).join('')+'<button type="button" class="mkb" data-mk="1" title="Poser le marque-page ici (là où est le curseur)" aria-label="Marque-page ici">🔖 Je suis ici</button>';
   ta.insertAdjacentElement('beforebegin',bar);
   let saved=null,rd=null,lastBar=0;
@@ -4676,7 +4741,7 @@ function stRich(ta,obj,key,after){ta.style.display='none';
   const sync=()=>{const h=document.activeElement===ed?null:stLinkify(stClean(ed.innerHTML),ui.stN);
     if(h===null){if(rd)rd.hidden=true;ed.hidden=false;return}
     if(!rd){rd=document.createElement('div');rd.className='stread';rd.tabIndex=0;rd.dataset.fid=ed.dataset.fid;ed.insertAdjacentElement('afterend',rd);
-      rd.addEventListener('click',e=>{const a=e.target.closest('a.npcl');if(a){e.preventDefault();if(a.dataset.lieu){stOpen('lieu',a.dataset.lieu);return}ui.stBack=ui.stN?ui.stBack:(ui.stS?'sess':'camp');ui.stL=null;ui.stN=a.dataset.npc;stRender();return}edit(stOffsetAtPoint(rd,e.clientX,e.clientY))});
+      rd.addEventListener('click',e=>{const a=e.target.closest('a.npcl');if(a){e.preventDefault();stPeek(a.dataset.lieu?'lieu':'npc',a.dataset.lieu||a.dataset.npc);return}edit(stOffsetAtPoint(rd,e.clientX,e.clientY))});
       rd.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('a')){e.preventDefault();edit()}})}
     rd.innerHTML=h;rd.hidden=false;ed.hidden=true};
   bar.addEventListener('mousedown',e=>{if(e.target.closest('button'))e.preventDefault()});
@@ -4703,7 +4768,8 @@ function stBind(el,sel,obj,key,after){el.querySelectorAll(sel).forEach(i=>{if(i.
 function stRender(){const el=$('#stView');if(!el)return;const D=STD();
   const C=stCamp();if(ui.stC&&!C){ui.stC=ui.stS=ui.stN=null}
   if(!stCamp()){el.innerHTML=stListHTML();stListBind(el);return}
-  if(S.stNav==null)S.stNav=innerWidth>=1000;const W=h=>`<div class="stwrap ${S.stNav?'':'nav-off'}"><aside class="sttoc" id="stToc" aria-label="Navigation dans la campagne"></aside><div class="stmain">${h}</div></div><div class="stfab"><button type="button" class="tocb" id="stTocB" aria-label="Navigation">${S.stNav?'✕ Masquer':'☰ Navigation'}</button><button type="button" id="stMkB" hidden>🔖 Reprendre</button><button type="button" id="stTopB" aria-label="Haut de la page" hidden>↑</button></div>`;
+  if(D.cur!==ui.stC){D.cur=ui.stC;stSave()}
+  if(S.stNav==null)S.stNav=innerWidth>=1000;const W=h=>`<div class="stwrap ${S.stNav?'':'nav-off'}"><aside class="sttoc" id="stToc" aria-label="Navigation dans la campagne"></aside><div class="stmain">${h}</div></div><div class="stfab"><button type="button" class="tocb" id="stTocB" aria-label="Navigation">${S.stNav?'✕ Masquer':'☰ Navigation'}</button><button type="button" id="stScB" hidden>🎬 Ma scène</button><button type="button" id="stMkB" hidden>🔖 Reprendre</button><button type="button" id="stTopB" aria-label="Haut de la page" hidden>↑</button></div>`;
   if(ui.stN&&stNpc()){el.innerHTML=W(stNpcHTML());stNpcBind(el)}
   else if(ui.stL&&stLieu()){ui.stN=null;el.innerHTML=W(stLieuHTML());stLieuBind(el)}
   else{ui.stN=null;ui.stL=null;if(ui.stS&&stSess()){el.innerHTML=W(stSessHTML());stSessBind(el)}else{ui.stS=null;el.innerHTML=W(stCampHTML());stCampBind(el)}}
@@ -4732,7 +4798,7 @@ function stCampHTML(){const c=stCamp();if(ui.stTab==='scen'&&!stHasScen(c))ui.st
   let body='';
   if(T==='sess'){const L=(c.sess||[]).slice().sort((a,b)=>b.n-a.n);
     body=`<div class="stact" style="margin-top:0;margin-bottom:12px"><button class="btn primary" type="button" id="sNew">+ Nouvelle session</button></div>
-      ${L.length?`<div class="stsess">${L.map(x=>`<button type="button" class="stsrow" data-sess="${x.id}"><span class="n">${x.n}</span><span class="t"><b>${esc(x.title||'Session '+x.n)}</b><small>${x.date?stDate(x.date+'T12:00'):''} · ${(x.live||[]).length} note${(x.live||[]).length>1?'s':''} en direct${(x.npcs||[]).length?' · '+x.npcs.length+' PNJ':''}</small></span><span>›</span></button>`).join('')}</div>`
+      ${L.length?`<div class="stsess">${L.map(x=>`<button type="button" class="stsrow" data-sess="${x.id}"><span class="n">${x.n}</span><span class="t"><b>${esc(x.title||'Session '+x.n)}${c.play===x.id?' <span class="att allié">▶ en cours</span>':''}</b><small>${x.date?stDate(x.date+'T12:00'):''} · ${(x.live||[]).length} note${(x.live||[]).length>1?'s':''} en direct${(x.npcs||[]).length?' · '+x.npcs.length+' PNJ':''}</small></span><span>›</span></button>`).join('')}</div>`
         :`<div class="stempty">Pas encore de session. Crée la première pour préparer ta partie et prendre des notes pendant le jeu.</div>`}`}
   if(T==='scen'){body=`<p class="hint" style="margin-top:0">Ton scénario, découpé en chapitres (actes, lieux, scènes…). Tout est enregistré automatiquement.</p>
       ${(c.scen||[]).length>1?`<div class="stact" style="margin:0 0 10px"><button class="btn sm" type="button" data-foldall="1">Tout replier</button><button class="btn sm" type="button" data-foldall="0">Tout déplier</button></div>`:''}
@@ -4776,7 +4842,7 @@ function stCampBind(el){const c=stCamp();stCrumbBind(el);
 /* une session */
 function stSessHTML(){const c=stCamp(),x=stSess(),N=(x.npcs||[]).map(id=>(c.npcs||[]).find(n=>n.id===id)).filter(Boolean),inCombat=S.turn>=0;
   return `<div class="stbook">${stCrumb([['Campagnes','list'],[c.name,'camp'],['Session '+x.n,'']])}
-    <div class="sthead"><input class="sttitle" id="sTitle" value="${esc(x.title||'')}" placeholder="Titre de la session" aria-label="Titre de la session"><input class="in" type="date" id="sDate" value="${esc(x.date||'')}" style="width:auto"><button class="btn ghost sm" type="button" id="sDel">Supprimer</button></div>
+    <div class="sthead"><input class="sttitle" id="sTitle" value="${esc(x.title||'')}" placeholder="Titre de la session" aria-label="Titre de la session"><input class="in" type="date" id="sDate" value="${esc(x.date||'')}" style="width:auto"><button class="btn ${c.play===x.id?'':'primary'}" type="button" id="sPlay">${c.play===x.id?'■ Arrêter la session':'▶ Jouer cette session'}</button><button class="btn ghost sm" type="button" id="sDel">Supprimer</button></div>${c.play===x.id?'<div class="playban">▶ Session en cours : l’onglet Histoire s’ouvre directement ici, et la scène où tu es est retenue toute seule.</div>':''}
     <div class="stcols"><div>
       <label class="fl" for="sPrep">Préparation / scénario de la session</label><textarea id="sPrep" class="big" placeholder="Ce qui doit se passer, les scènes prévues, les indices à donner…">${esc(x.prep||'')}</textarea>
       <label class="fl">PNJ de la session</label><div class="stchips">${N.map(n=>`<span class="stchip" data-open="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}<span class="x" data-rm="${n.id}" role="button" aria-label="Retirer">✕</span></span>`).join('')}
@@ -4790,6 +4856,7 @@ function stSessHTML(){const c=stCamp(),x=stSess(),N=(x.npcs||[]).map(id=>(c.npcs
     </div></div></div>`}
 function stLiveItems(x){const L=(x.live||[]).slice().reverse();return L.length?L.map(n=>`<li><time>${stTime(n.ts)}${n.r?'<br>R'+n.r:''}</time><span>${esc(n.t)}</span><button type="button" data-ldel="${n.id}" aria-label="Supprimer la note">✕</button></li>`).join(''):'<li style="color:#9c8b6c;border:0">Rien pour l’instant. Les notes s’affichent ici, avec l’heure.</li>'}
 function stSessBind(el){const c=stCamp(),x=stSess();stCrumbBind(el);
+  el.querySelector('#sPlay').onclick=()=>{if(c.play===x.id){c.play=null;toast('Session arrêtée')}else{c.play=x.id;if(!c.cur||c.cur.sid!==x.id)c.cur={sid:x.id,h:0};toast('▶ Session '+x.n+' en cours')}stSave();ui.stKeep=1;stRender()};
   stBind(el,'#sTitle',x,'title');stBind(el,'#sPrep',x,'prep');stBind(el,'#sSum',x,'sum');
   el.querySelector('#sDate').onchange=e=>{x.date=e.target.value;stSave()};
   el.querySelector('#sDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer ?';return}c.sess=c.sess.filter(s2=>s2.id!==x.id);ui.stS=null;stSave();stRender()};
