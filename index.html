@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-12h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-15h20';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -306,6 +306,17 @@ a.npcl.lieul{color:#2a5a3a}
 .stpeek .tx{font:15px/1.5 Georgia,serif;color:#2b2416;white-space:pre-wrap}
 .stpeek .tx.sec{background:#fff4f0;border:1px solid #e5b9ae;border-radius:8px;padding:6px 9px}
 .stpeek .x{position:sticky;top:0;float:right;appearance:none;border:0;background:#fbf6ea;font-size:24px;cursor:pointer;color:#6b5a3f}
+
+/* ---------- Hauteurs ---------- */
+.elv{position:absolute;pointer-events:none;box-sizing:border-box;border:0 solid rgba(255,236,170,.95);z-index:1;font:700 11px var(--f-mono,monospace);color:#fff;text-shadow:0 1px 2px #000;padding:2px 3px}
+.elv.l1{background:rgba(255,214,120,.18)}.elv.l2{background:rgba(255,190,90,.28)}.elv.l3{background:rgba(255,160,70,.36)}.elv.l4{background:rgba(255,130,60,.44)}
+.elv.soft{background:rgba(255,220,140,.08)!important;border-color:rgba(255,236,170,.55);border-style:dashed}
+.elvb{position:absolute;left:50%;top:-10px;transform:translateX(-50%);background:rgba(40,28,8,.88);color:#ffd98a;font:700 10px var(--f-mono,monospace);padding:0 4px;border-radius:5px;white-space:nowrap;z-index:4;pointer-events:none;box-shadow:0 0 0 1px rgba(255,217,138,.5)}
+
+.zoom.tvz{background:#2b2416;border-color:#2b2416}.zoom.tvz button{color:#f2e6c8}.zoom.tvz .tvzl{color:#e8c77a;font-size:12px;padding:0 6px;align-self:center;white-space:nowrap}
+
+.metbox{margin-top:16px;padding:10px 12px 12px;border:1px dashed #9ab88f;border-radius:12px;background:#f3f8ef}
+.metbox .check small{color:#6b7a5f}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -1131,7 +1142,11 @@ function blocked(){if(_blk)return _blk;const B=new Set(S.map.walls||[]),m=S.map;
   if(m.kind==='tiles'&&m.tiles)for(let i=0;i<m.tiles.length;i++)if(TERR[m.tiles[i]]?.b)B.add((i%m.cols)+','+Math.floor(i/m.cols));
   (S.objs||[]).forEach(o=>{if(blocksMove(o))ocells(o).forEach(k=>B.add(k))});(m.zones||[]).forEach(z=>{if(z.block)z.keys.forEach(k=>B.add(k))});return _blk=B}
 function foot(c,x,y){const out=[];for(let j=0;j<sz(c);j++)for(let i=0;i<sz(c);i++)out.push((x+i)+','+(y+j));return out}
-function stepCost(c,x,y){return foot(c,x,y).some(k=>{const [a,b]=k.split(',').map(Number),t=tileAt(a,b),s=surfAt(a,b);return (t&&TERR[t]?.d)||(s&&(SURF[s.t]||SURFX[s.t])?.d)})?2:1}
+function elevOf(c,x,y){const E=S.map&&S.map.elev;if(!E||!c)return 0;let n=0;foot(c,x??c.x,y??c.y).forEach(k=>{if(E[k]>n)n=E[k]});return n}
+function elevBadge(c){const n=elevOf(c);return n?`<span class="elvb" title="En hauteur : ${n*3} m">▲${n*3}m</span>`:''}
+// bonus de hauteur façon BG3 : +2 en hauteur, −2 en contrebas
+function elevAtk(att,tgt){if(!att||!tgt||tgt.isObj)return 0;const a=elevOf(att),t=elevOf(tgt);return a>t?2:a<t?-2:0}
+function stepCost(c,x,y,fx,fy){if(fx!=null&&has(c,'à terre'))return 2*stepCost(c,x,y);if(fx!=null){const up=elevOf(c,x,y)-elevOf(c,fx,fy);if(up>0)return 1+up+stepCost(c,x,y)-1}return foot(c,x,y).some(k=>{const [a,b]=k.split(',').map(Number),t=tileAt(a,b),s=surfAt(a,b);return (t&&TERR[t]?.d)||(s&&(SURF[s.t]||SURFX[s.t])?.d)})?2:1}
 function around(x,y,r){const out=[];for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++){const a=x+i,b=y+j;if(a>=0&&b>=0&&a<S.map.cols&&b<S.map.rows)out.push(a+','+b)}return out}
 const rollD=s=>1+Math.floor(Math.random()*s);
 function rollDice(f){let t=0;String(f).replace(/\s/g,'').replace(/([+-]?)(\d*)d(\d+)|([+-]?)(\d+)/g,(m,s1,n,d,s2,k)=>{if(d){let v=0;for(let i=0;i<(+n||1);i++)v+=rollD(+d);t+=s1==='-'?-v:v}else if(k)t+=s2==='-'?-(+k):+k;return m});return Math.max(0,t)}
@@ -1549,10 +1564,10 @@ function effSpeed(c){return (has(c,'agrippé')||has(c,'entravé')||has(c,'paraly
 /* ---------- Déplacement ---------- */
 function reachable(c){
   // Dijkstra : terrain difficile = 2 cases
-  const max=Math.floor(c.res.move/CELL_M+1e-9), out=new Map(), best=new Map([[c.x+','+c.y,0]]), par=new Map(), bk=[[[c.x,c.y]]];out.par=par;out.cost=best;
+  const FS=fearSrc(c),max=Math.floor(c.res.move/CELL_M+1e-9), out=new Map(), best=new Map([[c.x+','+c.y,0]]), par=new Map(), bk=[[[c.x,c.y]]];out.par=par;out.cost=best;
   for(let d=0;d<=max;d++){for(const [x,y] of (bk[d]||[])){if(best.get(x+','+y)!==d)continue;
     for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){if(!dx&&!dy)continue;const nx=x+dx,ny=y+dy,k=nx+','+ny;
-      if(!fits(c,nx,ny,'pass'))continue;const nd=d+stepCost(c,nx,ny);if(nd>max||(best.has(k)&&best.get(k)<=nd))continue;
+      if(!fits(c,nx,ny,'pass'))continue;if(FS.length&&FS.some(f=>dist(f,{x:nx,y:ny,size:sz(c)})<dist(f,{x,y,size:sz(c)})))continue;const nd=d+stepCost(c,nx,ny,x,y);if(nd>max||(best.has(k)&&best.get(k)<=nd))continue;
       best.set(k,nd);par.set(k,x+','+y);(bk[nd]||(bk[nd]=[])).push([nx,ny])}}}
   best.forEach((d,k)=>{if(d>0){const [x,y]=k.split(',').map(Number);if(fits(c,x,y,'end'))out.set(k,d)}});
   return out;
@@ -1772,6 +1787,8 @@ function renderBoard(){
   const grid=document.createElement('div');grid.className='grid';b.appendChild(grid);
   Object.entries(m.surf||{}).forEach(([k,sv])=>{const [x,y]=k.split(',').map(Number);if(x>=m.cols||y>=m.rows)return;const d=document.createElement('div');d.className='sf '+sv.t;
     d.style.cssText=`left:${x*cs-cs*.08}px;top:${y*cs-cs*.08}px;width:${cs*1.16}px;height:${cs*1.16}px;animation-delay:-${((x*7+y*13)%10)/10}s`;b.appendChild(d)});
+  {const E=m.elev||{},show=ui.ed?1:(!TVM&&S.elevShow)?2:0;if(show)Object.entries(E).forEach(([k,n])=>{const [x,y]=k.split(',').map(Number);if(x>=m.cols||y>=m.rows)return;const d=document.createElement('div');d.className='elv l'+Math.min(4,n)+(show===2?' soft':'');d.style.cssText=`left:${x*cs}px;top:${y*cs}px;width:${cs}px;height:${cs}px`;
+      const L=E[(x-1)+','+y]===n,R=E[(x+1)+','+y]===n,U=E[x+','+(y-1)]===n,D=E[x+','+(y+1)]===n;d.style.borderWidth=`${U?0:2}px ${R?0:2}px ${D?0:2}px ${L?0:2}px`;if(show===1&&!L&&!U)d.textContent='+'+n*3+' m';b.appendChild(d)})}
   (m.zones||[]).forEach(z=>{if(!z.aura)return;const h=byId(z.aura);if(!h||h.hid)return;const p=ctr(h),r=(z.r/CELL_M+sz(h)/2)*cs;const d=document.createElement('div');d.className='zaura';d.style.cssText=`left:${p.x-r}px;top:${p.y-r}px;width:${2*r}px;height:${2*r}px`;d.title=z.n;b.appendChild(d)});
   b.classList.toggle('nogrid',!m.grid&&!ui.ed);$('#mapwrap').classList.toggle('editing',!!ui.ed);
   const frag=document.createDocumentFragment();
@@ -1810,8 +1827,8 @@ function renderBoard(){
     t.className=`tok ${ui.multi&&ui.multi.includes(c.id)?'picked':''} ${c.hid?'hidtok':''} ${ui.ed&&ui.edSel===c.id?'sel':''} ${c.side} ${figu?'figu':''} ${square(c)?'sq':''} ${c.id===ui.sel?'sel':''} ${curC&&curC.id===c.id?'cur':''} ${targets.has(c.id)||area.has(c.id)?'target':''} ${c.hp<=0?'down':''}`;
     t.style.cssText=`left:${c.x*cs+off}px;top:${c.y*cs+off}px;width:${tz}px;height:${tz}px;--c:${c.color};--p:${p};--hpc:${p>.5?'#4cbf80':p>.25?'#e0a83a':'#e2624d'};z-index:${c.hp>0?3:2}`;
     const visible=c.conds.filter(k=>k!=='concentration').length,efi=efIcons(c);
-    if(figu)t.innerHTML=`<div class="ring"></div><div class="base"></div><div class="fimg" style="background-image:url('${imgU(c.img)}');--rot:${c.rot||0}deg"></div>${c.label?`<span class="tlab">${esc(c.label)}</span>`:''}${visible?`<span class="cnd">${visible}</span>`:''}${efi}`;
-    else t.innerHTML=`<div class="ring"></div>${(()=>{const u=art(c);return `<div class="face ${u?'img':''}" style="font-size:${Math.max(11,tz*.36/Math.max(1,label(c).length/2))}px${u?`;background-image:url('${u}')`:''}">${u?'':esc(label(c))}</div>${u&&c.label?`<span class="tlab">${esc(c.label)}</span>`:''}`})()}${visible?`<span class="cnd">${visible}</span>`:''}${efi}`;
+    if(figu)t.innerHTML=`<div class="ring"></div><div class="base"></div><div class="fimg" style="background-image:url('${imgU(c.img)}');--rot:${c.rot||0}deg"></div>${c.label?`<span class="tlab">${esc(c.label)}</span>`:''}${visible?`<span class="cnd">${visible}</span>`:''}${efi}${elevBadge(c)}`;
+    else t.innerHTML=`<div class="ring"></div>${(()=>{const u=art(c);return `<div class="face ${u?'img':''}" style="font-size:${Math.max(11,tz*.36/Math.max(1,label(c).length/2))}px${u?`;background-image:url('${u}')`:''}">${u?'':esc(label(c))}</div>${u&&c.label?`<span class="tlab">${esc(c.label)}</span>`:''}`})()}${visible?`<span class="cnd">${visible}</span>`:''}${efi}${elevBadge(c)}`;
     if(LT){const k=lightAt(c.x+sz(c)/2,c.y+sz(c)/2);if(k>.12)t.style.filter=`brightness(${Math.max(c.side==='pj'?.62:.3,1-k*.85)})`}
     if(m.fog&&!charSeen(c)){if(TVM)return;t.style.opacity='.55'}
     t.title=c.name;t.dataset.id=c.id;b.appendChild(t);
@@ -1821,6 +1838,7 @@ function renderBoard(){
 }
 function validTarget(att,a,c){
   const X=a.sx||spx(a);if(c.ban)return false;
+  if(c!==att&&!(X&&(X.t==='a'||X.t==='s'))&&a.kind!=='soin'&&charmedBy(att,c))return false;
   if(X&&X.t==='a')return c.side===att.side&&(c.hp>0||c.side==='pj');
   if(X&&X.t==='f')return c!==att&&c.side!==att.side&&(c.hp>0||c.side==='pj');
   if(X&&X.t==='x')return c.hp>0||c.side==='pj';
@@ -1903,7 +1921,7 @@ function renderPanel(){
   $('#pEdit').onclick=()=>editChar(c);
   $('#pDmg').onclick=()=>{const n=+$('#pHpN').value;if(n>0){damage(c,n);log(`${esc(c.name)} perd ${n} PV (manuel).`);queueFx({att:c,a:{kind:'none'},hits:[{c,dm:n,kind:'hit',kill:c.hp===0}]});save();render();runFx()}};
   $('#pHeal').onclick=()=>{const n=+$('#pHpN').value;if(n>0){heal(c,n);log(`${esc(c.name)} récupère ${n} PV (manuel).`);queueFx({att:c,a:{kind:'none'},hits:[{c,dm:n,kind:'heal'}]});save();render();runFx()}};
-  $('#pMove').onclick=()=>{ui.mode=ui.mode==='move'?null:'move';ui.act=null;ui.center=null;render()};
+  $('#pMove').onclick=()=>{ui.mode=ui.mode==='move'?null:'move';ui.act=null;ui.center=null;if(ui.mode==='move'){const F=fearSrc(c);if(F.length)toast('Effrayé·e : impossible de s’approcher de '+F.map(o=>o.name).join(', '))}render()};
   $('#pPlace').onclick=()=>{ui.mode='place';ui.act=null;render()};
   if($('#pHid'))$('#pHid').onclick=()=>{c.hid=!c.hid;log(c.hid?`${esc(c.name)} est caché aux joueurs.`:`${esc(c.name)} apparaît !`);save();render()};
   if($('#pRotL')){$('#pRotL').onclick=()=>{c.rot=(c.rot||0)-45;save();renderBoard()};$('#pRotR').onclick=()=>{c.rot=(c.rot||0)+45;save();renderBoard()}}
@@ -2102,7 +2120,7 @@ function resolveSingle(att,a,tgt){
   const head=`<h2>${esc(a.name)}</h2><div class="sub">${esc(att.name)} → ${esc(tgt.name)} · ${fm(dist(att,tgt)*CELL_M)}</div>`;
   const note=a.note?`<div class="note">${esc(a.note)}</div>`:'';
   if(a.kind==='attaque'||a.kind==='sort_att'){
-    const info=advInfo(att,tgt,a),XD=atkDice(att),fl=atkFlat(att,a),critOn=+(a.crit||(X&&X.crit))||20,AC0=a._mir==='dup'?10+abMod(tgt,'DEX'):acOf(tgt);
+    const info=advInfo(att,tgt,a),XD=atkDice(att),EH=elevAtk(att,tgt),fl=atkFlat(att,a)+EH,critOn=+(a.crit||(X&&X.crit))||20,AC0=a._mir==='dup'?10+abMod(tgt,'DEX'):acOf(tgt);
     modal(`${head}
       <div class="chips" id="chips"></div>
       <div class="grid2"><label class="check"><input type="checkbox" id="mAdv"> Avantage en plus <small style="color:var(--muted)">(aide, hauteur, flanc…)</small></label><label class="check"><input type="checkbox" id="mDis"> Désavantage en plus</label></div>
@@ -2114,7 +2132,7 @@ function resolveSingle(att,a,tgt){
       <div class="row"><button class="btn" id="mCancel" type="button">Annuler</button><button class="btn primary" id="mGo" type="button">Valider le jet</button></div>`,el=>{
       const upd=()=>{const A=info.adv.length||el.querySelector('#mAdv').checked,D=info.dis.length||el.querySelector('#mDis').checked;
         const st=A&&D?'neu':A?'adv':D?'dis':'neu';
-        el.querySelector('#chips').innerHTML=[...info.adv.map(t=>`<span class="chip adv">${esc(t)}</span>`),...info.dis.map(t=>`<span class="chip dis">${esc(t)}</span>`),info.autoCrit?'<span class="chip adv">Critique automatique si touché</span>':''].join('')||'<span class="chip neu">Aucun modificateur de situation</span>';
+        el.querySelector('#chips').innerHTML=[...info.adv.map(t=>`<span class="chip adv">${esc(t)}</span>`),...info.dis.map(t=>`<span class="chip dis">${esc(t)}</span>`),info.autoCrit?'<span class="chip adv">Critique automatique si touché</span>':'',EH>0?'<span class="chip adv">▲ En hauteur : +2 au toucher</span>':EH<0?'<span class="chip dis">▼ En contrebas : −2 au toucher</span>':''].join('')||'<span class="chip neu">Aucun modificateur de situation</span>';
         el.querySelector('#how').innerHTML=st==='adv'?'<b>Avantage</b> : lance 2d20 et garde le plus haut.':st==='dis'?'<b>Désavantage</b> : lance 2d20 et garde le plus bas.':A&&D?'Avantage et désavantage s’annulent : lance <b>1d20</b>.':'Lance <b>1d20</b>.'};
       upd();el.querySelector('#mAdv').onchange=upd;el.querySelector('#mDis').onchange=upd;
       if(resolveSingle._skipRx){const d0=resolveSingle._d;resolveSingle._skipRx=false;el._rx=1;setTimeout(()=>{const i=el.querySelector('#d20');if(i){i.value=d0;el.querySelector('#mGo').click()}},0)}
@@ -2230,7 +2248,7 @@ function actFx(a){if(a.fx)return a.fx;{const X=a.sx||spx(a);if(X&&(X.c||X.e||X.f
   m=n.match(/(?:Touché|Peut rendre)\s*:?\s*([^·]*)/i);if(m){const cs=condsIn(m[1]);if(cs.length)return {save:null,conds:cs,dur:0}}
   if(a.kind==='sort_jds'){m=n.match(/échec\s*:\s*([^·]*)/i);if(m){const cs=condsIn(m[1]);if(cs.length)return {save:a.save,dc:a.dc,conds:cs,dur:cs.some(k=>LONGC.has(k))?10:0,rep:true,viaSave:true}}}
   return null}
-function applyCond(t,k,o){if(!t.conds.includes(k)){t.conds.push(k);sfxRelay('condition')}
+function applyCond(t,k,o){if(!t.conds.includes(k)){t.conds.push(k);sfxRelay('condition')}incapConc(t);
   if(o&&o.dur){t.ce=(t.ce||[]).filter(e=>e.k!==k);t.ce.push({k,save:o.save||null,dc:o.dc||0,left:o.dur,rep:!!o.rep,src:o.src||'',conc:o.conc||null})}}
 function removeCond(t,k){t.conds=t.conds.filter(z=>z!==k);t.ce=(t.ce||[]).filter(e=>e.k!==k)}
 
@@ -2240,6 +2258,7 @@ function removeCond(t,k){t.conds=t.conds.filter(z=>z!==k);t.ce=(t.ce||[]).filter
 // z: zone persistante ; g: action accordée tant que le sort dure ; tp: téléportation (m) ; sum: invocation ; x: règle spéciale ; pk: choix au lancement
 const M1=10,M10=100,H1=600,H8=4800,J1=14400;
 const SPX0={
+'Bousculer':{t:'f',x:'gShove'},'Agripper':{t:'f',x:'gGrap'},'Se libérer':{t:'s',x:'gFree'},
 // ===== Capacités de classe =====
 'Rage':{t:'s',x:'cfRage'},'Attaque téméraire':{t:'s',x:'cfReck'},'Inspiration bardique':{t:'a',x:'cfInsp'},'Renvoi des morts-vivants':{t:'s',x:'cfTurn'},'Fureur destructrice':{t:'s',x:'cfDestr'},'Fougue':{t:'s',x:'cfSurge'},'Défense patiente':{t:'s',x:'cfDodge'},'Pas du vent':{t:'s',x:'cfStep'},'Ruse : Foncer':{t:'s',x:'cfDash'},'Ruse : Se désengager':{t:'s',x:'cfDis'},'Ruse : Se cacher':{t:'s',x:'cfHide'},'Imposition des mains':{t:'a',x:'cfLay'},
 // ===== Tours de magie =====
@@ -2764,7 +2783,7 @@ function efAdd(t,o){if(!t||t.isObj)return null;t.ef=t.ef||[];
   t.ef.filter(e=>e.n===o.n&&e.src===o.src).forEach(e=>{t.ef=t.ef.filter(x=>x!==e);efClean(t,e,1)});
   const e=Object.assign({id:uid(),at:RNDS(),c:[],m:{}},o);e.m=e.m||{};
   e.c=(e.c||[]).filter(k=>!efImmC(t,k)&&!((e.m.immC||[]).includes(k)));
-  e.c.forEach(k=>{if(!has(t,k)){t.conds.push(k);sfxRelay('condition')}});
+  e.c.forEach(k=>{if(!has(t,k)){t.conds.push(k);sfxRelay('condition')}});incapConc(t);
   (e.m.c0||[]).forEach(k=>{if(has(t,k)){removeCond(t,k);log(`${esc(t.name)} n’est plus ${esc(k)}.`)}});
   (e.m.immC||[]).forEach(k=>{if(has(t,k))removeCond(t,k)});
   if(e.m.hpMax){t.hpMax=Math.max(1,t.hpMax+e.m.hpMax);if(e.m.hpMax>0)t.hp+=e.m.hpMax;t.hp=Math.min(t.hp,t.hpMax)}
@@ -3154,7 +3173,7 @@ const SURFX={lianes:{n:'Lianes',d:1},lune:{n:'Rayon de lumière'},silence:{n:'Si
 /* dégâts reçus : résistances, PV temporaires, Lien de protection, Protection contre la mort, Métamorphose */
 function spDmgIn(t,n){t._thpB=t.thp||0;if(!(n>0))return n;const dt=(curDT||'').toLowerCase(),E=efAll(t);
   const hit=L=>L.some(x=>x==='all'||dt&&x===dt||String(x).startsWith('allbut:')&&dt!==String(x).slice(7));
-  const I=[].concat(...E.map(e=>e.m&&e.m.imm||[])),R=[].concat(...E.map(e=>e.m&&e.m.res||[]));
+  const I=[].concat(...E.map(e=>e.m&&e.m.imm||[])),R=[].concat(...E.map(e=>e.m&&e.m.res||[]),has(t,'pétrifié')?['all']:[]);
   if(I.length&&hit(I)){log(`${esc(t.name)} est immunisé·e${dt?' ('+esc(dt)+')':''}.`);return 0}
   if(R.length&&hit(R)){n=Math.floor(n/2);log(`${esc(t.name)} résiste${dt?' ('+esc(dt)+')':''} : dégâts réduits à ${n}.`)}
   if(n>0&&t.thp>0){const a=Math.min(t.thp,n);t.thp-=a;n-=a;log(`${esc(t.name)} : ${a} dégâts absorbés par ses PV temporaires.`)}
@@ -3293,14 +3312,15 @@ function pushPath(t,ox,oy,d,src){const s=sz(t),cx=t.x+s/2,cy=t.y+s/2;let dx=cx-o
     if(foot(t,x,y).some(k=>{const [a,b]=k.split(',').map(Number);return ['g','l'].includes(tileAt(a,b))}))break}
   return {x,y,pts,hit}}
 function doPush(src,t,P,origin){if(!t||t.isObj||t.hp<=0&&t.side!=='pj'||sz(t)>=4)return;const o=origin||{x:src.x+sz(src)/2,y:src.y+sz(src)/2};
-  const run=()=>{if(!S.chars.includes(t))return;const R=P.d?pushPath(t,o.x,o.y,P.d,src):{x:t.x,y:t.y,pts:[t.x+','+t.y],hit:null},moved=R.pts.length>1;
+  const run=()=>{if(!S.chars.includes(t))return;const e0=elevOf(t);const R=P.d?pushPath(t,o.x,o.y,P.d,src):{x:t.x,y:t.y,pts:[t.x+','+t.y],hit:null},moved=R.pts.length>1;
     if(moved){t.x=R.x;t.y=R.y;dirty();render();walk(t,R.pts,true);sfxRelay('blunt')}
     const dist=fm((R.pts.length-1)*CELL_M);if(P.d)log(`${esc(t.name)} est ${P.d<0?'attiré·e':'repoussé·e'}${moved?' de '+dist:''}${R.hit&&R.hit!=='bord'?` et heurte ${R.hit==='mur'?'un mur':R.hit==='objet'?'un obstacle':R.hit==='lanceur'?esc(src.name):'une créature'}`:R.hit==='bord'?' jusqu’au bord de la carte':''}.`);
     if(P.prone&&!has(t,'à terre')){applyCond(t,'à terre');log(`${esc(t.name)} tombe à terre.`)}
-    setTimeout(()=>pushLand(t),moved?Math.max(300,150*(R.pts.length-1))+80:0);save()};
+    setTimeout(()=>pushLand(t,e0),moved?Math.max(300,150*(R.pts.length-1))+80:0);save()};
   fxChain=fxChain.then(()=>sleep(250)).then(run)}
-function pushLand(t){if(!S.chars.includes(t))return;const cells=foot(t,t.x,t.y),tiles=cells.map(k=>{const [a,b]=k.split(',').map(Number);return tileAt(a,b)}),sf=cells.map(k=>(S.map.surf||{})[k]).filter(Boolean).map(v=>v.t);
+function pushLand(t,e0){if(!S.chars.includes(t))return;const cells=foot(t,t.x,t.y),tiles=cells.map(k=>{const [a,b]=k.split(',').map(Number);return tileAt(a,b)}),sf=cells.map(k=>(S.map.surf||{})[k]).filter(Boolean).map(v=>v.t);
   const hurt=(f,dt,why)=>{const n=rollDice(f);curDT=dt;damage(t,n);curDT='';log(`${esc(t.name)} ${why} : <b>${n}</b> dégâts de ${dt} (${f}).`);queueFx({att:t,a:{kind:'none'},hits:[{c:t,dm:n,kind:'hit',kill:t.hp===0}]});runFx()};
+  {const dr=(e0||0)-elevOf(t);if(dr>0){hurt(dr+'d6','contondant','chute de '+dr*3+' m');if(t.hp>0&&!has(t,'à terre'))applyCond(t,'à terre')}}
   if(tiles.includes('l'))hurt('6d10','feu','tombe dans la lave');
   else if(tiles.includes('g')){hurt('4d6','contondant','chute dans le gouffre');if(t.hp>0&&!has(t,'à terre'))applyCond(t,'à terre')}
   else if(tiles.includes('E'))log(`${esc(t.name)} tombe dans l’eau profonde.`);
@@ -3383,9 +3403,9 @@ function counterCheck(att,a,cont){if(CS_SKIP){CS_SKIP=false;return false}if(!isS
   return true}
 
 /* ---------- Éditeur de carte ---------- */
-const TOOLS=[['pions','Sélection'],['terrain','Terrain'],['surface','Surfaces'],['objet','Objets'],['mur','Obstacles'],['gomme','Gomme'],['edit','Modifier'],['pan','Déplacer la vue']];
+const TOOLS=[['pions','Sélection'],['terrain','Terrain'],['surface','Surfaces'],['hauteur','Hauteur'],['objet','Objets'],['mur','Obstacles'],['gomme','Gomme'],['edit','Modifier'],['pan','Déplacer la vue']];
 const HINTS={pions:'Touche un pion ou un objet pour le sélectionner, fais-le glisser du doigt pour le déplacer. Le curseur « Taille » l’agrandit. « Cacher » rend un monstre invisible pour les joueurs et la TV (embuscade).',terrain:'Touche ou glisse sur la carte pour peindre. Murs, eau profonde, lave et gouffre bloquent le passage ; éboulis et eau peu profonde comptent double.',
-  surface:'Les surfaces posées ici restent jusqu’à ce que tu les effaces. En jeu, le feu dure 3 rounds. Graisse et ronces ralentissent ; acide et ronces blessent (1d4) ; la graisse fait glisser et brûle ; brume et ténèbres masquent la zone.',
+  hauteur:'Peins les zones en hauteur ; l’app compare ensuite la hauteur de l’attaquant et de sa cible. Gomme ou « Sol » pour effacer.',surface:'Les surfaces posées ici restent jusqu’à ce que tu les effaces. En jeu, le feu dure 3 rounds. Graisse et ronces ralentissent ; acide et ronces blessent (1d4) ; la graisse fait glisser et brûle ; brume et ténèbres masquent la zone.',
   objet:'Touche une case pour poser l’objet (les grands décors partent de la case touchée vers la droite et le bas). Utilise « Modifier » pour le pivoter ou régler ses dégâts, son groupe ou son contenu.',
   mur:'Obstacles invisibles : pratique sur une image importée pour marquer ses murs, piliers et rochers.',
   gomme:'Efface objets, surfaces et obstacles sous le pinceau.',
@@ -3456,9 +3476,10 @@ function renderEditor(){
       <p class="hint" style="margin:4px 0 0">${(S.map.spawns||[]).length} départ(s). Un joueur qui rejoint la table arrive directement sur un départ libre.</p></div>
     <div class="plist">${L.map(c=>`<div class="prow ${ui.edSel===c.id?'on':''} ${c.hid?'hid':''}" data-pr="${c.id}"><span class="pdot ${c.side}" style="background:${c.color}">${esc(label(c))}</span><span class="pn"><b>${esc(c.name)}</b><small>${c.side==='pj'?'PJ':'PNJ'}${c.hid?' · caché':''} · case ${c.x+1},${c.y+1}</small></span>
       ${c.side!=='pj'?`<button class="btn sm" type="button" data-ph="${c.id}" title="${c.hid?'Révéler aux joueurs':'Cacher aux joueurs'}">${c.hid?'Révéler':'Cacher'}</button>`:''}<button class="btn sm" type="button" data-pe="${c.id}">Modifier</button>${c.side!=='pj'?`<button class="btn sm danger" type="button" data-pd="${c.id}" aria-label="Retirer">✕</button>`:''}</div>`).join('')||'<p class="empty">Aucun personnage sur cette carte.</p>'}</div>`}
+  if(E.tool==='hauteur')pal=`<p class="hint" style="margin:0 0 6px">Peins les zones en hauteur (rochers, balcons, remparts, collines). Attaquer depuis plus haut donne <b>+2 au toucher</b>, depuis plus bas <b>−2</b> ; monter coûte du déplacement en plus.</p><div class="seg" style="flex-wrap:wrap">${[1,2,3,4].map(n=>`<button type="button" class="${(E.elev||1)===n?'on':''}" data-elev="${n}">+${n*3} m</button>`).join('')}<button type="button" class="${E.elev===0?'on':''}" data-elev="0">Sol (effacer)</button></div>`;
   if(E.tool==='surface')pal=`<div class="pal">${Object.entries(SURF).map(([k,v])=>`<button type="button" class="pi ${E.surf===k?'on':''}" data-surf="${k}"><span class="sfp"><i class="sf ${k}"></i></span><span>${v.n}</span></button>`).join('')}<button type="button" class="pi ${E.surf==='none'?'on':''}" data-surf="none"><span class="sfp"></span><span>Effacer</span></button></div>`;
   if(E.tool==='objet')pal=OCAT.map(([t,ks])=>`<div class="palh">${t}</div><div class="pal">${ks.split(' ').map(k=>[k,OBJT[k]]).map(([k,v])=>`<button type="button" class="pi ${E.obj===k?'on':''}" data-obj="${k}"><img alt="" src="${objSVG({type:k=='porteS'?'porte':k})}" style="background:#2a2f37;object-fit:contain;padding:${(v.w||1)>2||(v.h||1)>2?2:4}px;box-sizing:border-box"><span>${v.n}</span></button>`).join('')}</div>`).join('')+`<p class="hint">${esc(OBJT[E.obj].desc)}</p>`;
-  const brush=['terrain','surface','mur','gomme'].includes(E.tool)&&(E.tool!=='terrain'||tiles)?`<div class="sect"><h3>Taille du pinceau</h3><div class="seg">${[1,2,3].map(b=>`<button type="button" class="${E.brush===b?'on':''}" data-brush="${b}">${b}×${b}</button>`).join('')}</div></div>`:'';
+  const brush=['terrain','surface','hauteur','mur','gomme'].includes(E.tool)&&(E.tool!=='terrain'||tiles)?`<div class="sect"><h3>Taille du pinceau</h3><div class="seg">${[1,2,3].map(b=>`<button type="button" class="${E.brush===b?'on':''}" data-brush="${b}">${b}×${b}</button>`).join('')}</div></div>`:'';
   const selC=E.tool==='pions'&&ui.edSel?byId(ui.edSel):null,selO=E.tool==='pions'&&ui.edObj?S.objs.find(o=>o.id===ui.edObj):null,SZN=['','Moyenne','Grande','Très grande','Gigantesque'];
   const selBox=selC?`<div class="selbox"><b>${esc(selC.name)}</b> <small class="meta">sélectionné</small>
       <label class="fld">Taille : <b id="szL">${SZN[sz(selC)]}</b><input type="range" id="szR" min="1" max="4" step="1" value="${sz(selC)}"></label>
@@ -3492,6 +3513,7 @@ function renderEditor(){
   p.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{E.tool=b.dataset.tool;render()});
   p.querySelectorAll('[data-terr]').forEach(b=>b.onclick=()=>{E.terr=b.dataset.terr;renderEditor()});
   p.querySelectorAll('[data-surf]').forEach(b=>b.onclick=()=>{E.surf=b.dataset.surf;renderEditor()});
+  p.querySelectorAll('[data-elev]').forEach(b=>b.onclick=()=>{E.elev=+b.dataset.elev;renderEditor()});
   p.querySelectorAll('[data-obj]').forEach(b=>b.onclick=()=>{E.obj=b.dataset.obj;renderEditor()});
   p.querySelectorAll('[data-brush]').forEach(b=>b.onclick=()=>{E.brush=+b.dataset.brush;renderEditor()});
   if($('#ePB'))$('#ePB').onclick=bestiaryModal;if($('#ePS'))$('#ePS').onclick=()=>{E.spawn=!E.spawn;render()};if($('#ePG'))$('#ePG').onclick=toSpawns;if($('#ePX'))$('#ePX').onclick=()=>{S.map.spawns=[];save();render()};if($('#ePN'))$('#ePN').onclick=()=>{const c=C({name:'Nouveau perso',side:'ennemi',actions:[A({name:'Attaque',bonus:4,dmg:'1d6+2'})]});editChar(c,true)};
@@ -3515,8 +3537,9 @@ function paintAt(e,first){
       const t=S.map.tiles.split('');cells.forEach(kk=>{const [a,b]=kk.split(',').map(Number);t[b*S.map.cols+a]=E.terr});S.map.tiles=t.join('');repaintCells(cells);dirty();
       if(TERR[E.terr].b){const occ=S.chars.filter(c=>foot(c,c.x,c.y).some(kk=>cells.includes(kk)));if(occ.length&&first)toast('Attention : un personnage se trouve sur une case bloquée')}break}
     case 'surface':cells.forEach(kk=>{if(E.surf==='none')delete sf[kk];else sf[kk]={t:E.surf,until:null}});renderBoard();break;
+    case 'hauteur':{const H=S.map.elev||(S.map.elev={}),n=E.elev==null?1:E.elev;cells.forEach(kk=>{if(n)H[kk]=n;else delete H[kk]});dirty();renderBoard();break}
     case 'mur':{const W=new Set(S.map.walls||[]);if(first)wallAdd=!W.has(k);cells.forEach(kk=>wallAdd?W.add(kk):W.delete(kk));S.map.walls=[...W];dirty();renderBoard();break}
-    case 'gomme':{const W=new Set(S.map.walls||[]);cells.forEach(kk=>{delete sf[kk];W.delete(kk)});S.map.walls=[...W];S.objs=S.objs.filter(o=>!ocells(o).some(k=>cells.includes(k)));dirty();renderBoard();break}
+    case 'gomme':{const W=new Set(S.map.walls||[]);cells.forEach(kk=>{delete sf[kk];W.delete(kk);if(S.map.elev)delete S.map.elev[kk]});S.map.walls=[...W];S.objs=S.objs.filter(o=>!ocells(o).some(k=>cells.includes(k)));dirty();renderBoard();break}
     case 'objet':{if(!first)return;const T=OBJT[E.obj],why=canPlaceObj(E.obj,x,y,T.w||1,T.h||1);if(why){toast(why);return}
       {const o=newObj(E.obj==='porteS'?'porte':E.obj,x,y);if(E.obj==='porteS'){o.secret=true;o.name='Porte secrète'}S.objs.push(o)}dirty();renderBoard();break}
     case 'pions':{if(!first)return;if(!E.spawn){if(ui.edSel||ui.edObj){ui.edSel=null;ui.edObj=null;render()}return}const L=S.map.spawns||(S.map.spawns=[]),i=L.indexOf(k);if(i>=0)L.splice(i,1);else if(!blocked().has(k))L.push(k);else{toast('Case bloquée');return}renderBoard();break}
@@ -3715,10 +3738,13 @@ function renderMapbar(){const el=$('#mapbar');if(!el)return;
     <span class="mapname" title="Carte affichée">🗺 ${esc((curMapE()||{}).name||'Carte')}</span><button type="button" class="mtab add" id="mAdd" hidden title="Nouvelle carte" aria-label="Nouvelle carte">+</button></div>
     <button type="button" class="mtab amb" id="sndB" title="Sons et musique">${MUS.cur?'♪ '+esc((MD().tracks.find(t=>t.id===MUS.cur)||{}).name||''):'♪ Sons'}</button>
     <button type="button" class="mtab amb" id="wxB" title="Météo animée">${S.map.wx?'☁ '+esc(WXN[S.map.wx]):'☁ Météo'}</button>
+    ${Object.keys(S.map.elev||{}).length?`<button type="button" class="mtab amb ${S.elevShow?'on':''}" id="elB" title="Afficher les zones en hauteur sur la tablette">▲ Hauteurs</button>`:''}
     <button type="button" class="mtab amb" id="lAmb" title="Éclairage de la carte">${esc(AMBN[S.map.light||'interieur'])}</button>
+    ${S.tvOn?`<div class="zoom tvz" title="Zoom de la caméra sur la TV"><button type="button" id="tvZo" aria-label="Dézoomer la TV">📺 −</button><span class="tvzl">${esc((TVZS.find(z=>z[0]===tvZ())||[0,'?'])[1])}</span><button type="button" id="tvZi" aria-label="Zoomer la TV">+</button></div>`:''}
     <div class="zoom"><button type="button" id="zOut" aria-label="Dézoomer">−</button><button type="button" id="zFit" title="Voir toute la carte">${Math.round(S.map.cell/60*100)}%</button><button type="button" id="zIn" aria-label="Zoomer">+</button></div>`;
   el.querySelectorAll('[data-map]').forEach(b=>b.onclick=()=>b.dataset.map===S.curMap?mapsModal():switchMap(b.dataset.map));
-  $('#mAdd').onclick=newMapModal;$('#lAmb').onclick=lightModal;$('#wxB').onclick=wxModal;$('#sndB').onclick=sndModal;
+  {const e=$('#elB');if(e)e.onclick=()=>{S.elevShow=!S.elevShow;save();renderMapbar();renderBoard()}}$('#mAdd').onclick=newMapModal;$('#lAmb').onclick=lightModal;$('#wxB').onclick=wxModal;$('#sndB').onclick=sndModal;
+  {const st=d=>{const i=TVZS.findIndex(z=>z[0]===tvZ()),j=Math.max(0,Math.min(TVZS.length-1,(i<0?2:i)+d));S.tvZoom=TVZS[j][0];TVS.camPrev=null;save();tvPublishSt();renderMapbar();toast('TV : '+TVZS[j][1])};const a=$('#tvZo'),b=$('#tvZi');if(a)a.onclick=()=>st(1);if(b)b.onclick=()=>st(-1)}
   $('#zIn').onclick=()=>setZoom(S.map.cell*1.25);$('#zOut').onclick=()=>setZoom(S.map.cell/1.25);
   $('#zFit').onclick=()=>{const mw=$('#mapwrap');setZoom(Math.min((mw.clientWidth-4)/S.map.cols,(mw.clientHeight-4)/S.map.rows));mw.scrollTo(0,0)};
   el.querySelector('.mtab.on')?.scrollIntoView({block:'nearest',inline:'nearest'})}
@@ -4079,7 +4105,7 @@ function tvImgKey(T,u){if(!u)return null;const k=String(u).startsWith('ref:')?St
 function tvPublish(){const T=tvTarget();if(!T||!S.tvOn||TVM)return;tvPublishSfx();tvPublishAmb();const C=TVS.cache,m=S.map;
   const put=(k,v)=>{const j=JSON.stringify(v);if(C[k]===j)return;C[k]=j;Promise.resolve(T.set(k,v)).catch(()=>{delete C[k];if(!TVS.warned){TVS.warned=1;toast('Écran TV : accès refusé. Mets à jour les règles de la base (database.rules.json).')}})};
   if(m.kind==='video'&&m.vid)tvVidSend(T,m.vid);
-  put('map',{vid:m.kind==='video'?(m.vid||''):'',fog:m.fog?1:0,seen:m.fog?(m.seen||''):'',vis:m.fog?(m.vis||''):'',id:S.curMap||'',cols:m.cols,rows:m.rows,kind:m.kind,tiles:m.tiles||null,grid:!!m.grid,surf:m.surf||{},light:m.light||'interieur',wx:m.wx||'',wxI:m.wxI??.6,tone:m.tone||null,bg:m.kind==='img'&&m.src&&!isRef(m.src)?tvImgKey(T,m.src):null});
+  put('map',{vid:m.kind==='video'?(m.vid||''):'',fog:m.fog?1:0,seen:m.fog?(m.seen||''):'',vis:m.fog?(m.vis||''):'',id:S.curMap||'',cols:m.cols,rows:m.rows,kind:m.kind,tiles:m.tiles||null,grid:!!m.grid,surf:m.surf||{},elev:m.elev||{},light:m.light||'interieur',wx:m.wx||'',wxI:m.wxI??.6,tone:m.tone||null,bg:m.kind==='img'&&m.src&&!isRef(m.src)?tvImgKey(T,m.src):null});
   put('objs',(S.objs||[]).filter(o=>!(o.type==='piege'&&o.hidden)).map(o=>({id:o.id,type:o.type,name:o.name,x:o.x,y:o.y,rot:o.rot||0,open:!!o.open,on:!!o.on,secret:!!o.secret,lit:o.lit!==false,spent:!!o.spent,vert:!!o.vert,lr:o.lr||0,lc:o.lc||'',li:o.li??1,hp:o.hp??0,hpMax:o.hpMax??0,broken:!!o.broken,sc:o.sc||1})));
   put('toks',S.chars.filter(c=>!c.hid&&charSeen(c)).map(c=>({pet:c.petOf?1:0,mtype:c.side!=='pj'?foeType(c):'',base:c.side!=='pj'?foeBase(c):'',por:c.side!=='pj'&&foePorId(c)?tvImgKey(T,'ref:'+foePorId(c)):null,pory:c.side!=='pj'?((S.bestPorY||{})[foeBase(c)]||0):0,porz:c.side!=='pj'?((S.bestPorZ||{})[foeBase(c)]||100):100,porx:c.side!=='pj'?((S.bestPorX||{})[foeBase(c)]||0):0,bust:c.side==='pj'&&c.bust?tvImgKey(T,c.bust):null,id:c.id,name:c.name,side:c.side,color:c.color,x:c.x,y:c.y,size:sz(c),hp:c.hp,hpMax:c.hpMax,conds:c.conds||[],img:tvImgKey(T,c.img),tokStyle:c.tokStyle||'',label:c.label||'',shape:c.shape||'',rot:c.rot||0,light:c.light||''})));
   tvPublishSt(T)}
@@ -4087,8 +4113,13 @@ function tvPublishSt(T){if(TVM||!S.tvOn)return;T=T||tvTarget();if(!T)return;cons
   const area=ui.mode==='target'&&sel&&a&&a.area>0&&ui.center?{x:ui.center.x,y:ui.center.y,r:Math.floor(a.area/CELL_M+1e-9),col:dcol(a),k:shapeOf(a)?areaKeys(sel,a,ui.center).join(';'):''}:null;
   const st={an:S.anims||{},ak:S.animKw||null,round:S.round||0,cur:(S.turn>=0&&cur())?cur().id:'',order:S.turn>=0?S.order.filter(id=>{const c=byId(id);return c&&!c.hid&&(c.hp>0||c.side==='pj')}):[],sel:ui.sel||'',area,cam:(S.turn>=0&&S.tvAuto!==false&&cur())?autoCam(cur()):S.tvFollow?tvCam():null,snd:SD(),blk:(ui.sb&&S.turn<0)?1:0,idle:(S.tvIdle&&S.turn<0&&!S.tvNoIdle)?1:0};
   sbSync();const j=JSON.stringify(st);if(TVS.cache.st===j)return;TVS.cache.st=j;Promise.resolve(T.set('st',st)).catch(()=>{delete TVS.cache.st})}
-function autoCam(c){const m=S.map,w=Math.min(m.cols,Math.max(10,S.tvZoom||14)),h=Math.min(m.rows,Math.max(7,Math.round(w*9/16)));
-  const s=sz(c);let x=c.x+s/2-w/2,y=c.y+s/2-h/2;x=Math.max(0,Math.min(m.cols-w,x));y=Math.max(0,Math.min(m.rows-h,y));return {x:Math.round(x*2)/2,y:Math.round(y*2)/2,w,h}}
+const TVZS=[[10,'Très proche'],[14,'Proche'],[20,'Moyen'],[28,'Large'],[38,'Très large'],[0,'Toute la carte']];
+const tvZ=()=>S.tvZoom==null?20:+S.tvZoom;
+function autoCam(c){const m=S.map,Z=tvZ();if(!Z||Z>=m.cols)return null;const w=Math.min(m.cols,Math.max(8,Z)),h=Math.min(m.rows,Math.max(6,Math.round(w*9/16)));
+  const s=sz(c),P=TVS.camPrev;
+  // zone morte : si le personnage est déjà bien visible, la caméra ne bouge pas
+  if(P&&P.w===w&&P.h===h&&P.map===S.curMap){const mx=w*.22,my=h*.22;if(c.x>=P.x+mx&&c.x+s<=P.x+w-mx&&c.y>=P.y+my&&c.y+s<=P.y+h-my)return {x:P.x,y:P.y,w,h}}
+  let x=c.x+s/2-w/2,y=c.y+s/2-h/2;x=Math.max(0,Math.min(m.cols-w,x));y=Math.max(0,Math.min(m.rows-h,y));const r={x:Math.round(x*2)/2,y:Math.round(y*2)/2,w,h};TVS.camPrev=Object.assign({map:S.curMap},r);return r}
 function tvCam(){const mw=$('#mapwrap'),cs=S.map.cell,f=v=>Math.round(v*4)/4;return {x:f(mw.scrollLeft/cs),y:f(mw.scrollTop/cs),w:f(mw.clientWidth/cs),h:f(mw.clientHeight/cs)}}
 function scheduleTV(){if(!S.tvOn||TVM)return;clearTimeout(TVS.timer);TVS.timer=setTimeout(tvPublish,120)}
 function tvFx(ev){if(TVM||!S.tvOn)return;const T=tvTarget();if(!T)return;clearTimeout(TVS.timer);tvPublish();
@@ -4114,7 +4145,7 @@ function tvModal(){const online=tvOnline();
       <p class="hint">« Suivre ma vue » : la TV cadre ce que tu vois sur la tablette (zoom et déplacement compris).</p>
       <label class="check"><input type="checkbox" id="tvAuto" ${S.tvAuto!==false?'checked':''}> Pendant le combat, zoomer automatiquement sur le personnage dont c’est le tour</label>
       <label class="check"><input type="checkbox" id="tvIdle" ${S.tvNoIdle?'':'checked'}> Écran noir sur la TV entre la fin d’un combat et le suivant</label>
-      <label class="fld">Zoom du suivi<select id="tvZoom">${[[10,'Proche'],[14,'Moyen'],[20,'Large']].map(([v,l])=>`<option value="${v}" ${(S.tvZoom||14)===v?'selected':''}>${l}</option>`).join('')}</select></label></div>
+      <label class="fld">Zoom du suivi<select id="tvZoom">${TVZS.map(([v,l])=>`<option value="${v}" ${tvZ()===v?'selected':''}>${l}</option>`).join('')}</select></label><p class="hint" style="margin:2px 0 0">Tu peux aussi zoomer la TV pendant le combat avec les boutons 📺 − / + au-dessus de la carte.</p></div>
     <div class="row" style="justify-content:space-between"><button class="btn" id="tvOpen" type="button">Ouvrir l’écran TV ici</button><button class="btn primary" id="mOk" type="button">Fermer</button></div>`,el=>{
     try{if(online&&window.qrcode){const q=qrcode(0,'M');q.addData(direct);q.make();el.querySelector('#qr').innerHTML=`<img alt="QR code de l’écran TV" src="${q.createDataURL(6,2)}" style="width:160px;height:160px;image-rendering:pixelated;border-radius:8px;background:#fff">`}}catch(e){}
     el.querySelector('#tvOn').onchange=e=>{S.tvOn=e.target.checked;TVS.sfxSent={};setTimeout(sndAmbApply,50);TVS.cache={};TVS.imgs.clear();TVS.warned=0;save();if(S.tvOn)tvPublish()};
@@ -4147,7 +4178,7 @@ function tvNetStart(){const N=net();if(!N){tvMsg('<div class="tvbox"><h2>Connexi
   N.on(P('sbm'),v=>{SBTV.m=v||{};sbTvPrefetch();sbTvSync()});N.on(P('sbp'),v=>{SBTV.p=v||{};sbTvSync()});N.on(P('fx'),v=>tvFxIn(v||{}));N.on(P('ambc'),v=>{Object.entries(v||{}).forEach(([k,o])=>{if(o&&!AMBBUF[k]&&!TVS['am'+k]){TVS['am'+k]=1;tvAmbIn(k,o)}})});N.on(P('sfx'),v=>{const V=v||{};Object.keys(SCUS).forEach(k=>{if(!V[k])delete SCUS[k]});Object.entries(V).forEach(([k,o])=>{if(o&&TVS['sv'+k]!==o.v){TVS['sv'+k]=o.v;tvSfxIn(k,o)}})})}
 function tvApply(k,v){if(v==null)return;
   if(k==='map'){const old=S.map;if(v.tiles!==old.tiles||v.cols!==old.cols||v.rows!==old.rows)tileCv=null;
-    FOGCK='';S.map={fog:!!v.fog,seen:v.seen||'',vis:v.vis||'',cols:v.cols,rows:v.rows,cell:old.cell||60,kind:v.kind,tiles:v.tiles||null,grid:!!v.grid,surf:v.surf||{},light:v.light,wx:v.wx||'',wxI:v.wxI??.6,tone:v.tone||null,walls:[],src:v.bg?(IMGS.get(v.bg)||null):null,bgk:v.bg||null,id:v.id};
+    FOGCK='';S.map={fog:!!v.fog,seen:v.seen||'',vis:v.vis||'',cols:v.cols,rows:v.rows,cell:old.cell||60,kind:v.kind,tiles:v.tiles||null,grid:!!v.grid,surf:v.surf||{},elev:v.elev||{},light:v.light,wx:v.wx||'',wxI:v.wxI??.6,tone:v.tone||null,walls:[],src:v.bg?(IMGS.get(v.bg)||null):null,bgk:v.bg||null,id:v.id};
     S.map.vid=v.vid||null;$('#tvvid')?.remove();
     if(S.map.kind==='video'&&!vidURL(S.map.vid)&&!videoURL)vidLoad(S.map.vid).then(u=>{if(u){tvRender(true);return}if(TVM==='local'&&!S.map.vid)tvVideoAsk();else if(TVM!=='local')tvVidFetch()});
     if(!TVS.got){TVS.got=true;tvMsg('')}dirty()}
@@ -4169,7 +4200,11 @@ function tvRender(force){if(!TVM)return;if(!force&&(Date.now()<TVS.busyUntil||TV
   m.cell=Math.max(6,Math.min(240,Math.floor(Math.min(W/r.w,H/r.h))));renderBoard();renderParty();
   const cs=m.cell,bw=m.cols*cs,bh=m.rows*cs,b=$('#board'),fx=$('#fx'),mw=$('#mapwrap'),ox=Math.max(0,(W-bw)/2),oy=Math.max(0,(H-bh)/2);mw.style.left=PW+'px';
   b.style.marginLeft=ox+'px';b.style.marginTop=oy+'px';fx.style.left=ox+'px';fx.style.top=oy+'px';
-  const L=cam?ox+r.x*cs-(W-r.w*cs)/2:0,Tp=cam?r.y*cs-(H-r.h*cs)/2:0;if(TVS.lastCs===cs&&cam&&!RM)mw.scrollTo({left:L,top:Tp,behavior:'smooth'});else{mw.scrollLeft=L;mw.scrollTop=Tp}TVS.lastCs=cs;tvHud()}
+  const L=cam?ox+r.x*cs-(W-r.w*cs)/2:0,Tp=cam?r.y*cs-(H-r.h*cs)/2:0;if(TVS.lastCs===cs&&!RM)tvPan(mw,L,Tp);else{tvPan.stop();mw.scrollLeft=L;mw.scrollTop=Tp;if(TVS.lastCs&&TVS.lastCs!==cs&&!RM){mw.animate([{opacity:.35},{opacity:1}],{duration:700,easing:'ease-out'})}}TVS.lastCs=cs;tvHud()}
+function tvPan(mw,L,T){L=Math.max(0,Math.min(L,mw.scrollWidth-mw.clientWidth));T=Math.max(0,Math.min(T,mw.scrollHeight-mw.clientHeight));const P=tvPan.p;if(P&&Math.abs(P.L-L)<2&&Math.abs(P.T-T)<2)return;
+  const x0=mw.scrollLeft,y0=mw.scrollTop,d=Math.hypot(L-x0,T-y0);if(d<2){tvPan.stop();return}const dur=Math.min(1600,650+d*.6),t0=performance.now(),ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  tvPan.stop();const p=tvPan.p={L,T};const step=now=>{if(tvPan.p!==p)return;const k=Math.min(1,(now-t0)/dur),e=ease(k);mw.scrollLeft=x0+(L-x0)*e;mw.scrollTop=y0+(T-y0)*e;if(k<1)p.raf=requestAnimationFrame(step);else tvPan.p=null};p.raf=requestAnimationFrame(step)}
+tvPan.stop=()=>{if(tvPan.p&&tvPan.p.raf)cancelAnimationFrame(tvPan.p.raf);tvPan.p=null};
 function tvOverlay(){const a=TVS.st&&TVS.st.area,b=$('#board'),cs=S.map.cell;if(!a)return;
   if(a.k){a.k.split(';').forEach(k=>{const [x,y]=k.split(',').map(Number);const d=document.createElement('div');d.className='hl area tvarea';d.style.cssText=`left:${x*cs}px;top:${y*cs}px;width:${cs}px;height:${cs}px;--ac:${a.col}`;b.appendChild(d)});return}
   for(let y=a.y-a.r;y<=a.y+a.r;y++)for(let x=a.x-a.r;x<=a.x+a.r;x++){if(x<0||y<0||x>=S.map.cols||y>=S.map.rows)continue;const d=document.createElement('div');d.className='hl area tvarea';d.style.cssText=`left:${x*cs}px;top:${y*cs}px;width:${cs}px;height:${cs}px;--ac:${a.col}`;b.appendChild(d)}}
@@ -4611,11 +4646,12 @@ function stPeek(ty,id){const c=stCamp();if(!c)return;const o=ty==='lieu'?(c.plac
       ${m?`<div class="hint">${esc(m[1])} · CA ${m[3]} · PV ${esc(m[4])}</div>`:''}</div></div>
     ${ty==='npc'?tx('look','Apparence')+tx('pers','Personnalité')+tx('goal','Motivations')+tx('secret','Secrets (MJ)','sec')+tx('notes','Notes'):tx('desc','Description')+tx('secret','Secrets (MJ)','sec')+tx('notes','Notes')}
     ${N.length?`<h4>PNJ présents</h4><div class="stchips">${N.map(n=>`<span class="stchip" data-pk="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}</span>`).join('')}</div>`:''}
-    <div class="stact">${pl?`<button class="btn sm" type="button" data-pl="${pl.id}">📍 ${esc(pl.name)}</button>`:''}<button class="btn sm" type="button" data-full="1">Ouvrir la fiche complète</button>${ty==='npc'?'<button class="btn sm primary" type="button" data-map="1">Placer sur la carte</button>':''}</div></div>`;
+    <div class="stact">${pl?`<button class="btn sm" type="button" data-pl="${pl.id}">📍 ${esc(pl.name)}</button>`:''}${ty==='npc'?`<button class="btn sm" type="button" data-met="1">${o.met?'👁 Rencontré ✓':'👁 Marquer comme rencontré'}</button>`:''}<button class="btn sm" type="button" data-full="1">Ouvrir la fiche complète</button>${ty==='npc'?'<button class="btn sm primary" type="button" data-map="1">Placer sur la carte</button>':''}</div></div>`;
   const shut=()=>d.remove();d.onclick=e=>{if(e.target===d)shut()};d.querySelector('.x').onclick=shut;
   d.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{shut();stPeek('npc',b.dataset.pk)});
   const pb=d.querySelector('[data-pl]');if(pb)pb.onclick=()=>{shut();stPeek('lieu',pb.dataset.pl)};
   d.querySelector('[data-full]').onclick=()=>{shut();stOpen(ty,id)};
+  {const mt=d.querySelector('[data-met]');if(mt)mt.onclick=()=>{o.met=!o.met;stSave();scheduleNet();mt.textContent=o.met?'👁 Rencontré ✓':'👁 Marquer comme rencontré';toast(o.met?'👁 '+o.name+' apparaît chez les joueuses':o.name+' est caché aux joueuses')}}
   const mb=d.querySelector('[data-map]');if(mb)mb.onclick=()=>{shut();stOpen('npc',id);setTimeout(()=>{const b=$('#npMap');if(b)b.click()},80)};
   document.querySelectorAll('.stpeek').forEach(x=>x.remove());document.body.appendChild(d)}
 /* ---------- Capacités de classe : ressources, actions, passifs ---------- */
@@ -4683,6 +4719,38 @@ Object.assign(SPXX,{
       el.querySelector('#mCancel').onclick=close;el.querySelector('#mGo').onclick=()=>{const n=Math.max(1,Math.min(left,Math.round(+el.querySelector('#lhN').value||0)));close();spendX(att,a);cfUse(att,'imp',n);heal(t,n);floatText(t,'+'+n,'heal');
         queueFx({att,a,hits:[{c:t,dm:n,kind:'heal'}],label:a.name});log(`<b>${esc(att.name)}</b> impose les mains à ${esc(t.name)} : +${n} PV (réserve ${cfLeft(att,'imp')}).`);endAction()}})}
 });
+
+/* ---------- Règles : effrayé, charmé, neutralisé, bousculer, agripper ---------- */
+function fearSrc(c){if(!c||!has(c,'effrayé'))return [];const L=[];(c.ef||[]).forEach(e=>{if((e.c||[]).includes('effrayé')){const o=byId(e.src);if(o&&o!==c&&o.hp>0)L.push(o)}});
+  (c.ce||[]).forEach(e=>{if(e.k==='effrayé'&&e.src){const o=S.chars.find(z=>z.name===e.src||z.id===e.src);if(o&&o!==c&&o.hp>0)L.push(o)}});if(c.fearOf){const o=byId(c.fearOf);if(o&&o.hp>0)L.push(o)}return [...new Set(L)]}
+function charmedBy(c,o){if(!c||!o||!has(c,'charmé'))return false;return (c.ef||[]).some(e=>(e.c||[]).includes('charmé')&&e.src===o.id)||(c.ce||[]).some(e=>e.k==='charmé'&&(e.src===o.name||e.src===o.id))}
+function incapConc(t){if(has(t,'concentration')&&['neutralisé','paralysé','étourdi','inconscient','pétrifié'].some(k=>has(t,k)))dropConc(t,'neutralisé·e')}
+const GEN_ACTS=[{k:'shove',name:'Bousculer',note:'Remplace une attaque : jet d’Athlétisme contre Athlétisme ou Acrobaties de la cible. Réussi : elle tombe à terre ou recule de 1,5 m (dans le vide, le feu… si tu choisis bien ta case).'},
+  {k:'grap',name:'Agripper',note:'Remplace une attaque : jet d’Athlétisme contre Athlétisme ou Acrobaties de la cible. Réussi : sa vitesse tombe à 0 tant que tu la tiens.'}];
+function ensureGen(c){if(!c||c.isObj||c.side==='objet')return;c.actions=c.actions||[];GEN_ACTS.forEach(g=>{if(!c.actions.some(a=>a.gen===g.k))c.actions.push(A({id:'gen'+g.k+uid(),name:g.name,kind:'auto',cost:'action',range:1.5,dmg:'0',gen:g.k,note:g.note}))});
+  const held=(c.ef||[]).some(e=>e.n==='Agrippé·e'),fr=c.actions.find(a=>a.gen==='free');if(held&&!fr)c.actions.push(A({id:'genfree'+uid(),name:'Se libérer',kind:'auto',cost:'action',range:0,dmg:'0',gen:'free',note:'Jet d’Athlétisme ou d’Acrobaties contre l’Athlétisme de celui qui te tient.'}));if(!held&&fr)c.actions=c.actions.filter(a=>a!==fr)}
+const athl=c=>abMod(c,'FOR')+(c.side==='pj'?(+c.prof||2):0),escp=c=>Math.max(abMod(c,'FOR'),abMod(c,'DEX'))+(c.side==='pj'?(+c.prof||2):0);
+function contest(att,t,label,cb){const a1=athl(att),b1=escp(t);dieAsk(att,label+' : Athlétisme ('+sgn(a1)+')','1d20',v1=>{dieAsk(t,'Résister : Athlétisme ou Acrobaties ('+sgn(b1)+')','1d20',v2=>{const A1=v1+a1,B1=v2+b1,win=A1>B1;
+  log(`${esc(att.name)} · ${esc(label)} : ${v1}${sgn(a1)} = <b>${A1}</b> contre ${esc(t.name)} ${v2}${sgn(b1)} = <b>${B1}</b> → <b>${win?'réussi':'raté'}</b>.`);cb(win)},'d20')},'d20')}
+Object.assign(SPXX,{
+  gShove(att,a,X,tg){const t=tg[0];if(!t||t===att)return;if(sz(t)>sz(att)+1){toast(t.name+' est trop grand·e pour être bousculé·e');return}
+    modal(`<h2>Bousculer ${esc(t.name)}</h2><div class="how">Que veux-tu faire si tu gagnes l’opposition ?</div><div class="row" style="flex-wrap:wrap"><button class="btn" type="button" id="mCancel">Annuler</button><button class="btn primary" type="button" data-sv="prone">Le faire tomber à terre</button><button class="btn primary" type="button" data-sv="push">Le repousser de 1,5 m</button></div>`,el=>{
+      el.querySelector('#mCancel').onclick=close;el.querySelectorAll('[data-sv]').forEach(b=>b.onclick=()=>{const k=b.dataset.sv;close();spendX(att,a);faceTo(att,t.x,t.y);
+        contest(att,t,'Bousculer',win=>{if(win){if(k==='prone'){if(!has(t,'à terre'))applyCond(t,'à terre');log(`<b>${esc(t.name)}</b> tombe à terre.`);floatText(t,'À terre','info')}else doPush(att,t,{d:1.5})}else floatText(t,'Résiste','info');sfxRelay('blunt');save();endAction()})})})},
+  gGrap(att,a,X,tg){const t=tg[0];if(!t||t===att)return;if(sz(t)>sz(att)+1){toast(t.name+' est trop grand·e pour être agrippé·e');return}spendX(att,a);faceTo(att,t.x,t.y);
+    contest(att,t,'Agripper',win=>{if(win){efAdd(t,{n:'Agrippé·e',ic:'✊',src:att.id,c:['agrippé'],left:null,m:{}});ensureGen(t);log(`<b>${esc(t.name)}</b> est agrippé·e par ${esc(att.name)} (vitesse 0).`);floatText(t,'Agrippé·e','info')}else floatText(t,'Se dégage','info');save();endAction()})},
+  gFree(att,a){const e=(att.ef||[]).find(z=>z.n==='Agrippé·e'),o=e&&byId(e.src);if(!e){toast('Personne ne te tient');return}spendX(att,a);
+    if(!o||o.hp<=0||cfIncap(o)){efDel(att,e,'libéré·e');ensureGen(att);save();endAction();return}
+    contest(att,o,'Se libérer',win=>{if(win){efDel(att,e,'se libère');ensureGen(att);floatText(att,'Libre !','info')}save();endAction()})}
+});
+
+/* ---------- Récit partagé avec les joueuses : résumés de session + PNJ rencontrés ---------- */
+const STHUMB=new Map();
+function stThumb(ref){if(!ref)return null;if(STHUMB.has(ref))return STHUMB.get(ref);const u=imgU(ref);if(!u)return null;STHUMB.set(ref,null);
+  const im=new Image();im.onload=()=>{const k=Math.min(1,112/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.max(1,Math.round(im.width*k));cv.height=Math.max(1,Math.round(im.height*k));cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);STHUMB.set(ref,cv.toDataURL('image/webp',.8));scheduleNet()};im.src=u;return null}
+function storyPub(){const D=S.story;if(!D||!(D.camps||[]).length)return null;const c=D.camps.find(x=>x.id===D.cur)||D.camps.slice().sort((a,b)=>(b.upd||0)-(a.upd||0))[0];if(!c)return null;
+  return {name:c.name||'',sess:(c.sess||[]).filter(x=>x.share!==false&&String(x.sum||'').trim()).sort((a,b)=>b.n-a.n).map(x=>({n:x.n,t:x.title||'',d:x.date||'',s:String(x.sum).slice(0,6000)})),
+    npcs:(c.npcs||[]).filter(n=>n.met).sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(n=>({id:n.id,n:n.name,r:n.role||'',p:n.place||'',a:n.att||'neutre',k:String(n.pub||'').slice(0,2000),i:stThumb(n.img)||''}))}}
 /* ---------- Histoire : campagnes, sessions, scénario, PNJ, notes ---------- */
 const STD=()=>S.story||(S.story={camps:[]});
 const stCamp=()=>STD().camps.find(c=>c.id===ui.stC)||null;
@@ -4690,7 +4758,7 @@ const stSess=()=>{const c=stCamp();return c&&(c.sess||[]).find(x=>x.id===ui.stS)
 const stLieu=()=>{const c=stCamp();return c&&(c.places||[]).find(x=>x.id===ui.stL)||null};
 const stNpc=()=>{const c=stCamp();return c&&(c.npcs||[]).find(x=>x.id===ui.stN)||null};
 const STCOL=['#8a2a22','#2a5a8a','#4f7a2a','#7a2a6a','#a8841f','#2a7a6a','#5a5048'];
-function stSave(){const c=stCamp();if(c)c.upd=Date.now();if(!saveT)saveT=setTimeout(saveNow,600)}
+function stSave(){const c=stCamp();if(c)c.upd=Date.now();if(!saveT)saveT=setTimeout(saveNow,600);clearTimeout(stSave._n);stSave._n=setTimeout(()=>scheduleNet(),1500)}
 const stDate=t=>{try{return new Date(t).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}catch(e){return ''}};
 const stTime=t=>{try{return new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}};
 const stToday=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
@@ -4808,7 +4876,7 @@ function stCampHTML(){const c=stCamp();if(ui.stTab==='scen'&&!stHasScen(c))ui.st
       <button class="btn" type="button" id="chNew">+ Ajouter un chapitre</button>`}
   if(T==='pnj'){const L=(c.npcs||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
     body=`<div class="stact" style="margin-top:0;margin-bottom:12px;align-items:center"><button class="btn primary" type="button" id="nNew">+ Nouveau PNJ</button>${L.length>6?`<input class="in stsearch" type="search" id="nQ" placeholder="Rechercher un PNJ…">`:''}</div>
-      ${L.length?`<div class="stgrid" id="nGrid">${L.map(n=>`<button type="button" class="stcard npccard" data-npc="${n.id}" data-q="${esc((n.name+' '+(n.role||'')+' '+(n.place||'')).toLowerCase())}"><span class="pic" ${stPic(n)}>${n.img?'':stInit(n)}</span><span class="tx"><h3>${esc(n.name)}</h3><span class="att ${n.att||'neutre'}">${esc(n.att||'neutre')}</span><span class="d">${esc([n.role,n.place].filter(Boolean).join(' · ')||'—')}</span></span></button>`).join('')}</div>`
+      ${L.length?`<div class="stgrid" id="nGrid">${L.map(n=>`<button type="button" class="stcard npccard" data-npc="${n.id}" data-q="${esc((n.name+' '+(n.role||'')+' '+(n.place||'')).toLowerCase())}"><span class="pic" ${stPic(n)}>${n.img?'':stInit(n)}</span><span class="tx"><h3>${esc(n.name)}${n.met?' <small title="Rencontré par les joueuses">👁</small>':''}</h3><span class="att ${n.att||'neutre'}">${esc(n.att||'neutre')}</span><span class="d">${esc([n.role,n.place].filter(Boolean).join(' · ')||'—')}</span></span></button>`).join('')}</div>`
         :`<div class="stempty">Aucun PNJ. Ajoute tes personnages non-joueurs : portrait, rôle, personnalité, secrets, statistiques…</div>`}`}
   if(T==='lieux'){const L=(c.places||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
     body=`<div class="stact" style="margin-top:0;margin-bottom:12px"><button class="btn primary" type="button" id="lNew">+ Nouveau lieu</button></div>
@@ -4847,7 +4915,7 @@ function stSessHTML(){const c=stCamp(),x=stSess(),N=(x.npcs||[]).map(id=>(c.npcs
       <label class="fl" for="sPrep">Préparation / scénario de la session</label><textarea id="sPrep" class="big" placeholder="Ce qui doit se passer, les scènes prévues, les indices à donner…">${esc(x.prep||'')}</textarea>
       <label class="fl">PNJ de la session</label><div class="stchips">${N.map(n=>`<span class="stchip" data-open="${n.id}"><i ${stPic(n)}>${n.img?'':stInit(n)}</i>${esc(n.name)}<span class="x" data-rm="${n.id}" role="button" aria-label="Retirer">✕</span></span>`).join('')}
         ${(c.npcs||[]).length>N.length?`<select class="in" id="sAddN" style="width:auto;max-width:240px"><option value="">+ Ajouter un PNJ…</option>${(c.npcs||[]).filter(n=>!(x.npcs||[]).includes(n.id)).map(n=>`<option value="${n.id}">${esc(n.name)}</option>`).join('')}</select>`:(c.npcs||[]).length?'':'<span class="hint">Crée d’abord des PNJ dans l’onglet PNJ de la campagne.</span>'}</div>
-      <label class="fl" for="sSum">Résumé de la session (après la partie)</label><textarea id="sSum" placeholder="Ce qui s’est réellement passé, pour la prochaine fois…">${esc(x.sum||'')}</textarea>
+      <label class="fl" for="sSum">Résumé de la session (après la partie)</label><label class="check" style="margin:-2px 0 6px"><input type="checkbox" id="sShare" ${x.share!==false?'checked':''}> Les joueuses voient ce résumé sur leur téléphone</label><textarea id="sSum" placeholder="Ce qui s’est réellement passé, pour la prochaine fois…">${esc(x.sum||'')}</textarea>
     </div><div>
       <div class="stlive"><h3>✎ Notes en direct</h3>
         <form id="lForm"><input id="lIn" placeholder="${inCombat?'Note (round '+S.round+')…':'Une note rapide, puis Entrée…'}" autocomplete="off" enterkeyhint="send"><button class="btn" type="submit">Noter</button></form>
@@ -4859,6 +4927,7 @@ function stSessBind(el){const c=stCamp(),x=stSess();stCrumbBind(el);
   el.querySelector('#sPlay').onclick=()=>{if(c.play===x.id){c.play=null;toast('Session arrêtée')}else{c.play=x.id;if(!c.cur||c.cur.sid!==x.id)c.cur={sid:x.id,h:0};toast('▶ Session '+x.n+' en cours')}stSave();ui.stKeep=1;stRender()};
   stBind(el,'#sTitle',x,'title');stBind(el,'#sPrep',x,'prep');stBind(el,'#sSum',x,'sum');
   el.querySelector('#sDate').onchange=e=>{x.date=e.target.value;stSave()};
+  el.querySelector('#sShare').onchange=e=>{x.share=e.target.checked;stSave();scheduleNet()};
   el.querySelector('#sDel').onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer ?';return}c.sess=c.sess.filter(s2=>s2.id!==x.id);ui.stS=null;stSave();stRender()};
   const list=el.querySelector('#lList'),inp=el.querySelector('#lIn');
   const bindDel=()=>list.querySelectorAll('[data-ldel]').forEach(b=>b.onclick=()=>{x.live=x.live.filter(n=>n.id!==b.dataset.ldel);stSave();list.innerHTML=stLiveItems(x);bindDel()});bindDel();
@@ -4881,13 +4950,15 @@ function stNpcHTML(){const c=stCamp(),n=stNpc(),back=ui.stBack==='sess'&&stSess(
         <div><label class="fl" for="np_place">Lieu</label><input class="in" id="np_place" data-nk="place" value="${esc(n.place||'')}" placeholder="Où le trouver" list="npLieux"><datalist id="npLieux">${(c.places||[]).map(p=>`<option value="${esc(p.name)}">`).join('')}</datalist>${(()=>{const p=stPlaceOf(n);return p?`<button type="button" class="btn sm" data-golieu="${p.id}" style="margin-top:6px">📍 Ouvrir ${esc(p.name)}</button>`:''})()}</div></div>
       <label class="fl">Attitude envers le groupe</label><div class="seg">${['allié','neutre','hostile'].map(a=>`<button type="button" data-att="${a}" class="${(n.att||'neutre')===a?'on':''}">${a[0].toUpperCase()+a.slice(1)}</button>`).join('')}</div>
       ${ta('look','Apparence','Âge, allure, voix, tics…')}${ta('pers','Personnalité','Traits, manières de parler…')}${ta('goal','Motivations','Ce qu’il veut, ce qu’il craint…')}
-      ${ta('secret','Secrets (MJ seulement)','Ce que les joueurs ne savent pas…','secret')}${ta('notes','Notes','Relations, ce que le groupe sait de lui…')}
+      ${ta('secret','Secrets (MJ seulement)','Ce que les joueurs ne savent pas…','secret')}${ta('notes','Notes (MJ)','Relations, idées, ce qui s’est passé…')}
+      <div class="metbox"><label class="check"><input type="checkbox" id="npMet" ${n.met?'checked':''}> 👁 Rencontré par les joueuses <small>(il apparaît sur leur téléphone avec son portrait, son rôle et le texte ci-dessous)</small></label>${ta('pub','Ce que les joueuses en savent','Ce qu’elles ont appris sur lui… (visible sur leur téléphone)')}</div>
       <label class="fl" for="npStat">Statistiques (créature du bestiaire)</label><input class="in" id="npStat" list="npBest" value="${esc(n.stat||'')}" placeholder="Ex. : Vétéran, Mage, Bandit… (facultatif)"><datalist id="npBest">${(typeof BESTIARY!=='undefined'?BESTIARY:[]).map(b=>`<option value="${esc(b[0])}">`).join('')}</datalist>
       <p class="hint" id="npStatI">${m?`${esc(m[1])} · CA ${m[3]} · PV ${esc(m[4])} · FP ${esc(m[11]||'?')}`:'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).'}</p>
     </div></div></div>`}
 function stNpcBind(el){const c=stCamp(),n=stNpc();
   el.querySelectorAll('[data-crumb]').forEach(b=>b.onclick=()=>{const k=b.dataset.crumb;ui.stN=null;ui.stL=null;if(k==='list'){ui.stC=null;ui.stS=null}else if(k==='camp'){ui.stS=null;if(ui.stBack!=='sess')ui.stTab=ui.stTab||'pnj'}else if(k==='pnj'){ui.stS=null;ui.stTab='pnj'}ui.stBack=null;stRender()});
   el.querySelectorAll('[data-golieu]').forEach(b=>b.onclick=()=>stOpen('lieu',b.dataset.golieu));
+  el.querySelector('#npMet').onchange=e=>{n.met=e.target.checked;stSave();scheduleNet();toast(n.met?'👁 '+n.name+' apparaît chez les joueuses':n.name+' est caché aux joueuses')};
   stBind(el,'#npN',n,'name');el.querySelectorAll('[data-nk]').forEach(i=>stBind(el,`#${i.id}`,n,i.dataset.nk));
   el.querySelectorAll('[data-att]').forEach(b=>b.onclick=()=>{n.att=b.dataset.att;stSave();el.querySelectorAll('[data-att]').forEach(x=>x.classList.toggle('on',x===b))});
   const st=el.querySelector('#npStat');st.oninput=()=>{n.stat=st.value.trim();stSave();const m=BESTIARY.find(b=>b[0]===n.stat);el.querySelector('#npStatI').textContent=m?`${m[1]} · CA ${m[3]} · PV ${m[4]} · FP ${m[11]||'?'}`:n.stat?'Créature introuvable dans le bestiaire.':'Sans statistiques, le PNJ sera posé avec 10 PV et CA 12 (modifiables ensuite).'};
@@ -5260,6 +5331,7 @@ function nextTurn(){
   }
 }
 function startTurn(c){
+  ensureGen(c);S.chars.forEach(o=>(o.ef||[]).filter(e=>e.n==='Agrippé·e').forEach(e=>{const g=byId(e.src);if(!g||g.hp<=0||cfIncap(g)||dist(g,o)>1){efDel(o,e,'la prise se défait');ensureGen(o)}}));
   c.conds=c.conds.filter(k=>k!=='esquive'&&k!=='désengagé');c.acB=0;
   if(legMax(c))c.legLeft=legMax(c);
   if(c.hp>0)(c.actions||[]).forEach(a=>{const x=rchOf(a);if(x&&(c.rch||{})[a.name]===false){const d=rollD(6);if(d>=x){c.rch[a.name]=true;log(`${esc(c.name)} · ${esc(a.name)} : d6 = ${d} → <b>rechargé</b> !`);toast(`${c.name} : ${a.name} est rechargé !`)}else log(`${esc(c.name)} · ${esc(a.name)} : d6 = ${d}, toujours en recharge.`)}});
@@ -5569,6 +5641,7 @@ window.addEventListener('net-ready',netStart);
 function scheduleNet(now){clearTimeout(NETS.timer);NETS.timer=setTimeout(publishNet,now?0:250)}
 function publishNet(){const N=net();if(!N||!NETS.tid||NETS.passive)return;
   {const J=(S.journal||[]).filter(e=>e.vis).map(e=>({t:e.t||'',x:e.x||'',d:!!e.done,to:e.to||''})),jj=JSON.stringify(J);if(jj!==NETS.jourJ){NETS.jourJ=jj;N.update(TP('meta'),{journal:J}).catch(()=>{NETS.jourJ=''})}}
+  {const P=storyPub(),pj=JSON.stringify(P);if(pj!==NETS.storyJ){NETS.storyJ=pj;N.update(TP('meta'),{story:P}).catch(()=>{NETS.storyJ=''})}}
   const st=c=>c.hp<=0?'à terre':c.hp<c.hpMax/2?'en sang':c.hp<c.hpMax?'blessé':'indemne';
   const view={name:(NETS.meta&&NETS.meta.name)||'',round:S.round||0,cur:(S.turn>=0&&cur())?cur().id:'',
     order:S.order.map(id=>{const c=byId(id);return c&&!c.hid?{cid:c.id,name:c.name,side:c.side,color:c.color,init:c.initTot??0,hp:c.side==='pj'?c.hp:-1,hpMax:c.side==='pj'?c.hpMax:-1,st:st(c)}:null}).filter(Boolean),
@@ -5592,7 +5665,7 @@ function summaryFields(k){return {name:k.name||'Sans nom',side:'pj',color:k.colo
 function applySummary(k,c){const f=summaryFields(k),slots={};f.bust=k.bust||null;
   Object.entries(k.slots||{}).forEach(([l,v])=>{const max=+(v&&v[0])||0;slots[l]=[max,c&&c.slots&&c.slots[l]?Math.min(max,+c.slots[l][1]||0):Math.min(max,+(v&&v[1])||0)]});f.slots=slots;{const R={};Object.entries(k.cres||{}).forEach(([q,v])=>{const max=+(v&&v[0])||0;R[q]=[max,c&&c.cres&&c.cres[q]?Math.min(max,+c.cres[q][1]||0):Math.min(max,+(v&&v[1])||0),v&&v[2]||q,v&&v[3]||'long']});f.cres=R;f.cfp=k.cfp||{}}
   if(k.token){f.img=k.token;f.imgFromSheet=true;f.tokStyle=k.tokStyle==='figurine'?'figurine':'medaillon'}else if(k.portrait){f.img=k.portrait;f.imgFromSheet=true;f.tokStyle=(c&&c.tokStyle==='figurine'&&!c.imgFromSheet)?c.tokStyle:'medaillon'}else if(c&&c.imgFromSheet){f.img=null;f.imgFromSheet=false}
-  if(c){const gr=(c.actions||[]).filter(a=>a.gr),po=c.poly;if(po){['name','ac','hpMax','speed','actions','saves','img','tokStyle','imgFromSheet'].forEach(q=>{if(q in f){po[q]=f[q];delete f[q]}})}Object.assign(c,f);if(!po){c.actions=c.actions.concat(gr);c.hpMax+=(c.ef||[]).reduce((s,e)=>s+(+(e.m&&e.m.hpMax)||0),0)}c.hp=Math.min(c.hp,c.hpMax);syncPets(k,c);return c}
+  if(c){const gr=(c.actions||[]).filter(a=>a.gr),po=c.poly;if(po){['name','ac','hpMax','speed','actions','saves','img','tokStyle','imgFromSheet'].forEach(q=>{if(q in f){po[q]=f[q];delete f[q]}})}Object.assign(c,f);if(!po){c.actions=c.actions.concat(gr);c.hpMax+=(c.ef||[]).reduce((s,e)=>s+(+(e.m&&e.m.hpMax)||0),0)}c.hp=Math.min(c.hp,c.hpMax);syncPets(k,c);ensureGen(c);return c}
   c=C({...f,hp:Math.max(0,Math.min(f.hpMax,k.hp==null?f.hpMax:+k.hp))});c.conds=(k.conds||[]).filter(x=>CONDS.includes(x));c.res={move:c.speed,action:true,bonus:true,reaction:true};
   const fr=spawnFor(c)||findFree(c);c.x=fr.x;c.y=fr.y;S.chars.push(c);syncPets(k,c);return c}
 function syncPets(k,c){const P=Array.isArray(k.pets)?k.pets:Object.values(k.pets||{});const keep=new Set();

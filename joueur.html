@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-12h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-15h20';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -51,6 +51,15 @@
 .mvpn{position:fixed;left:12px;right:12px;top:12px;z-index:99998;display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#2b2112,#4a3410);border:1.5px solid #d8b25a;color:#fff3d6;box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 20px rgba(255,190,60,.35);animation:mvpin .5s cubic-bezier(.2,1.4,.4,1)}
 .mvpn b{font-size:34px}.mvpn strong{display:block;font:700 16px Georgia,serif;color:#ffe08a}.mvpn small{display:block;font-size:12.5px;opacity:.85;margin-top:3px;line-height:1.35}
 .mvpn.out{animation:mvpout .4s ease-in forwards}@keyframes mvpin{from{transform:translateY(-120%);opacity:0}}@keyframes mvpout{to{transform:translateY(-120%);opacity:0}}
+
+.rsess{border-top:1px solid var(--line);padding:6px 0}.rsess summary{cursor:pointer;padding:4px 0}.rsess summary small{opacity:.65}
+.rtx{white-space:pre-wrap;font-size:14.5px;line-height:1.5;padding:4px 0 6px}
+.rnpcs{display:flex;flex-direction:column;gap:6px}
+.rnpc{border:1px solid var(--line);border-radius:12px;padding:6px 8px}.rnpc summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none}.rnpc summary::-webkit-details-marker{display:none}
+.rav{width:48px;height:48px;border-radius:50%;flex:none;background:#3a2a14 center/cover;color:#f2e6c8;display:grid;place-items:center;font-weight:700;border:2px solid #c9a45c}
+.rnm{flex:1;min-width:0;display:flex;flex-direction:column}.rnm small{opacity:.7;font-size:12.5px}
+.ratt{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-radius:999px;padding:2px 8px;flex:none}
+.rnpc .rtx{padding:8px 4px 2px}
 </style>
 </head>
 <body>
@@ -786,9 +795,14 @@ function tabSac(c){
     <div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:wrap"><button class="btn" data-a="addi" type="button">+ Ajouter un objet</button><button class="btn" data-a="addpot" type="button">+ Potion de soins</button><button class="btn" data-a="addscr" type="button">+ Parchemin</button></div>
     <p class="sub" style="margin:6px 0 0">Les potions et parchemins apparaissent dans tes actions de combat. À l’usage, la quantité baisse toute seule.</p></div>`;
 }
+function storyCards(c){const st=joined()&&myChar()===c&&CON.meta&&CON.meta.story;if(!st)return '';const A=x=>Array.isArray(x)?x:Object.values(x||{});const SS=A(st.sess),NN=A(st.npcs);if(!SS.length&&!NN.length)return '';
+  const att={allié:['#dcefd8','#2f6b2a'],neutre:['#ece6d6','#6b5a3f'],hostile:['#f6d9d4','#8a2a22']};
+  const ini=n=>esc(String(n||'?').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase());
+  return `${SS.length?`<div class="card"><h3>📖 Récit de l’aventure</h3>${st.name?`<p class="sub" style="margin:0 0 6px">${esc(st.name)}</p>`:''}${SS.map((x,i)=>`<details class="rsess" ${i?'':'open'}><summary><b>Session ${x.n}</b>${x.t?' · '+esc(x.t):''}${x.d?` <small>${esc(new Date(x.d+'T12:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'}))}</small>`:''}</summary><div class="rtx">${esc(x.s)}</div></details>`).join('')}</div>`:''}
+  ${NN.length?`<div class="card"><h3>👥 PNJ rencontrés <small style="font-weight:400;opacity:.7">(${NN.length})</small></h3><div class="rnpcs">${NN.map(n=>{const a=att[n.a]||att.neutre;return `<details class="rnpc"><summary><span class="rav" style="${n.i?`background-image:url('${n.i}')`:''}">${n.i?'':ini(n.n)}</span><span class="rnm"><b>${esc(n.n)}</b><small>${esc([n.r,n.p].filter(Boolean).join(' · '))}</small></span><span class="ratt" style="background:${a[0]};color:${a[1]}">${esc(n.a)}</span></summary>${n.k?`<div class="rtx">${esc(n.k)}</div>`:'<div class="rtx" style="opacity:.6">Rien de plus pour l’instant.</div>'}</details>`}).join('')}</div></div>`:''}`}
 function tabNotes(c){const J0=(joined()&&myChar()===c&&CON.meta&&CON.meta.journal)||[],J=(Array.isArray(J0)?J0:Object.values(J0)),G=J.filter(e=>!e.to),P=J.filter(e=>e.to&&e.to===CON.cid);
   const row=e=>`<div style="padding:8px 0;border-top:1px solid var(--line)"><b style="${e.d?'text-decoration:line-through;opacity:.6':''}">${esc(e.t||'Sans titre')}</b>${e.d?' <small>✓ terminée</small>':''}${e.x?`<div style="white-space:pre-wrap;font-size:14px;margin-top:3px">${esc(e.x)}</div>`:''}</div>`;
-  return `${G.length||P.length?`<div data-live="jour">${P.length?`<div class="card" style="border-color:#b08a3e"><h3>🔒 Ma quête personnelle</h3><p class="sub" style="margin:0 0 4px">Seul ton personnage voit ces entrées.</p>${P.map(row).join('')}</div>`:''}${G.length?`<div class="card"><h3>📜 Journal du groupe</h3>${G.map(row).join('')}</div>`:''}</div>`:''}<div class="card"><h3>Capacités et traits</h3><label class="fld">Dons, capacités de classe, maîtrises d’outils, langues…<textarea data-f="traits">${esc(c.traits)}</textarea></label></div>
+  return `${G.length||P.length?`<div data-live="jour">${P.length?`<div class="card" style="border-color:#b08a3e"><h3>🔒 Ma quête personnelle</h3><p class="sub" style="margin:0 0 4px">Seul ton personnage voit ces entrées.</p>${P.map(row).join('')}</div>`:''}${G.length?`<div class="card"><h3>📜 Journal du groupe</h3>${G.map(row).join('')}</div>`:''}</div>`:''}${storyCards(c)}<div class="card"><h3>Capacités et traits</h3><label class="fld">Dons, capacités de classe, maîtrises d’outils, langues…<textarea data-f="traits">${esc(c.traits)}</textarea></label></div>
   <div class="card"><h3>Personnalité</h3><label class="fld">Traits, idéaux, liens, défauts<textarea data-f="perso">${esc(c.perso)}</textarea></label></div>
   <div class="card"><h3>Journal</h3><label class="fld">Notes de campagne<textarea data-f="notes" style="min-height:200px">${esc(c.notes)}</textarea></label></div>`}
 
@@ -1122,7 +1136,7 @@ function liveOfSheet(c){const D=calc(c),sl={};D.slots.forEach((n,i)=>{if(n>0)sl[
   return {hp:c.hp==null?D.hpMax:+c.hp,conds:[...new Set(conds)].sort(),death:{s:+c.death.s||0,f:+c.death.f||0},slots:sl,res:rs}}
 function netConnect(){const N=net();CON.unsub.concat(CON.charUn).forEach(u=>{try{u&&u()}catch(e){}});CON.unsub=[];CON.charUn=[];CON.cid=null;CON.view=null;CON.cache='';CON.sumJ='';CON.lost=false;CON.conn=null;CON.metaOk=false;CON.endTs=undefined;
   if(!N||!DB.join||!DB.join.tid){softRefresh();return}
-  CON.unsub.push(N.on(TP('meta'),v=>{{const j0=v&&v.journal||[],jj=JSON.stringify((Array.isArray(j0)?j0:Object.values(j0)).filter(e=>!e.to||e.to===CON.cid));if(CON.jourJ!=null&&jj!==CON.jourJ&&jj!=='[]')toast('📜 Le journal de quête a été mis à jour');CON.jourJ=jj}if(v)CON.metaOk=true;else if(CON.metaOk&&DB.join){CON.metaOk=false;DB.leftTid=DB.join.tid;DB.join=null;saveLocal();toast('Le MJ a changé le code de la table : demande-lui le nouveau');netConnect();const y=window.scrollY;render();window.scrollTo(0,y);return}CON.meta=v;CON.metaSeen=true;const y=window.scrollY;render();window.scrollTo(0,y)}));
+  CON.unsub.push(N.on(TP('meta'),v=>{{const L=v&&v.story&&v.story.npcs?(Array.isArray(v.story.npcs)?v.story.npcs:Object.values(v.story.npcs)).map(n=>n.n):[],S0=v&&v.story&&v.story.sess?(Array.isArray(v.story.sess)?v.story.sess:Object.values(v.story.sess)).length:0;if(CON.npcSeen){const nw=L.filter(n=>!CON.npcSeen.includes(n));if(nw.length)toast('👥 Nouveau PNJ rencontré : '+nw.join(', '));else if(S0>CON.sessSeen)toast('📖 Le résumé de la session est arrivé')}CON.npcSeen=L;CON.sessSeen=S0}{const j0=v&&v.journal||[],jj=JSON.stringify((Array.isArray(j0)?j0:Object.values(j0)).filter(e=>!e.to||e.to===CON.cid));if(CON.jourJ!=null&&jj!==CON.jourJ&&jj!=='[]')toast('📜 Le journal de quête a été mis à jour');CON.jourJ=jj}if(v)CON.metaOk=true;else if(CON.metaOk&&DB.join){CON.metaOk=false;DB.leftTid=DB.join.tid;DB.join=null;saveLocal();toast('Le MJ a changé le code de la table : demande-lui le nouveau');netConnect();const y=window.scrollY;render();window.scrollTo(0,y);return}CON.meta=v;CON.metaSeen=true;const y=window.scrollY;render();window.scrollTo(0,y)}));
   CON.unsub.push(N.on(TP('turn'),v=>{if(v){['acts','toks','objs','reach','aoo'].forEach(k=>{if(!Array.isArray(v[k]))v[k]=v[k]?Object.values(v[k]):[]});v.res=v.res||{a:0,b:0,r:0,m:0};v.me=v.me||[0,0,1];(v.acts||[]).forEach(a=>{a.ok=a.ok?1:0})}CON.turn=v;softRefresh();if(CON.pm)drawPM(false)}));
   CON.unsub.push(N.on(TP('pmap'),v=>{CON.pmap=v;if(CON.pm)drawPM(false)}));
   CON.unsub.push(N.on(TP('view'),v=>{const was=!!(CON.view&&CON.cid&&CON.view.cur===CON.cid);CON.view=v;const now=!!(v&&CON.cid&&v.cur===CON.cid);
