@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-11h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-11h55';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -12133,8 +12133,9 @@ var __values = (this && this.__values) || function(o) {
             STTOCL = [];
             (c.scen || []).forEach(function (ch) { sb += btn(ch.title || 'Chapitre', 'l1', function () { return stGo('scen:' + ch.id + ':title'); }); stHeads(ch, 'text').forEach(function (x) { sb += btn(x.t, 'l' + x.l, function () { return stGo('scen:' + ch.id + ':text', { h: x.i }); }); }); });
         }
-        h += sec('scen', '🎬', 'Scénario', (c.scen || []).length, sb, onScen ? '' : null);
-        h += sec('sess', '📅', 'Sessions', (c.sess || []).length, (c.sess || []).slice().sort(function (a, b) { return b.n - a.n; }).map(function (x) { return btn(x.n + ' · ' + (x.title || 'Session ' + x.n), 'l1', function () { return stOpen('sess', x.id); }, ui.stS === x.id); }).join(''), 'Nouvelle session');
+        h += sec('sess', '📅', 'Sessions', (c.sess || []).length, (c.sess || []).slice().sort(function (a, b) { return a.n - b.n; }).map(function (x) { return btn(x.n + ' · ' + (x.title || 'Session ' + x.n), 'l1', function () { return stOpen('sess', x.id); }, ui.stS === x.id) + stHeads(x, 'prep').map(function (q) { return btn(q.t, 'l' + q.l, function () { return stGo('sess:' + x.id + ':prep', { h: q.i }); }); }).join(''); }).join(''), 'Nouvelle session');
+        if (stHasScen(c))
+            h += sec('scen', '🎬', 'Ancien scénario', (c.scen || []).length, sb, null);
         h += sec('npc', '👤', 'PNJ', (c.npcs || []).length, (c.npcs || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); }).map(function (n) { return btn(n.name, 'l1', function () { return stOpen('npc', n.id); }, ui.stN === n.id, "<span class=\"av\" ".concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "</span>")); }).join(''), 'Nouveau PNJ');
         h += sec('lieu', '📍', 'Lieux', (c.places || []).length, (c.places || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); }).map(function (p) { return btn(p.name, 'l1', function () { return stOpen('lieu', p.id); }, ui.stL === p.id, "<span class=\"av\" ".concat(stPic(p), ">").concat(p.img ? '' : '📍', "</span>")); }).join(''), 'Nouveau lieu');
         h += "<button type=\"button\" class=\"add\" data-g=\"".concat(go.push(function () { return stOpen('camp', null, 'notes'); }) - 1, "\" style=\"margin-top:8px;border:0;background:none;cursor:pointer;padding:6px 4px\">\uD83D\uDCDC Notes & lore</button>");
@@ -12831,7 +12832,7 @@ var __values = (this && this.__values) || function(o) {
                         toast('Donne un nom à ta campagne');
                         return;
                     }
-                    var c = { id: 'c' + uid(), name: n, desc: m.querySelector('#cD').value.trim(), col: col, created: Date.now(), upd: Date.now(), scen: [{ id: 'h' + uid(), title: 'Introduction', text: '' }], npcs: [], sess: [], notes: '' };
+                    var c = { id: 'c' + uid(), name: n, desc: m.querySelector('#cD').value.trim(), col: col, created: Date.now(), upd: Date.now(), scen: [], npcs: [], sess: [], notes: '' };
                     STD().camps.push(c);
                     close();
                     ui.stC = c.id;
@@ -12848,8 +12849,12 @@ var __values = (this && this.__values) || function(o) {
         ui.stC = null;
     } if (k === 'lieux')
         ui.stTab = 'lieux'; ui.stS = null; ui.stN = null; ui.stL = null; stRender(); }; }); }
+    var stHasScen = function (c) { return (c.scen || []).some(function (h) { return String(h.text || '').trim(); }); };
     function stCampHTML() {
-        var c = stCamp(), T = ui.stTab || 'sess', tabs = [['sess', 'Sessions'], ['scen', 'Scénario'], ['pnj', 'PNJ'], ['lieux', 'Lieux'], ['notes', 'Notes & lore']];
+        var c = stCamp();
+        if (ui.stTab === 'scen' && !stHasScen(c))
+            ui.stTab = 'sess';
+        var T = ui.stTab || 'sess', tabs = [['sess', 'Sessions']].concat(stHasScen(c) ? [['scen', 'Ancien scénario']] : [], [['pnj', 'PNJ'], ['lieux', 'Lieux'], ['notes', 'Notes & lore']]);
         var body = '';
         if (T === 'sess') {
             var L = (c.sess || []).slice().sort(function (a, b) { return b.n - a.n; });

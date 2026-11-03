@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-11h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-11h55';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -4505,8 +4505,8 @@ function stTocBuild(){const T=$('#stToc');if(!T)return;const c=stCamp();if(!c)re
   // scénario
   let sb='';if(onScen){STTOCL=P;sb=P.map((x,i)=>{go.push(()=>{if(x.fo){const f=x.e.querySelector('[data-fold]');if(f)f.click()}x.e.scrollIntoView({block:'start',behavior:RM?'auto':'smooth'})});return `<button type="button" data-g="${go.length-1}" data-ti="${i}" class="l${x.l} ${x.fo?'fo':''}">${x.fo?'▸ ':''}${esc(x.t)}</button>`}).join('')}
   else{STTOCL=[];(c.scen||[]).forEach(ch=>{sb+=btn(ch.title||'Chapitre','l1',()=>stGo('scen:'+ch.id+':title'));stHeads(ch,'text').forEach(x=>{sb+=btn(x.t,'l'+x.l,()=>stGo('scen:'+ch.id+':text',{h:x.i}))})})}
-  h+=sec('scen','🎬','Scénario',(c.scen||[]).length,sb,onScen?'':null);
-  h+=sec('sess','📅','Sessions',(c.sess||[]).length,(c.sess||[]).slice().sort((a,b)=>b.n-a.n).map(x=>btn(x.n+' · '+(x.title||'Session '+x.n),'l1',()=>stOpen('sess',x.id),ui.stS===x.id)).join(''),'Nouvelle session');
+  h+=sec('sess','📅','Sessions',(c.sess||[]).length,(c.sess||[]).slice().sort((a,b)=>a.n-b.n).map(x=>btn(x.n+' · '+(x.title||'Session '+x.n),'l1',()=>stOpen('sess',x.id),ui.stS===x.id)+stHeads(x,'prep').map(q=>btn(q.t,'l'+q.l,()=>stGo('sess:'+x.id+':prep',{h:q.i}))).join('')).join(''),'Nouvelle session');
+  if(stHasScen(c))h+=sec('scen','🎬','Ancien scénario',(c.scen||[]).length,sb,null);
   h+=sec('npc','👤','PNJ',(c.npcs||[]).length,(c.npcs||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(n=>btn(n.name,'l1',()=>stOpen('npc',n.id),ui.stN===n.id,`<span class="av" ${stPic(n)}>${n.img?'':stInit(n)}</span>`)).join(''),'Nouveau PNJ');
   h+=sec('lieu','📍','Lieux',(c.places||[]).length,(c.places||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(p=>btn(p.name,'l1',()=>stOpen('lieu',p.id),ui.stL===p.id,`<span class="av" ${stPic(p)}>${p.img?'':'📍'}</span>`)).join(''),'Nouveau lieu');
   h+=`<button type="button" class="add" data-g="${go.push(()=>stOpen('camp',null,'notes'))-1}" style="margin-top:8px;border:0;background:none;cursor:pointer;padding:6px 4px">📜 Notes & lore</button>`;
@@ -4722,12 +4722,13 @@ function stListBind(el){el.querySelectorAll('[data-camp]').forEach(b=>b.onclick=
       m.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{col=b.dataset.c;m.querySelectorAll('[data-c]').forEach(x=>x.classList.toggle('on',x===b))});
       m.querySelector('#mCancel').onclick=close;setTimeout(()=>m.querySelector('#cN').focus(),50);
       m.querySelector('#mOk').onclick=()=>{const n=m.querySelector('#cN').value.trim();if(!n){toast('Donne un nom à ta campagne');return}
-        const c={id:'c'+uid(),name:n,desc:m.querySelector('#cD').value.trim(),col,created:Date.now(),upd:Date.now(),scen:[{id:'h'+uid(),title:'Introduction',text:''}],npcs:[],sess:[],notes:''};
+        const c={id:'c'+uid(),name:n,desc:m.querySelector('#cD').value.trim(),col,created:Date.now(),upd:Date.now(),scen:[],npcs:[],sess:[],notes:''};
         STD().camps.push(c);close();ui.stC=c.id;ui.stTab='sess';stSave();stRender()}})}}
 /* une campagne */
 function stCrumb(parts){return `<div class="stcrumb">${parts.map((p,i)=>i<parts.length-1?`<button type="button" data-crumb="${p[1]}">${esc(p[0])}</button><span class="sep">›</span>`:`<span>${esc(p[0])}</span>`).join('')}</div>`}
 function stCrumbBind(el){el.querySelectorAll('[data-crumb]').forEach(b=>b.onclick=()=>{const k=b.dataset.crumb;if(k==='list'){ui.stC=null}if(k==='lieux')ui.stTab='lieux';ui.stS=null;ui.stN=null;ui.stL=null;stRender()})}
-function stCampHTML(){const c=stCamp(),T=ui.stTab||'sess',tabs=[['sess','Sessions'],['scen','Scénario'],['pnj','PNJ'],['lieux','Lieux'],['notes','Notes & lore']];
+const stHasScen=c=>(c.scen||[]).some(h=>String(h.text||'').trim());
+function stCampHTML(){const c=stCamp();if(ui.stTab==='scen'&&!stHasScen(c))ui.stTab='sess';const T=ui.stTab||'sess',tabs=[['sess','Sessions']].concat(stHasScen(c)?[['scen','Ancien scénario']]:[],[['pnj','PNJ'],['lieux','Lieux'],['notes','Notes & lore']]);
   let body='';
   if(T==='sess'){const L=(c.sess||[]).slice().sort((a,b)=>b.n-a.n);
     body=`<div class="stact" style="margin-top:0;margin-bottom:12px"><button class="btn primary" type="button" id="sNew">+ Nouvelle session</button></div>
