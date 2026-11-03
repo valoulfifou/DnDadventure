@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='31/10-23h15';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='03/11-10h50';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -227,6 +227,48 @@ body.mode-st .top .round{visibility:hidden}
 
 /* pions des PJ (figurines) un peu plus grands */
 .tok.pj.figu .fimg{top:-42%;right:-42%;bottom:-42%;left:-42%}
+
+/* ---------- Histoire : navigation (sommaire, recherche, repli, marque-page) ---------- */
+.stview{max-width:1440px}
+.stwrap{display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start}
+.sttoc{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto;background:#fbf6ea;border:1px solid #d9c9a5;border-radius:14px;padding:12px 10px 14px;box-shadow:0 2px 0 #e6d7b5;scrollbar-width:thin}
+.sttoc .sq{width:100%;box-sizing:border-box;border:1px solid #d9c9a5;background:#fffdf7;border-radius:10px;padding:9px 10px;font:15px Georgia,serif;color:#2b2416}
+.sttoc .sq:focus{outline:2px solid #c9a45c}
+.sttoc h4{margin:14px 4px 6px;font:700 11px var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:#9a8460}
+.sttoc .tl{display:flex;flex-direction:column;gap:1px}
+.sttoc .tl button{appearance:none;border:0;background:none;text-align:left;font:14px/1.3 Georgia,serif;color:#3a2a14;padding:6px 8px;border-radius:8px;cursor:pointer;border-left:3px solid transparent}
+.sttoc .tl button:hover{background:#f1e6cc}
+.sttoc .tl button.on{background:#efe1c0;border-left-color:#8a2a22;font-weight:700}
+.sttoc .tl button.l2{padding-left:20px;font-size:13.5px;color:#5a4528}
+.sttoc .tl button.l3{padding-left:32px;font-size:13px;color:#7a6440}
+.sttoc .tl button.fo{color:#9a8460}
+.sttoc .none{font-size:13px;color:#9a8460;padding:4px 8px}
+.sttoc .res button{display:block;width:100%;appearance:none;border:0;border-bottom:1px solid #eadcbc;background:none;text-align:left;padding:8px 6px;cursor:pointer;font:13px/1.4 Georgia,serif;color:#3a2a14}
+.sttoc .res button:hover{background:#f1e6cc}
+.sttoc .res b{display:block;font:700 11px var(--f-display);letter-spacing:.06em;color:#8a5a20;margin-bottom:2px}
+.sttoc .res mark{background:#f3d36b;color:inherit;border-radius:2px;padding:0 1px}
+.sttoc .mk{display:flex;align-items:center;gap:6px;margin-top:10px;width:100%;appearance:none;border:1px solid #d9c9a5;background:#fff4dc;border-radius:10px;padding:8px 10px;cursor:pointer;font:13px Georgia,serif;color:#5a3a10;text-align:left}
+.sttoc .x{display:none}
+.stfab{position:fixed;right:16px;bottom:16px;z-index:45;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.stfab button{appearance:none;border:1px solid #c9a45c;background:#2b2416;color:#f2e6c8;border-radius:999px;min-width:48px;height:48px;padding:0 14px;font:700 14px var(--f-display);box-shadow:0 4px 12px rgba(0,0,0,.3);cursor:pointer}
+.stfab .tocb{display:none}
+.stfab button[hidden]{display:none}
+@media(max-width:1000px){
+  .stwrap{grid-template-columns:1fr}
+  .sttoc{position:fixed;left:0;top:0;bottom:0;width:min(330px,86vw);max-height:none;z-index:60;border-radius:0 14px 14px 0;transform:translateX(-105%);transition:transform .25s;box-shadow:4px 0 24px rgba(0,0,0,.3)}
+  .sttoc.open{transform:none}
+  .sttoc .x{display:block;margin-left:auto;appearance:none;border:0;background:none;font-size:22px;color:#6b5a3f;cursor:pointer;padding:0 4px}
+  .stfab .tocb{display:block}}
+.stchap .h .fold{width:30px;border:0;background:none;font-size:15px}
+.stchap .h small.chw{color:#9a8460;font-size:12px;white-space:nowrap}
+.stchap.folded{padding-bottom:10px}
+.stchap.folded .h input{color:#6b5a3f}
+.stedit h3,.stread h3{font:700 22px/1.3 var(--f-display);color:#3a2a14;margin:14px 0 6px;border-bottom:1px solid #e3d4b0;padding-bottom:3px}
+.stedit h4,.stread h4{font:700 18px/1.3 var(--f-display);color:#5a3a10;margin:12px 0 4px}
+.stview [data-toc],.stview h3,.stview h4,.stview .stedit,.stview .stread{scroll-margin-top:90px}
+.sthl{position:absolute;z-index:70;pointer-events:none;background:rgba(243,211,107,.55);border-radius:3px;box-shadow:0 0 0 2px rgba(201,164,92,.8);animation:sthl 2.8s ease forwards}
+@keyframes sthl{0%,60%{opacity:1}100%{opacity:0}}
+.stfmt .mkb{margin-left:auto}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
@@ -11777,6 +11819,312 @@ var __values = (this && this.__values) || function(o) {
             el.querySelector('#mOk').onclick = function () { sndUI = function () { }; close(); };
         });
     }
+    /* ---------- Histoire : navigation ---------- */
+    function stFid(obj, key) {
+        var c = stCamp();
+        if (!c || !obj)
+            return '';
+        if (obj === c)
+            return key;
+        if ((c.scen || []).includes(obj))
+            return 'scen:' + obj.id + ':' + key;
+        if ((c.sess || []).includes(obj))
+            return 'sess:' + obj.id + ':' + key;
+        if ((c.npcs || []).includes(obj))
+            return 'npc:' + obj.id + ':' + key;
+        return '';
+    }
+    var stFold = function (t) { return String(t || '').split('').map(function (ch) { return (ch.normalize('NFD')[0] || ch).toLowerCase(); }).join(''); };
+    function stTexts(root) { var L = [], tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); while (tw.nextNode())
+        L.push(tw.currentNode); return L; }
+    // position (en caractères) -> range dans un bloc de texte
+    function stRangeAt(root, off, len) {
+        var e_21, _c;
+        var L = stTexts(root);
+        var p = 0, r = document.createRange(), st = null;
+        try {
+            for (var L_2 = __values(L), L_2_1 = L_2.next(); !L_2_1.done; L_2_1 = L_2.next()) {
+                var n = L_2_1.value;
+                var l = n.nodeValue.length;
+                if (!st && off <= p + l) {
+                    r.setStart(n, Math.max(0, off - p));
+                    st = 1;
+                    if (!len) {
+                        r.collapse(true);
+                        return r;
+                    }
+                }
+                if (st && off + len <= p + l) {
+                    r.setEnd(n, off + len - p);
+                    return r;
+                }
+                p += l;
+            }
+        }
+        catch (e_21_1) { e_21 = { error: e_21_1 }; }
+        finally {
+            try {
+                if (L_2_1 && !L_2_1.done && (_c = L_2.return)) _c.call(L_2);
+            }
+            finally { if (e_21) throw e_21.error; }
+        }
+        if (st) {
+            r.setEndAfter(L[L.length - 1]);
+            return r;
+        }
+        return null;
+    }
+    function stOffsetOf(root, node, off) { var r = document.createRange(); r.selectNodeContents(root); try {
+        r.setEnd(node, off);
+    }
+    catch (e) {
+        return null;
+    } return r.toString().length; }
+    function stOffsetAtPoint(root, x, y) {
+        var n = null, o = 0;
+        if (document.caretRangeFromPoint) {
+            var r = document.caretRangeFromPoint(x, y);
+            if (r) {
+                n = r.startContainer;
+                o = r.startOffset;
+            }
+        }
+        else if (document.caretPositionFromPoint) {
+            var p = document.caretPositionFromPoint(x, y);
+            if (p) {
+                n = p.offsetNode;
+                o = p.offset;
+            }
+        }
+        return n && root.contains(n) ? stOffsetOf(root, n, o) : null;
+    }
+    function stFidLabel(fid) {
+        var c = stCamp();
+        if (!c)
+            return '';
+        var _c = __read(fid.split(':'), 3), k = _c[0], id = _c[1], f = _c[2], F = { prep: 'Préparation', sum: 'Résumé', title: 'Titre', text: '', look: 'Apparence', pers: 'Personnalité', goal: 'Motivations', secret: 'Secrets', notes: 'Notes', role: 'Rôle', place: 'Lieu', name: 'Nom' };
+        if (k === 'desc')
+            return 'Résumé de la campagne';
+        if (k === 'notes')
+            return 'Notes & lore';
+        if (k === 'name')
+            return 'Nom de la campagne';
+        if (k === 'scen') {
+            var h = (c.scen || []).find(function (z) { return z.id === id; });
+            return 'Scénario › ' + (h ? h.title : '?');
+        }
+        if (k === 'sess' || k === 'live') {
+            var x = (c.sess || []).find(function (z) { return z.id === id; });
+            return 'Session ' + (x ? x.n : '?') + ' › ' + (k === 'live' ? 'Notes en direct' : F[f] || f);
+        }
+        if (k === 'npc') {
+            var n = (c.npcs || []).find(function (z) { return z.id === id; });
+            return 'PNJ ' + (n ? n.name : '?') + (F[f] ? ' › ' + F[f] : '');
+        }
+        return fid;
+    }
+    // marque-page
+    function stMarkSet(ed, saved) {
+        var c = stCamp();
+        if (!c || !ed.dataset.fid)
+            return;
+        var off = 0;
+        if (saved && ed.contains(saved.startContainer)) {
+            var o = stOffsetOf(ed, saved.startContainer, saved.startOffset);
+            if (o != null)
+                off = o;
+        }
+        c.mark = { fid: ed.dataset.fid, off: off, ts: Date.now() };
+        stSave();
+        toast('🔖 Marque-page posé : ' + stFidLabel(c.mark.fid));
+        stNavFab();
+    }
+    // aller à un endroit précis
+    function stGo(fid, o) {
+        var c = stCamp();
+        if (!c || !fid)
+            return;
+        o = o || {};
+        var _c = __read(fid.split(':'), 2), k = _c[0], id = _c[1];
+        ui.stN = null;
+        ui.stS = null;
+        ui.stBack = null;
+        if (k === 'scen') {
+            ui.stTab = 'scen';
+            var h = (c.scen || []).find(function (z) { return z.id === id; });
+            if (h && h.fold) {
+                h.fold = false;
+                stSave();
+            }
+        }
+        else if (k === 'notes')
+            ui.stTab = 'notes';
+        else if (k === 'sess' || k === 'live')
+            ui.stS = id;
+        else if (k === 'npc')
+            ui.stN = id;
+        ui.stKeep = 1;
+        stRender();
+        setTimeout(function () { return stLocate(fid, o); }, 60);
+    }
+    function stLocate(fid, o) {
+        var sel = fid.startsWith('live:') ? '#lList' : "[data-fid=\"".concat(fid, "\"]");
+        var el = __spreadArray([], __read(document.querySelectorAll('#stView ' + sel)), false).find(function (e) { return !e.hidden && e.offsetParent; });
+        if (!el)
+            return;
+        var r = null;
+        if (o.q != null && el.tagName !== 'INPUT') {
+            var L = stTexts(el), txt = stFold(L.map(function (n) { return n.nodeValue; }).join('')), q = stFold(o.q);
+            var i = -1, k = 0;
+            do {
+                i = txt.indexOf(q, i + 1);
+            } while (i >= 0 && k++ < (o.nth || 0));
+            if (i >= 0)
+                r = stRangeAt(el, i, q.length);
+        }
+        else if (o.off != null && el.tagName !== 'INPUT') {
+            r = stRangeAt(el, o.off, 0);
+            if (r) {
+                var n = r.startContainer;
+                if (n.nodeType === 3) {
+                    var t = n.nodeValue, a = r.startOffset;
+                    var b = a;
+                    while (b < t.length && !/\s/.test(t[b]))
+                        b++;
+                    var s0 = a;
+                    while (s0 > 0 && !/\s/.test(t[s0 - 1]))
+                        s0--;
+                    r.setStart(n, s0);
+                    r.setEnd(n, Math.max(b, s0 + 1 > t.length ? t.length : b));
+                }
+            }
+        }
+        stFlash(r, el);
+    }
+    function stFlash(r, el) {
+        var rects = r ? __spreadArray([], __read(r.getClientRects()), false).filter(function (x) { return x.width || x.height; }) : [];
+        if (!rects.length)
+            rects = [el.getBoundingClientRect()];
+        var top = rects[0].top + scrollY;
+        window.scrollTo({ top: Math.max(0, top - innerHeight * .3), behavior: RM ? 'auto' : 'smooth' });
+        rects.slice(0, 6).forEach(function (x) { var d = document.createElement('div'); d.className = 'sthl'; d.style.cssText = "left:".concat(x.left + scrollX - 2, "px;top:").concat(x.top + scrollY - 1, "px;width:").concat(x.width + 4, "px;height:").concat(x.height + 2, "px"); document.body.appendChild(d); setTimeout(function () { return d.remove(); }, 3000); });
+    }
+    // sommaire
+    var STTOC = 0;
+    function stTocSoon() { clearTimeout(STTOC); STTOC = setTimeout(stTocBuild, 700); }
+    function stTocItems() {
+        var m = $('#stView .stmain');
+        if (!m)
+            return [];
+        var out = [];
+        m.querySelectorAll('[data-toc],.stsrow,.npccard,label.fl,.stlive h3,.stedit h3,.stedit h4,.stread h3,.stread h4').forEach(function (e) {
+            if (e.closest('[hidden]') && !e.matches('[data-toc]'))
+                return;
+            var t = '', l = 1, fo = false;
+            if (e.matches('.stchap')) {
+                t = (e.querySelector('[data-cht]') || {}).value || 'Chapitre';
+                fo = e.classList.contains('folded');
+            }
+            else if (e.matches('.stsrow'))
+                t = e.querySelector('.n').textContent + ' · ' + e.querySelector('.t b').textContent;
+            else if (e.matches('.npccard'))
+                t = e.querySelector('h3').textContent;
+            else if (e.matches('label.fl,.stlive h3'))
+                t = e.textContent.replace(/^✎\s*/, '');
+            else {
+                t = e.textContent;
+                l = e.tagName === 'H3' ? 2 : 3;
+                if (!e.closest('.stchap'))
+                    l--;
+            }
+            t = t.trim();
+            if (t)
+                out.push({ e: e, t: t, l: Math.max(1, l), fo: fo });
+        });
+        return out;
+    }
+    function stTocBuild() {
+        var T = $('#stToc');
+        if (!T)
+            return;
+        var q = (T.querySelector('.sq') || {}).value || '';
+        if (!T.dataset.ok) {
+            T.dataset.ok = 1;
+            T.innerHTML = "<div style=\"display:flex;align-items:center;gap:6px\"><input class=\"sq\" type=\"search\" placeholder=\"\uD83D\uDD0D Rechercher\u2026\" aria-label=\"Rechercher dans la campagne\" enterkeyhint=\"search\"><button type=\"button\" class=\"x\" aria-label=\"Fermer\">\u2715</button></div><div class=\"tbody\"></div>";
+            var inp = T.querySelector('.sq');
+            var t0_1 = 0;
+            inp.oninput = function () { clearTimeout(t0_1); t0_1 = setTimeout(stTocBuild, 180); };
+            T.querySelector('.x').onclick = function () { return T.classList.remove('open'); };
+            if (ui.stQ) {
+                inp.value = ui.stQ;
+            }
+        }
+        var B = T.querySelector('.tbody'), qq = T.querySelector('.sq').value.trim();
+        ui.stQ = qq;
+        if (qq.length >= 2) {
+            var R_1 = stSearch(qq);
+            B.innerHTML = "<h4>".concat(R_1.length ? R_1.length + (R_1.length >= 80 ? '+' : '') + ' résultat' + (R_1.length > 1 ? 's' : '') : 'Aucun résultat', "</h4><div class=\"res\">").concat(R_1.map(function (r, i) { return "<button type=\"button\" data-r=\"".concat(i, "\"><b>").concat(esc(stFidLabel(r.fid)), "</b>").concat(r.snip, "</button>"); }).join(''), "</div>");
+            B.querySelectorAll('[data-r]').forEach(function (b) { return b.onclick = function () { var r = R_1[+b.dataset.r]; T.classList.remove('open'); stGo(r.fid, { q: qq, nth: r.nth }); }; });
+            return;
+        }
+        var L = stTocItems();
+        B.innerHTML = "<h4>Sommaire</h4>".concat(L.length ? "<div class=\"tl\">".concat(L.map(function (x, i) { return "<button type=\"button\" data-ti=\"".concat(i, "\" class=\"l").concat(x.l, " ").concat(x.fo ? 'fo' : '', "\">").concat(x.fo ? '▸ ' : '').concat(esc(x.t), "</button>"); }).join(''), "</div>") : '<div class="none">Ajoute des titres (T1, T2) dans ton texte pour qu’ils apparaissent ici.</div>') + (function () { var c = stCamp(); return c && c.mark ? "<button type=\"button\" class=\"mk\" data-mk2=\"1\">\uD83D\uDD16 Reprendre : ".concat(esc(stFidLabel(c.mark.fid)), "</button>") : ''; })();
+        B.querySelectorAll('[data-ti]').forEach(function (b) { return b.onclick = function () { var x = L[+b.dataset.ti]; T.classList.remove('open'); if (x.fo) {
+            var f = x.e.querySelector('[data-fold]');
+            if (f)
+                f.click();
+        } x.e.scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); }; });
+        var m2 = B.querySelector('[data-mk2]');
+        if (m2)
+            m2.onclick = function () { T.classList.remove('open'); stMarkGo(); };
+        STTOCL = L;
+        requestAnimationFrame(stTocSpy);
+    }
+    var STTOCL = [];
+    function stTocSpy() { var T = $('#stToc'); if (!T || !STTOCL.length)
+        return; var k = -1; STTOCL.forEach(function (x, i) { if (x.e.offsetParent && x.e.getBoundingClientRect().top < 140)
+        k = i; }); T.querySelectorAll('[data-ti]').forEach(function (b, i) { return b.classList.toggle('on', i === k); }); }
+    function stMarkGo() { var c = stCamp(); if (c && c.mark)
+        stGo(c.mark.fid, { off: c.mark.off }); }
+    function stNavFab() { var c = stCamp(), b = $('#stMkB'); if (b) {
+        b.hidden = !(c && c.mark);
+        b.title = c && c.mark ? 'Reprendre : ' + stFidLabel(c.mark.fid) : '';
+    } }
+    // recherche dans toute la campagne
+    function stSearch(q) {
+        var c = stCamp();
+        if (!c)
+            return [];
+        var Q = stFold(q), out = [];
+        var add = function (fid, t) {
+            t = String(t || '');
+            var F = stFold(t);
+            var i = -1, n = 0;
+            while ((i = F.indexOf(Q, i + 1)) >= 0 && out.length < 80) {
+                var a = Math.max(0, i - 40), b = Math.min(t.length, i + Q.length + 60);
+                out.push({ fid: fid, nth: n++, snip: (a ? '…' : '') + esc(t.slice(a, i)) + '<mark>' + esc(t.slice(i, i + Q.length)) + '</mark>' + esc(t.slice(i + Q.length, b)) + (b < t.length ? '…' : '') });
+            }
+        };
+        add('desc', c.desc);
+        add('notes', c.notes);
+        (c.scen || []).forEach(function (h) { add('scen:' + h.id + ':title', h.title); add('scen:' + h.id + ':text', h.text); });
+        (c.sess || []).slice().sort(function (a, b) { return b.n - a.n; }).forEach(function (x) { add('sess:' + x.id + ':title', x.title); add('sess:' + x.id + ':prep', x.prep); add('sess:' + x.id + ':sum', x.sum); add('live:' + x.id, (x.live || []).map(function (n) { return n.t; }).join('\n')); });
+        (c.npcs || []).forEach(function (n) { return ['name', 'role', 'place', 'look', 'pers', 'goal', 'secret', 'notes'].forEach(function (k) { return add('npc:' + n.id + ':' + k, n[k]); }); });
+        return out;
+    }
+    function stNavBind(el) {
+        stTocBuild();
+        stNavFab();
+        var T = el.querySelector('#stToc');
+        el.querySelector('#stTocB').onclick = function () { T.classList.add('open'); setTimeout(function () { return T.querySelector('.sq').focus({ preventScroll: true }); }, 260); };
+        el.querySelector('#stMkB').onclick = stMarkGo;
+        el.querySelector('#stTopB').onclick = function () { return window.scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' }); };
+    }
+    addEventListener('scroll', function () { if (!ui.st)
+        return; var b = $('#stTopB'); if (b)
+        b.hidden = scrollY < 500; if (!stTocSpy._r) {
+        stTocSpy._r = requestAnimationFrame(function () { stTocSpy._r = 0; stTocSpy(); });
+    } }, { passive: true });
     /* ---------- Capacités de classe : ressources, actions, passifs ---------- */
     var cfLeft = function (c, k) { var v = c && c.cres && c.cres[k]; return v ? Math.max(0, +v[0] - (+v[1] || 0)) : 0; };
     var cfIncap = function (c) { return ['neutralisé', 'paralysé', 'étourdi', 'inconscient', 'pétrifié'].some(function (k) { return has(c, k); }); };
@@ -12033,7 +12381,7 @@ var __values = (this && this.__values) || function(o) {
     function stClean(html) {
         var d = document.createElement('div');
         d.innerHTML = html;
-        var OK = { B: 1, STRONG: 1, I: 1, EM: 1, U: 1, BR: 1, DIV: 1, P: 1, SPAN: 1 };
+        var OK = { B: 1, STRONG: 1, I: 1, EM: 1, U: 1, BR: 1, DIV: 1, P: 1, SPAN: 1, H3: 1, H4: 1 };
         var walk = function (n) {
             Array.prototype.slice.call(n.childNodes).forEach(function (c) {
                 if (c.nodeType === 3)
@@ -12131,8 +12479,8 @@ var __values = (this && this.__values) || function(o) {
         ta.insertAdjacentElement('afterend', ed);
         var bar = document.createElement('div');
         bar.className = 'stfmt';
-        bar.innerHTML = '<button type="button" data-cmd="bold" title="Gras" aria-label="Gras" style="font-weight:900">G</button><span class="sep"></span><button type="button" data-sz="-" title="Texte plus petit" aria-label="Texte plus petit">A−</button><button type="button" data-sz="+" title="Texte plus grand" aria-label="Texte plus grand">A+</button><span class="sep"></span>' +
-            ST_AL.map(function (a) { return "<button type=\"button\" data-cmd=\"".concat(a[3], "\" title=\"").concat(a[2], "\" aria-label=\"").concat(a[2], "\"><svg viewBox=\"0 0 16 12\" width=\"16\" height=\"12\"><path d=\"").concat(a[1], "\" stroke=\"currentColor\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/></svg></button>"); }).join('');
+        bar.innerHTML = '<button type="button" data-blk="h3" title="Grand titre (apparaît dans le sommaire)" aria-label="Grand titre">T1</button><button type="button" data-blk="h4" title="Petit titre (apparaît dans le sommaire)" aria-label="Petit titre">T2</button><span class="sep"></span><button type="button" data-cmd="bold" title="Gras" aria-label="Gras" style="font-weight:900">G</button><span class="sep"></span><button type="button" data-sz="-" title="Texte plus petit" aria-label="Texte plus petit">A−</button><button type="button" data-sz="+" title="Texte plus grand" aria-label="Texte plus grand">A+</button><span class="sep"></span>' +
+            ST_AL.map(function (a) { return "<button type=\"button\" data-cmd=\"".concat(a[3], "\" title=\"").concat(a[2], "\" aria-label=\"").concat(a[2], "\"><svg viewBox=\"0 0 16 12\" width=\"16\" height=\"12\"><path d=\"").concat(a[1], "\" stroke=\"currentColor\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/></svg></button>"); }).join('') + '<button type="button" class="mkb" data-mk="1" title="Poser le marque-page ici (là où est le curseur)" aria-label="Marque-page ici">🔖 Je suis ici</button>';
         ta.insertAdjacentElement('beforebegin', bar);
         var saved = null, rd = null, lastBar = 0;
         var emp = function () { return ed.classList.toggle('empty', !ed.textContent.trim()); };
@@ -12150,8 +12498,13 @@ var __values = (this && this.__values) || function(o) {
             sl.addRange(saved);
         } };
         var curSize = function () { var n = saved && saved.startContainer; var el = n ? (n.nodeType === 3 ? n.parentElement : n) : ed; return parseFloat(getComputedStyle(el || ed).fontSize) || 16; };
-        var edit = function () { ed.hidden = false; if (rd)
-            rd.hidden = true; ed.focus(); var r = document.createRange(); r.selectNodeContents(ed); r.collapse(false); var sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); keep(); };
+        var edit = function (off) { ed.hidden = false; if (rd)
+            rd.hidden = true; ed.focus({ preventScroll: off != null }); var r = off != null ? stRangeAt(ed, off, 0) : null; if (!r) {
+            r = document.createRange();
+            r.selectNodeContents(ed);
+            r.collapse(false);
+        } var sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); keep(); };
+        ed.dataset.fid = stFid(obj, key);
         var sync = function () {
             var h = document.activeElement === ed ? null : stLinkify(stClean(ed.innerHTML), ui.stN);
             if (h === null) {
@@ -12164,6 +12517,7 @@ var __values = (this && this.__values) || function(o) {
                 rd = document.createElement('div');
                 rd.className = 'stread';
                 rd.tabIndex = 0;
+                rd.dataset.fid = ed.dataset.fid;
                 ed.insertAdjacentElement('afterend', rd);
                 rd.addEventListener('click', function (e) { var a = e.target.closest('a.npcl'); if (a) {
                     e.preventDefault();
@@ -12171,7 +12525,7 @@ var __values = (this && this.__values) || function(o) {
                     ui.stN = a.dataset.npc;
                     stRender();
                     return;
-                } edit(); });
+                } edit(stOffsetAtPoint(rd, e.clientX, e.clientY)); });
                 rd.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('a')) {
                     e.preventDefault();
                     edit();
@@ -12194,13 +12548,25 @@ var __values = (this && this.__values) || function(o) {
                 return;
             }
             restore();
-            if (b.dataset.cmd) {
+            if (b.dataset.mk) {
+                stMarkSet(ed, saved);
+                return;
+            }
+            if (b.dataset.blk) {
+                var cur_1 = '';
+                try {
+                    cur_1 = String(document.queryCommandValue('formatBlock') || '').toLowerCase();
+                }
+                catch (e) { }
+                document.execCommand('formatBlock', false, cur_1 === b.dataset.blk ? '<div>' : '<' + b.dataset.blk + '>');
+            }
+            else if (b.dataset.cmd) {
                 document.execCommand('styleWithCSS', false, /justify/.test(b.dataset.cmd));
                 document.execCommand(b.dataset.cmd, false, null);
             }
             else if (b.dataset.sz) {
-                var cur_1 = curSize();
-                var i_1 = ST_FS.reduce(function (p, v, j) { return Math.abs(v - cur_1) < Math.abs(ST_FS[p] - cur_1) ? j : p; }, 0);
+                var cur_2 = curSize();
+                var i_1 = ST_FS.reduce(function (p, v, j) { return Math.abs(v - cur_2) < Math.abs(ST_FS[p] - cur_2) ? j : p; }, 0);
                 i_1 = Math.max(0, Math.min(ST_FS.length - 1, i_1 + (b.dataset.sz === '+' ? 1 : -1)));
                 document.execCommand('styleWithCSS', false, false);
                 document.execCommand('fontSize', false, '7');
@@ -12219,7 +12585,7 @@ var __values = (this && this.__values) || function(o) {
             keep();
             save();
         });
-        ed.addEventListener('input', save);
+        ed.addEventListener('input', function () { save(); stTocSoon(); });
         ['keyup', 'mouseup', 'touchend'].forEach(function (ev) { return ed.addEventListener(ev, keep); });
         ed.addEventListener('paste', function (e) { e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain')); });
         var trySync = function () { if (document.activeElement === ed)
@@ -12237,10 +12603,9 @@ var __values = (this && this.__values) || function(o) {
     function stBind(el, sel, obj, key, after) { el.querySelectorAll(sel).forEach(function (i) { if (i.tagName === 'TEXTAREA') {
         stRich(i, obj, key, after);
         return;
-    } i.addEventListener('input', function () { obj[key] = i.value; if (i.tagName === 'TEXTAREA')
+    } i.dataset.fid = stFid(obj, key); i.addEventListener('input', function () { obj[key] = i.value; if (i.tagName === 'TEXTAREA')
         stGrow(i); stSave(); after && after(); }); }); }
     function stRender() {
-        var _c;
         var el = $('#stView');
         if (!el)
             return;
@@ -12254,21 +12619,27 @@ var __values = (this && this.__values) || function(o) {
             stListBind(el);
             return;
         }
+        var W = function (h) { return "<div class=\"stwrap\"><aside class=\"sttoc\" id=\"stToc\" aria-label=\"Sommaire et recherche\"></aside><div class=\"stmain\">".concat(h, "</div></div><div class=\"stfab\"><button type=\"button\" class=\"tocb\" id=\"stTocB\" aria-label=\"Sommaire\">\u2630 Sommaire</button><button type=\"button\" id=\"stMkB\" hidden>\uD83D\uDD16 Reprendre</button><button type=\"button\" id=\"stTopB\" aria-label=\"Haut de la page\" hidden>\u2191</button></div>"); };
         if (ui.stN && stNpc()) {
-            el.innerHTML = stNpcHTML();
+            el.innerHTML = W(stNpcHTML());
             stNpcBind(el);
-            return;
         }
-        ui.stN = null;
-        if (ui.stS && stSess()) {
-            el.innerHTML = stSessHTML();
-            stSessBind(el);
-            return;
+        else {
+            ui.stN = null;
+            if (ui.stS && stSess()) {
+                el.innerHTML = W(stSessHTML());
+                stSessBind(el);
+            }
+            else {
+                ui.stS = null;
+                el.innerHTML = W(stCampHTML());
+                stCampBind(el);
+            }
         }
-        ui.stS = null;
-        el.innerHTML = stCampHTML();
-        stCampBind(el);
-        (_c = el.scrollIntoView) === null || _c === void 0 ? void 0 : _c.call(el, { block: 'start' });
+        stNavBind(el);
+        if (!ui.stKeep)
+            window.scrollTo({ top: 0 });
+        ui.stKeep = 0;
     }
     /* liste des campagnes */
     function stListHTML() {
@@ -12315,7 +12686,7 @@ var __values = (this && this.__values) || function(o) {
                 : "<div class=\"stempty\">Pas encore de session. Cr\u00E9e la premi\u00E8re pour pr\u00E9parer ta partie et prendre des notes pendant le jeu.</div>");
         }
         if (T === 'scen') {
-            body = "<p class=\"hint\" style=\"margin-top:0\">Ton sc\u00E9nario, d\u00E9coup\u00E9 en chapitres (actes, lieux, sc\u00E8nes\u2026). Tout est enregistr\u00E9 automatiquement.</p>\n      ".concat((c.scen || []).map(function (h, i) { return "<div class=\"stchap\" data-ch=\"".concat(h.id, "\"><div class=\"h\"><input type=\"text\" value=\"").concat(esc(h.title), "\" data-cht=\"").concat(h.id, "\" placeholder=\"Titre du chapitre\" aria-label=\"Titre du chapitre\">\n        <button class=\"stib\" type=\"button\" data-up=\"").concat(h.id, "\" ").concat(i ? '' : 'disabled', " aria-label=\"Monter\">\u2191</button><button class=\"stib\" type=\"button\" data-dn=\"").concat(h.id, "\" ").concat(i < c.scen.length - 1 ? '' : 'disabled', " aria-label=\"Descendre\">\u2193</button><button class=\"stib\" type=\"button\" data-chdel=\"").concat(h.id, "\" aria-label=\"Supprimer\">\u2715</button></div>\n        <textarea data-chx=\"").concat(h.id, "\" placeholder=\"\u00C9cris ici\u2026\">").concat(esc(h.text), "</textarea></div>"); }).join(''), "\n      <button class=\"btn\" type=\"button\" id=\"chNew\">+ Ajouter un chapitre</button>");
+            body = "<p class=\"hint\" style=\"margin-top:0\">Ton sc\u00E9nario, d\u00E9coup\u00E9 en chapitres (actes, lieux, sc\u00E8nes\u2026). Tout est enregistr\u00E9 automatiquement.</p>\n      ".concat((c.scen || []).length > 1 ? "<div class=\"stact\" style=\"margin:0 0 10px\"><button class=\"btn sm\" type=\"button\" data-foldall=\"1\">Tout replier</button><button class=\"btn sm\" type=\"button\" data-foldall=\"0\">Tout d\u00E9plier</button></div>" : '', "\n      ").concat((c.scen || []).map(function (h, i) { return "<div class=\"stchap ".concat(h.fold ? 'folded' : '', "\" data-ch=\"").concat(h.id, "\" data-toc=\"1\"><div class=\"h\"><button class=\"stib fold\" type=\"button\" data-fold=\"").concat(h.id, "\" aria-expanded=\"").concat(h.fold ? 'false' : 'true', "\" aria-label=\"").concat(h.fold ? 'Déplier' : 'Replier', " le chapitre\">").concat(h.fold ? '▸' : '▾', "</button><input type=\"text\" value=\"").concat(esc(h.title), "\" data-cht=\"").concat(h.id, "\" placeholder=\"Titre du chapitre\" aria-label=\"Titre du chapitre\"><small class=\"chw\">").concat((String(h.text || '').match(/\S+/g) || []).length, " mots</small>\n        <button class=\"stib\" type=\"button\" data-up=\"").concat(h.id, "\" ").concat(i ? '' : 'disabled', " aria-label=\"Monter\">\u2191</button><button class=\"stib\" type=\"button\" data-dn=\"").concat(h.id, "\" ").concat(i < c.scen.length - 1 ? '' : 'disabled', " aria-label=\"Descendre\">\u2193</button><button class=\"stib\" type=\"button\" data-chdel=\"").concat(h.id, "\" aria-label=\"Supprimer\">\u2715</button></div>\n        <div class=\"chb\" ").concat(h.fold ? 'hidden' : '', "><textarea data-chx=\"").concat(h.id, "\" placeholder=\"\u00C9cris ici\u2026\">").concat(esc(h.text), "</textarea></div></div>"); }).join(''), "\n      <button class=\"btn\" type=\"button\" id=\"chNew\">+ Ajouter un chapitre</button>");
         }
         if (T === 'pnj') {
             var L = (c.npcs || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); });
@@ -12356,6 +12727,9 @@ var __values = (this && this.__values) || function(o) {
         };
         el.querySelectorAll('[data-up]').forEach(function (b) { return b.onclick = function () { return mv(b.dataset.up, -1); }; });
         el.querySelectorAll('[data-dn]').forEach(function (b) { return b.onclick = function () { return mv(b.dataset.dn, 1); }; });
+        el.querySelectorAll('[data-fold]').forEach(function (b) { return b.onclick = function () { var h = c.scen.find(function (z) { return z.id === b.dataset.fold; }); if (!h)
+            return; h.fold = !h.fold; stSave(); var box = b.closest('.stchap'); box.classList.toggle('folded', h.fold); box.querySelector('.chb').hidden = h.fold; b.textContent = h.fold ? '▸' : '▾'; b.setAttribute('aria-expanded', !h.fold); stTocBuild(); }; });
+        el.querySelectorAll('[data-foldall]').forEach(function (b) { return b.onclick = function () { var f = b.dataset.foldall === '1'; c.scen.forEach(function (h) { return h.fold = f; }); stSave(); ui.stKeep = 1; stRender(); }; });
         el.querySelectorAll('[data-chdel]').forEach(function (b) { return b.onclick = function () { if (!b.dataset.ok) {
             b.dataset.ok = 1;
             b.textContent = '?';
@@ -12715,7 +13089,7 @@ var __values = (this && this.__values) || function(o) {
             return;
         TVS.sbUp[id] = 'q';
         var job = function () { return __awaiter(_this, void 0, void 0, function () {
-            var N, base, v, m, blob_1, d, C_5, n, i, e_21;
+            var N, base, v, m, blob_1, d, C_5, n, i, e_22;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -12783,7 +13157,7 @@ var __values = (this && this.__values) || function(o) {
                         sbUpBadge(id);
                         return [3 /*break*/, 13];
                     case 12:
-                        e_21 = _c.sent();
+                        e_22 = _c.sent();
                         TVS.sbUp[id] = 'err';
                         sbUpBadge(id);
                         return [3 /*break*/, 13];
@@ -12802,7 +13176,7 @@ var __values = (this && this.__values) || function(o) {
     var SBTV = { m: {}, p: {}, busy: {} };
     function sbTvBlob(id) {
         return __awaiter(this, void 0, void 0, function () {
-            var m, c, e_22, N;
+            var m, c, e_23, N;
             var _this = this;
             return __generator(this, function (_c) {
                 switch (_c.label) {
@@ -12819,7 +13193,7 @@ var __values = (this && this.__values) || function(o) {
                         c = _c.sent();
                         return [3 /*break*/, 4];
                     case 3:
-                        e_22 = _c.sent();
+                        e_23 = _c.sent();
                         return [3 /*break*/, 4];
                     case 4:
                         if (c && c.v === m.v && c.b)
@@ -12830,7 +13204,7 @@ var __values = (this && this.__values) || function(o) {
                         if (!N)
                             return [2 /*return*/, null];
                         return [2 /*return*/, SBTV.busy[id] = N.get("tables/".concat(TVM, "/tv/sbc/").concat(id)).then(function (o) { return __awaiter(_this, void 0, void 0, function () {
-                                var L, b, e_23;
+                                var L, b, e_24;
                                 return __generator(this, function (_c) {
                                     switch (_c.label) {
                                         case 0:
@@ -12849,7 +13223,7 @@ var __values = (this && this.__values) || function(o) {
                                             _c.sent();
                                             return [3 /*break*/, 6];
                                         case 5:
-                                            e_23 = _c.sent();
+                                            e_24 = _c.sent();
                                             return [3 /*break*/, 6];
                                         case 6: return [2 /*return*/, b];
                                     }
@@ -12862,7 +13236,7 @@ var __values = (this && this.__values) || function(o) {
     function sbTvSync() {
         return __awaiter(this, void 0, void 0, function () {
             var P, _loop_11, _c, _e, _f, id, e;
-            var e_24, _g;
+            var e_25, _g;
             return __generator(this, function (_h) {
                 P = SBTV.p || {};
                 Object.keys(SBP).forEach(function (id) { var e = P[id]; if (!e || e.s !== SBP[id].s)
@@ -12891,12 +13265,12 @@ var __values = (this && this.__values) || function(o) {
                         _loop_11(id, e);
                     }
                 }
-                catch (e_24_1) { e_24 = { error: e_24_1 }; }
+                catch (e_25_1) { e_25 = { error: e_25_1 }; }
                 finally {
                     try {
                         if (_e && !_e.done && (_g = _c.return)) _g.call(_c);
                     }
-                    finally { if (e_24) throw e_24.error; }
+                    finally { if (e_25) throw e_25.error; }
                 }
                 return [2 /*return*/];
             });
@@ -12939,8 +13313,8 @@ var __values = (this && this.__values) || function(o) {
         } }; });
         el.querySelectorAll('[data-sbed]').forEach(function (b) { return b.onclick = function (e) { e.stopPropagation(); sbEdit(b.dataset.sbed); }; });
         el.querySelectorAll('[data-sbadd]').forEach(function (i) { return i.onchange = function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var k, n, _c, _e, f, id, er_2, e_25_1;
-            var e_25, _f;
+            var k, n, _c, _e, f, id, er_2, e_26_1;
+            var e_26, _f;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -12975,14 +13349,14 @@ var __values = (this && this.__values) || function(o) {
                         return [3 /*break*/, 2];
                     case 8: return [3 /*break*/, 11];
                     case 9:
-                        e_25_1 = _g.sent();
-                        e_25 = { error: e_25_1 };
+                        e_26_1 = _g.sent();
+                        e_26 = { error: e_26_1 };
                         return [3 /*break*/, 11];
                     case 10:
                         try {
                             if (_e && !_e.done && (_f = _c.return)) _f.call(_c);
                         }
-                        finally { if (e_25) throw e_25.error; }
+                        finally { if (e_26) throw e_26.error; }
                         return [7 /*endfinally*/];
                     case 11:
                         save();
@@ -13171,7 +13545,7 @@ var __values = (this && this.__values) || function(o) {
     var ambCustom = function () { return SD().ambc || (SD().ambc = []); };
     var AMBFAIL = new Set();
     function ambLoad(id) {
-        return __awaiter(this, void 0, void 0, function () { var b, e_26; return __generator(this, function (_c) {
+        return __awaiter(this, void 0, void 0, function () { var b, e_27; return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
                     if (AMBBUF[id])
@@ -13187,7 +13561,7 @@ var __values = (this && this.__values) || function(o) {
                     b = _c.sent();
                     return [3 /*break*/, 4];
                 case 3:
-                    e_26 = _c.sent();
+                    e_27 = _c.sent();
                     return [3 /*break*/, 4];
                 case 4:
                     if (!b) {
@@ -13279,8 +13653,8 @@ var __values = (this && this.__values) || function(o) {
     }
     function tvPublishAmb() {
         return __awaiter(this, void 0, void 0, function () {
-            var T, _loop_12, _c, _e, a, e_27_1;
-            var e_27, _f;
+            var T, _loop_12, _c, _e, a, e_28_1;
+            var e_28, _f;
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
@@ -13329,14 +13703,14 @@ var __values = (this && this.__values) || function(o) {
                         return [3 /*break*/, 2];
                     case 5: return [3 /*break*/, 8];
                     case 6:
-                        e_27_1 = _g.sent();
-                        e_27 = { error: e_27_1 };
+                        e_28_1 = _g.sent();
+                        e_28 = { error: e_28_1 };
                         return [3 /*break*/, 8];
                     case 7:
                         try {
                             if (_e && !_e.done && (_f = _c.return)) _f.call(_c);
                         }
-                        finally { if (e_27) throw e_27.error; }
+                        finally { if (e_28) throw e_28.error; }
                         return [7 /*endfinally*/];
                     case 8: return [2 /*return*/];
                 }
@@ -13714,9 +14088,9 @@ var __values = (this && this.__values) || function(o) {
         var t = null;
         var own = c && c.petOf ? byId(c.petOf) : null;
         if (c && c.side === 'pj' && (playerOf(c) || (own && playerOf(own)))) {
-            var R_1 = reachable(c), reach_1 = [], r1_1 = function (v) { return Math.round(v * 10) / 10; };
-            R_1.forEach(function (d, k) { if (k === c.x + ',' + c.y)
-                return; var _c = __read(k.split(',').map(Number), 2), x = _c[0], y = _c[1]; reach_1.push([x, y, r1_1((R_1.cost.get(k) || d) * CELL_M)]); });
+            var R_2 = reachable(c), reach_1 = [], r1_1 = function (v) { return Math.round(v * 10) / 10; };
+            R_2.forEach(function (d, k) { if (k === c.x + ',' + c.y)
+                return; var _c = __read(k.split(',').map(Number), 2), x = _c[0], y = _c[1]; reach_1.push([x, y, r1_1((R_2.cost.get(k) || d) * CELL_M)]); });
             var TH_2 = aooThreat(c);
             t = { cid: c.id, own: own ? own.id : '', nm: c.name, n: S.round, res: { a: c.res.action ? 1 : 0, b: c.res.bonus ? 1 : 0, r: c.res.reaction ? 1 : 0, m: r1_1(c.res.move) }, me: [c.x, c.y, sz(c)],
                 acts: c.actions.map(function (a) { var w = canUse(c, a), X = spx(a) || {}, sh = shapeOf(X.shape || X.line ? spAct(a, X) : a); var ui0 = upInfo(c, a); var ct = aCat(a); return { cg: ct.n, co: ct.o, wsL: a.ws ? wsList(c, a).map(function (m) { return [m[0], m[11], m[3], parseInt(m[4]), WS_FLY[m[0]] || m[5]]; }) : 0, up: ui0 ? ui0.levels.map(function (l) { return [l, l > ui0.base ? upTxt(ui0.U, l - ui0.base) : '', (X.n || 1) + (ui0.U.n || 0) * (l - ui0.base)]; }) : 0, tg: X.t || '', mt: X.n || 0, cell: (X.k === 'tp' || a.tp || X.t === 'p' && !((X.area != null ? X.area : a.area) > 0)) ? 1 : 0, tp: X.tp || a.tp || 0, sh: sh ? sh.k : '', L: sh ? sh.L : 0, id: a.id, name: a.name + cfCount(c, a), kind: a.kind, cost: a.cost, range: +a.range || 0, area: +a.area || 0, dmg: a.dmg && a.dmg !== '0' ? a.dmg : '', dtype: a.dtype || '', nt: String(a.note || '').slice(0, 300), ok: w ? 0 : 1, why: w || '' }; }).concat(c.hp > 0 && c.side === 'pj' ? S.chars.filter(function (o) { return o !== c && o.side === 'pj' && o.hp <= 0 && !pjDead(o) && dist(c, o) * CELL_M <= CELL_M + 1e-6; }).map(function (o) { return ({ id: 'help:' + o.id, name: 'Aider ' + o.name + ' à se relever', kind: 'auto', cost: 'action', range: 1.5, area: 0, dmg: '', dtype: '', nt: 'Il se relève avec 1 PV mais ne pourra pas agir à son prochain tour.', ok: c.res && c.res.action ? 1 : 0, why: c.res && c.res.action ? '' : 'Action déjà utilisée', sh: '', L: 0 }); }) : []),
@@ -13992,21 +14366,21 @@ var __values = (this && this.__values) || function(o) {
     }
     /* ---------- Emplacements de départ des joueurs ---------- */
     function spawnFor(c) {
-        var e_28, _c;
+        var e_29, _c;
         var L = (S.map.spawns || []).map(function (k) { return k.split(',').map(Number); });
         try {
-            for (var L_2 = __values(L), L_2_1 = L_2.next(); !L_2_1.done; L_2_1 = L_2.next()) {
-                var _e = __read(L_2_1.value, 2), x = _e[0], y = _e[1];
+            for (var L_3 = __values(L), L_3_1 = L_3.next(); !L_3_1.done; L_3_1 = L_3.next()) {
+                var _e = __read(L_3_1.value, 2), x = _e[0], y = _e[1];
                 if (fits(c, x, y, 'end'))
                     return { x: x, y: y };
             }
         }
-        catch (e_28_1) { e_28 = { error: e_28_1 }; }
+        catch (e_29_1) { e_29 = { error: e_29_1 }; }
         finally {
             try {
-                if (L_2_1 && !L_2_1.done && (_c = L_2.return)) _c.call(L_2);
+                if (L_3_1 && !L_3_1.done && (_c = L_3.return)) _c.call(L_3);
             }
-            finally { if (e_28) throw e_28.error; }
+            finally { if (e_29) throw e_29.error; }
         }
         return null;
     }
@@ -14160,7 +14534,7 @@ var __values = (this && this.__values) || function(o) {
             el.querySelector('#mCancel').onclick = close;
             list.forEach(function (c) { var i = el.querySelector("[data-i=\"".concat(c.id, "\"]")); askRoll(c, { kind: 'init', label: 'Initiative', detail: 'Lance 1d20 et saisis le dé : la table ajoute ton bonus.' }, function (v) { i.value = v; flash(i); }); });
             el.querySelector('#mGo').onclick = function () {
-                var e_29, _c;
+                var e_30, _c;
                 var auto = el.querySelector('#autoFoe').checked;
                 try {
                     for (var list_1 = __values(list), list_1_1 = list_1.next(); !list_1_1.done; list_1_1 = list_1.next()) {
@@ -14182,12 +14556,12 @@ var __values = (this && this.__values) || function(o) {
                         c.initTot = d + (+c.initB);
                     }
                 }
-                catch (e_29_1) { e_29 = { error: e_29_1 }; }
+                catch (e_30_1) { e_30 = { error: e_30_1 }; }
                 finally {
                     try {
                         if (list_1_1 && !list_1_1.done && (_c = list_1.return)) _c.call(list_1);
                     }
-                    finally { if (e_29) throw e_29.error; }
+                    finally { if (e_30) throw e_30.error; }
                 }
                 S.chars.forEach(function (c) { if (!list.includes(c))
                     c.initTot = null; });
@@ -14209,10 +14583,10 @@ var __values = (this && this.__values) || function(o) {
         if (!S.order.length)
             return;
         {
-            var e_30 = S.turn >= 0 ? cur() : null;
-            if (e_30)
-                endTurnFx(e_30);
-            var lg_1 = S.chars.filter(function (m) { var _c; return m !== e_30 && m.hp > 0 && legMax(m) && ((_c = m.legLeft) !== null && _c !== void 0 ? _c : legMax(m)) > 0; });
+            var e_31 = S.turn >= 0 ? cur() : null;
+            if (e_31)
+                endTurnFx(e_31);
+            var lg_1 = S.chars.filter(function (m) { var _c; return m !== e_31 && m.hp > 0 && legMax(m) && ((_c = m.legLeft) !== null && _c !== void 0 ? _c : legMax(m)) > 0; });
             if (lg_1.length && S.turn >= 0)
                 setTimeout(function () { return toast(lg_1.map(function (m) { return m.name; }).join(', ') + ' : action légendaire possible (fiche du monstre)'); }, 900);
         }
@@ -15076,13 +15450,13 @@ var __values = (this && this.__values) || function(o) {
         });
         f.slots = slots;
         {
-            var R_2 = {};
+            var R_3 = {};
             Object.entries(k.cres || {}).forEach(function (_c) {
                 var _e = __read(_c, 2), q = _e[0], v = _e[1];
                 var max = +(v && v[0]) || 0;
-                R_2[q] = [max, c && c.cres && c.cres[q] ? Math.min(max, +c.cres[q][1] || 0) : Math.min(max, +(v && v[1]) || 0), v && v[2] || q, v && v[3] || 'long'];
+                R_3[q] = [max, c && c.cres && c.cres[q] ? Math.min(max, +c.cres[q][1] || 0) : Math.min(max, +(v && v[1]) || 0), v && v[2] || q, v && v[3] || 'long'];
             });
-            f.cres = R_2;
+            f.cres = R_3;
             f.cfp = k.cfp || {};
         }
         if (k.token) {
@@ -15266,7 +15640,7 @@ var __values = (this && this.__values) || function(o) {
             modal("<h2>Cr\u00E9er la table en ligne</h2><div class=\"sub\">Donne un nom \u00E0 ta partie : tes joueurs le verront en rejoignant.</div>\n      <label class=\"fld\">Nom de la partie<input id=\"tn\" value=\"La Crypte des Gobelins\"></label>\n      <div class=\"row\"><button class=\"btn\" id=\"mCancel\" type=\"button\">Annuler</button><button class=\"btn primary\" id=\"mOk\" type=\"button\">Cr\u00E9er et inviter</button></div>", function (el) {
                 el.querySelector('#mCancel').onclick = close;
                 el.querySelector('#mOk').onclick = function () { return __awaiter(_this, void 0, void 0, function () {
-                    var name, tid, e_31;
+                    var name, tid, e_32;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
                             case 0:
@@ -15280,7 +15654,7 @@ var __values = (this && this.__values) || function(o) {
                                 _c.sent();
                                 return [3 /*break*/, 4];
                             case 3:
-                                e_31 = _c.sent();
+                                e_32 = _c.sent();
                                 toast('Impossible de créer la table : vérifie les règles de la base (guide, étape 4)');
                                 return [2 /*return*/];
                             case 4:
@@ -15339,7 +15713,7 @@ var __values = (this && this.__values) || function(o) {
     }
     function newCode() {
         return __awaiter(this, void 0, void 0, function () {
-            var N, old, name, tid, e_32, nb, P, del, e_33;
+            var N, old, name, tid, e_33, nb, P, del, e_34;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -15356,8 +15730,8 @@ var __values = (this && this.__values) || function(o) {
                         _c.sent();
                         return [3 /*break*/, 4];
                     case 3:
-                        e_32 = _c.sent();
-                        toast('Impossible de créer le nouveau code : ' + (e_32 && e_32.message || e_32));
+                        e_33 = _c.sent();
+                        toast('Impossible de créer le nouveau code : ' + (e_33 && e_33.message || e_33));
                         nb = $('#iNew');
                         if (nb) {
                             nb.disabled = false;
@@ -15377,7 +15751,7 @@ var __values = (this && this.__values) || function(o) {
                         _c.sent();
                         return [3 /*break*/, 8];
                     case 7:
-                        e_33 = _c.sent();
+                        e_34 = _c.sent();
                         return [3 /*break*/, 8];
                     case 8:
                         N.remove("tables/".concat(old, "/meta")).catch(function () { });
