@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='03/11-17h30';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='04/11-15h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -73,6 +73,17 @@
 .rav.sq{border-radius:10px;font-size:22px;background-color:#2f4a3a}
 .rnum{width:36px;height:36px;flex:none;border-radius:50%;display:grid;place-items:center;background:#8a2a22;color:#fff;font-weight:700}
 .rhere{font-size:13px;margin-top:4px}.rhere span{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:2px 3px 0 0}
+
+.jwmz{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-bottom:6px}.jwmz button{width:36px;height:32px;border:1px solid var(--line);border-radius:8px;background:transparent;font-size:18px;color:inherit}.jwmz span{font-size:13px;opacity:.7;min-width:42px;text-align:center}
+.jwm{overflow:auto;max-height:62vh;border:1px solid var(--line);border-radius:12px;background:#1d1a14;-webkit-overflow-scrolling:touch}
+.jwmin{position:relative;min-width:100%}.jwmin img{position:absolute;inset:0;width:100%;height:100%;display:block}.jwmin svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.jpin{position:absolute;transform:translate(-50%,-100%);border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;z-index:2}
+.jpin i{width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#c0392b;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.5)}
+.jpin span{margin-bottom:3px;background:rgba(251,246,234,.92);border:1px solid #c9a45c;border-radius:6px;padding:0 5px;font-size:11px;font-weight:700;color:#3a2a14;white-space:nowrap}
+.jpin.on span{background:#f3d36b}
+.jparty{position:absolute;transform:translate(-30%,-115%);font-size:22px;color:#2f6b2a;text-shadow:0 0 3px #fff;z-index:3;pointer-events:none}
+
+@media(max-width:420px){.nav button{letter-spacing:.02em;font-size:11px}}
 </style>
 </head>
 <body>
@@ -247,7 +258,7 @@ details>summary{cursor:pointer}
 /* Barre du bas */
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -1px 0 var(--paper),0 -2.5px 0 var(--line);
   padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));display:flex;justify-content:center}
-.nav .in{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;width:100%;max-width:760px;border:0;background:none;padding:0}
+.nav .in{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;width:100%;max-width:760px;border:0;background:none;padding:0}
 .nav button{border:0;background:none;padding:4px 2px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--f-display);font-weight:700;letter-spacing:.08em}
 .nav button svg{width:30px;height:30px;padding:4px;border-radius:50%;color:var(--umber)}
 .nav button.on{color:var(--umber)}
@@ -812,7 +823,7 @@ function tabJournal(c){
   if(!(joined()&&myChar()===c))return `<div class="card"><h3>Journal de l’aventure</h3><p class="sub" style="margin:0">Rejoins la table de ton MJ (onglet Combat) pour retrouver ici les PNJ rencontrés, les lieux découverts et le résumé de chaque session.</p></div>`;
   const A=x=>Array.isArray(x)?x:Object.values(x||{}),st=(CON.meta&&CON.meta.story)||{},NN=A(st.npcs),LL=A(st.lieux),SS=A(st.sess);
   const J=A(CON.meta&&CON.meta.journal),G=J.filter(e=>!e.to),P=J.filter(e=>e.to&&e.to===CON.cid);
-  const T=[['pnj','👥 PNJ',NN.length],['lieux','📍 Lieux',LL.length],['sess','📖 Sessions',SS.length]].concat(G.length||P.length?[['quest','📜 Quêtes',G.length+P.length]]:[]);
+  const WM=st.wm||null,T=[['pnj','👥 PNJ',NN.length],['lieux','📍 Lieux',LL.length],['sess','📖 Sessions',SS.length]].concat(WM?[['carte','🗺 Carte',0]]:[]).concat(G.length||P.length?[['quest','📜 Quêtes',G.length+P.length]]:[]);
   let t=view.jt||'pnj';if(!T.some(x=>x[0]===t))t='pnj';const O=view.jo||(view.jo={});
   const fold=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
   const ini=n=>esc(String(n||'?').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase());
@@ -823,6 +834,15 @@ function tabJournal(c){
   if(t==='lieux')body=LL.length?LL.map(l=>{const here=NN.filter(n=>n.p&&fold(n.p)===fold(l.n));return item('l'+l.id,`<span class="rav sq" style="${l.i?`background-image:url('${l.i}')`:''}">${l.i?'':'📍'}</span><span class="rnm"><b>${esc(l.n)}</b><small>${esc(l.y||'')}</small></span>`,
       `${l.k?`<div class="rtx">${esc(l.k)}</div>`:'<div class="rtx" style="opacity:.6">Rien de plus pour l’instant.</div>'}${here.length?`<div class="rhere"><small>On y a croisé :</small> ${here.map(n=>`<span>${esc(n.n)}</span>`).join('')}</div>`:''}`)}).join(''):'<p class="sub">Aucun lieu découvert pour l’instant.</p>';
   if(t==='sess')body=SS.length?SS.map((x,i)=>item('s'+x.n,`<span class="rnum">${x.n}</span><span class="rnm"><b>${esc(x.t||'Session '+x.n)}</b><small>${x.d?esc(new Date(x.d+'T12:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})):''}</small></span>`,`<div class="rtx">${esc(x.s)}</div>`,i===0)).join(''):'<p class="sub">Pas encore de résumé de session.</p>';
+  if(t==='carte'&&WM){const img=CON.wmap&&CON.wmap.k===WM.k?CON.wmap.d:null,z=view.wmz||1,P=A(WM.pins),TR=A(WM.trip),sel=P.find(p=>p.id===view.wmSel),L=sel&&LL.find(l=>l.id===sel.id);
+    const sw=Math.max(WM.w,WM.h)/260,pts=TR.map(q=>`${(q[0]*WM.w).toFixed(1)},${(q[1]*WM.h).toFixed(1)}`).join(' '),last=TR[TR.length-1];
+    body=img?`<div class="jwmz"><button type="button" data-a="wmz" data-v="-1">−</button><span>${Math.round(z*100)}%</span><button type="button" data-a="wmz" data-v="1">+</button></div>
+      <div class="jwm"><div class="jwmin" style="width:${z*100}%;aspect-ratio:${WM.w}/${WM.h}"><img src="${img}" alt="Carte du monde">
+        ${TR.length>1?`<svg viewBox="0 0 ${WM.w} ${WM.h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="${sw*2.6}" stroke-linecap="round" stroke-linejoin="round"/><polyline points="${pts}" fill="none" stroke="#c0392b" stroke-width="${sw*1.4}" stroke-dasharray="${sw*4} ${sw*3}" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
+        ${P.map(p=>`<button type="button" class="jpin ${view.wmSel===p.id?'on':''}" data-a="wmpin" data-v="${esc(p.id)}" style="left:${p.x*100}%;top:${p.y*100}%"><span>${esc(p.n)}</span><i></i></button>`).join('')}
+        ${last?`<span class="jparty" style="left:${last[0]*100}%;top:${last[1]*100}%">⚑</span>`:''}</div></div>
+      ${sel?`<div class="jit op" style="margin-top:8px"><div class="jb" style="padding-top:8px"><b>📍 ${esc(sel.n)}</b>${L&&L.y?` <small style="opacity:.7">${esc(L.y)}</small>`:''}<div class="rtx">${L&&L.k?esc(L.k):'Rien de plus pour l’instant.'}</div></div></div>`:`<p class="sub" style="margin:8px 0 0">⚑ = où se trouve le groupe. Touche un lieu pour le revoir.</p>`}`
+      :'<p class="sub">Chargement de la carte…</p>'}
   if(t==='quest'){const row=e=>`<div style="padding:8px 0;border-top:1px solid var(--line)"><b style="${e.d?'text-decoration:line-through;opacity:.6':''}">${esc(e.t||'Sans titre')}</b>${e.d?' <small>✓ terminée</small>':''}${e.x?`<div style="white-space:pre-wrap;font-size:14px;margin-top:3px">${esc(e.x)}</div>`:''}</div>`;
     body=`${P.length?`<div class="card" style="border-color:#b08a3e"><h3>🔒 Ma quête personnelle</h3>${P.map(row).join('')}</div>`:''}${G.length?`<div class="card"><h3>Quêtes du groupe</h3>${G.map(row).join('')}</div>`:''}`}
   return `<div data-live="journ"><div class="card"><h3>Journal${st.name?` · <small style="font-weight:400">${esc(st.name)}</small>`:''}</h3>
@@ -863,6 +883,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
     case 'new':{const n=newChar();DB.chars.push(n);DB.cur=n.id;view.tab='fiche';keep=false;toast('Choisis race, classe et niveau : le reste se calcule');break}
     case 'tab':view.tab=v;keep=false;break;
     case 'jt':view.jt=v;break;
+    case 'wmz':view.wmz=v==='-1'?Math.max(1,(view.wmz||1)/1.5):Math.min(5,(view.wmz||1)*1.5);break;
+    case 'wmpin':view.wmSel=view.wmSel===v?null:v;break;
     case 'jo':{const O=view.jo||(view.jo={});const el=b.closest('.jit');O[v]=!(el&&el.classList.contains('op'));break}
     case 'export':case 'joinT':return joinModal(c);
     case 'import':return importModal();
@@ -1168,6 +1190,7 @@ function netConnect(){const N=net();CON.unsub.concat(CON.charUn).forEach(u=>{try
   CON.unsub.push(N.on(TP('meta'),v=>{{const L=v&&v.story&&v.story.npcs?(Array.isArray(v.story.npcs)?v.story.npcs:Object.values(v.story.npcs)).map(n=>n.n):[],S0=v&&v.story&&v.story.sess?(Array.isArray(v.story.sess)?v.story.sess:Object.values(v.story.sess)).length:0;const LL=v&&v.story&&v.story.lieux?(Array.isArray(v.story.lieux)?v.story.lieux:Object.values(v.story.lieux)).map(n=>n.n):[];if(CON.npcSeen){const nw=L.filter(n=>!CON.npcSeen.includes(n)),nl=LL.filter(n=>!(CON.lieuSeen||[]).includes(n));if(nw.length)toast('👥 Nouveau PNJ dans ton journal : '+nw.join(', '));else if(nl.length)toast('📍 Nouveau lieu dans ton journal : '+nl.join(', '));else if(S0>CON.sessSeen)toast('📖 Le résumé de la session est arrivé dans ton journal')}CON.npcSeen=L;CON.lieuSeen=LL;CON.sessSeen=S0}{const j0=v&&v.journal||[],jj=JSON.stringify((Array.isArray(j0)?j0:Object.values(j0)).filter(e=>!e.to||e.to===CON.cid));if(CON.jourJ!=null&&jj!==CON.jourJ&&jj!=='[]')toast('📜 Le journal de quête a été mis à jour');CON.jourJ=jj}if(v)CON.metaOk=true;else if(CON.metaOk&&DB.join){CON.metaOk=false;DB.leftTid=DB.join.tid;DB.join=null;saveLocal();toast('Le MJ a changé le code de la table : demande-lui le nouveau');netConnect();const y=window.scrollY;render();window.scrollTo(0,y);return}CON.meta=v;CON.metaSeen=true;const y=window.scrollY;render();window.scrollTo(0,y)}));
   CON.unsub.push(N.on(TP('turn'),v=>{if(v){['acts','toks','objs','reach','aoo'].forEach(k=>{if(!Array.isArray(v[k]))v[k]=v[k]?Object.values(v[k]):[]});v.res=v.res||{a:0,b:0,r:0,m:0};v.me=v.me||[0,0,1];(v.acts||[]).forEach(a=>{a.ok=a.ok?1:0})}CON.turn=v;softRefresh();if(CON.pm)drawPM(false)}));
   CON.unsub.push(N.on(TP('pmap'),v=>{CON.pmap=v;if(CON.pm)drawPM(false)}));
+  CON.unsub.push(N.on(TP('wmap'),v=>{CON.wmap=v;if(view.tab==='journal'){const y=window.scrollY;render();window.scrollTo(0,y)}}));
   CON.unsub.push(N.on(TP('view'),v=>{const was=!!(CON.view&&CON.cid&&CON.view.cur===CON.cid);CON.view=v;const now=!!(v&&CON.cid&&v.cur===CON.cid);
     if(v){const et=v.end?+v.end.ts||0:0;if(CON.endTs===undefined)CON.endTs=et;else if(et>CON.endTs){CON.endTs=et;combatEndFx()}}
     if(now&&!was){turnFx()}
