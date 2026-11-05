@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='04/11-15h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='05/11-14h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -420,6 +420,21 @@ button{cursor:pointer}
 @media (min-width:960px){.mapwrap{max-height:calc(100vh - 150px)}}
 .board{position:relative;user-select:none;-webkit-user-select:none}
 .board .bg{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.board .wdepth{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.board .liq{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.board .ambt{position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;z-index:2}
+.board .ambt.crepuscule{background:linear-gradient(160deg,rgba(255,150,60,.35),rgba(170,70,120,.28) 55%,rgba(60,40,120,.35));mix-blend-mode:soft-light}
+.board .ambt.nuit{background:rgba(40,70,150,.22);mix-blend-mode:multiply}
+.board .flk{position:absolute;border-radius:50%;pointer-events:none;z-index:2;background:radial-gradient(circle,rgba(255,175,90,.26),rgba(255,140,60,.1) 45%,rgba(255,120,40,0) 70%);animation:flk 1.6s ease-in-out infinite alternate;will-change:transform,opacity}
+@keyframes flk{0%{opacity:.55;transform:scale(.94)}25%{opacity:1;transform:scale(1.03)}45%{opacity:.7;transform:scale(.97)}70%{opacity:.95;transform:scale(1.05)}100%{opacity:.62;transform:scale(.96)}}
+.board .fsmk{position:absolute;left:0;top:0;pointer-events:none;z-index:7;overflow:hidden;-webkit-mask-size:100% 100%;mask-size:100% 100%;opacity:.85}
+.board .fsmki{position:absolute;left:-50%;top:-50%;width:200%;height:200%;background-size:420px 420px;animation:fsmk 70s linear infinite;will-change:transform}
+@keyframes fsmk{from{transform:translate(0,0)}to{transform:translate(420px,210px)}}
+.tok .face{transition:box-shadow .3s}
+.tok[style*="--elv"] .face{box-shadow:0 0 0 2px var(--rim),inset 0 0 0 1px rgba(255,255,255,.25),calc(var(--elv)*3px) calc(4px + var(--elv)*6px) calc(10px + var(--elv)*6px) rgba(0,0,0,.55)}
+.tok.figu .fimg{filter:drop-shadow(0 calc(3px + var(--elv,0)*5px) calc(4px + var(--elv,0)*4px) rgba(0,0,0,.55))}
+#tvvig{position:fixed;top:0;right:0;bottom:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(0,0,0,.42) 100%)}
+@media (prefers-reduced-motion:reduce){.board .flk,.board .fsmki{animation:none}}
 .board .grid{position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none;
   background-image:linear-gradient(to right,rgba(255,255,255,.13) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.13) 1px,transparent 1px);
   background-size:var(--cell) var(--cell)}
@@ -3080,8 +3095,328 @@ var __values = (this && this.__values) || function(o) {
         }
         return STAMPS[k] = ok ? cv : null;
     }
+    /* ---------- Embellissements : transitions douces, bords de grotte, détails semés ---------- */
+    // Priorité des terrains naturels : le plus « fort » déborde sur son voisin
+    var BLP = { n: 9, f: 8, h: 7, a: 6, i: 6, r: 5, s: 5, t: 4, b: 3, v: 2 };
+    var BLRCV = new Set(['c', 'p', 'y', 'd', 'v', 't', 's', 'b', 'r', 'n', 'h', 'a', 'i', 'e', 'E', 'z']), BLWAT = new Set(['e', 'E', 'z']); // sols qui acceptent un débordement
+    var BSTAMP = {};
+    function baseStamp(c, T) {
+        var ST = stamp(c, T);
+        if (ST)
+            return ST;
+        var k = c + '|' + T;
+        if (BSTAMP[k] !== undefined)
+            return BSTAMP[k];
+        var cv = document.createElement('canvas');
+        cv.width = cv.height = SPER * T;
+        var g = cv.getContext('2d');
+        for (var y = 0; y < SPER; y++)
+            for (var x = 0; x < SPER; x++) {
+                g.save();
+                g.beginPath();
+                g.rect(x * T, y * T, T, T);
+                g.clip();
+                drawBase(g, x * T, y * T, T, c, rng(x, y));
+                g.restore();
+            }
+        tex(g, 0, 0, cv.width, cv.height, T, 'overlay', .35, 1);
+        return BSTAMP[k] = cv;
+    }
+    // bruit 1D continu le long d'une ligne de la grille (identique des deux côtés d'une frontière)
+    function lineNoise(line, u, seed) { var f = u * 3, i = Math.floor(f), t = f - i, a = hash(line, i, seed), b = hash(line, i + 1, seed), s = t * t * (3 - 2 * t); return a + (b - a) * s; }
+    // chemin d'une bande irrégulière qui part du bord s de la case (X,Y) et entre de « depth » dans la case
+    function bandPath(X, Y, T, s, x, y, depth, taper0, taper1, seed, open) {
+        var _c;
+        var p = new Path2D(), N = 14, horiz = s === 'n' || s === 's', line = horiz ? (s === 'n' ? y : y + 1) * 2 + 1 : (s === 'w' ? x : x + 1) * 2, o0 = horiz ? x : y;
+        var pt = function (t, d) { return s === 'n' ? [X + t * T, Y + d] : s === 's' ? [X + t * T, Y + T - d] : s === 'w' ? [X + d, Y + t * T] : [X + T - d, Y + t * T]; };
+        if (!open)
+            p.moveTo.apply(p, __spreadArray([], __read(pt(0, 0)), false));
+        for (var i = 0; i <= N; i++) {
+            var t = i / N;
+            var d = depth(lineNoise(line, o0 + t, seed));
+            if (taper0 && t < .4)
+                d *= Math.sin(t / .4 * Math.PI / 2);
+            if (taper1 && t > .6)
+                d *= Math.sin((1 - t) / .4 * Math.PI / 2);
+            (_c = (open && !i ? p.moveTo : p.lineTo)).call.apply(_c, __spreadArray([p], __read(pt(t, Math.max(0, d))), false));
+        }
+        if (!open) {
+            p.lineTo.apply(p, __spreadArray([], __read(pt(1, 0)), false));
+            p.closePath();
+        }
+        return p;
+    }
+    function cornerPath(X, Y, T, dx, dy, R) { var p = new Path2D(), cx = X + (dx > 0 ? T : 0), cy = Y + (dy > 0 ? T : 0); p.moveTo(cx, cy); p.ellipse(cx, cy, R, R * .9, 0, 0, Math.PI * 2); return p; }
+    var SIDES = [['n', 0, -1], ['s', 0, 1], ['w', -1, 0], ['e', 1, 0]];
+    function blendCell(g, x, y, T, c) {
+        var X = x * T, Y = y * T, pc = BLP[c] || 0;
+        if (!BLRCV.has(c))
+            return;
+        var t = function (a, b) { return tileAt(a, b); };
+        SIDES.forEach(function (_c) {
+            var _e = __read(_c, 3), s = _e[0], dx = _e[1], dy = _e[2];
+            var n = t(x + dx, y + dy);
+            if (!n || n === c || !(BLP[n] > pc))
+                return;
+            var ST = baseStamp(n, T);
+            if (!ST)
+                return;
+            var px = dy ? 1 : 0, py = dx ? 1 : 0, cont = function (k) { return t(x + px * k, y + py * k) === c && t(x + px * k + dx, y + py * k + dy) === n || t(x + px * k, y + py * k) === n; };
+            var tp0 = !cont(-1), tp1 = !cont(1), sd = (n.charCodeAt(0) * 7 + c.charCodeAt(0)) % 97;
+            var wet = BLWAT.has(c), dep = wet ? (function (v) { return T * (.06 + .24 * v); }) : (function (v) { return T * (.1 + .26 * v); });
+            var draw = function (f, a) { g.save(); g.clip(bandPath(X, Y, T, s, x, y, function (v) { return dep(v) * f; }, tp0, tp1, sd)); g.globalAlpha = a; g.drawImage(ST, md(x, SPER) * T, md(y, SPER) * T, T, T, X, Y, T, T); g.restore(); };
+            if (wet) {
+                draw(1, 1);
+                var Q = bandPath(X, Y, T, s, x, y, dep, tp0, tp1, sd, 1), Q2 = bandPath(X, Y, T, s, x, y, function (v) { return dep(v) + T * .06; }, tp0, tp1, sd, 1);
+                g.save();
+                g.lineJoin = 'round';
+                g.strokeStyle = 'rgba(8,10,12,.35)';
+                g.lineWidth = T * .12;
+                g.stroke(Q2);
+                g.strokeStyle = 'rgba(20,14,8,.6)';
+                g.lineWidth = Math.max(1.5, T * .035);
+                g.stroke(Q);
+                g.strokeStyle = c === 'z' ? 'rgba(200,235,150,.25)' : 'rgba(230,245,255,.28)';
+                g.lineWidth = Math.max(1, T * .014);
+                g.stroke(Q2);
+                g.restore();
+            }
+            else {
+                [1.32, 1.1, .88].forEach(function (f) { return draw(f, .36); });
+                draw(.66, 1);
+            }
+            if (!wet) {
+                var mx = (MATX[n] || [])[0];
+                if (mx) {
+                    g.save();
+                    g.clip(bandPath(X, Y, T, s, x, y, function (v) { return dep(v) * 1.1; }, tp0, tp1, sd));
+                    tex(g, X, Y, T, T, T, mx[0], mx[1] * .8, mx[2]);
+                    g.restore();
+                }
+            }
+        });
+    }
+    // parois de grotte : bord rocheux irrégulier qui mord sur le sol
+    function rockEdge(g, x, y, T) { ['o', 'H'].forEach(function (w) { return organicWall(g, x, y, T, w); }); }
+    function organicWall(g, x, y, T, w) {
+        var r0 = rng(x * 3 + 1, y * 5 + 2), X = x * T, Y = y * T, t = function (a, b) { return tileAt(a, b); }, isR = function (k) { return k === w; }, TOP = WTOP[w][0], FACE = WFACE[w][0];
+        SIDES.forEach(function (_c) {
+            var _e = __read(_c, 3), s = _e[0], dx = _e[1], dy = _e[2];
+            if (!isR(t(x + dx, y + dy)))
+                return;
+            var px = dy ? 1 : 0, py = dx ? 1 : 0, cont = function (k) { var _c; return isR(t(x + px * k + dx, y + py * k + dy)) && !((_c = TERR[t(x + px * k, y + py * k)]) === null || _c === void 0 ? void 0 : _c.wall); };
+            var dp = function (v) { return T * (.07 + .4 * v); }, P = bandPath(X, Y, T, s, x, y, dp, !cont(-1), !cont(1), 41), Q = bandPath(X, Y, T, s, x, y, dp, !cont(-1), !cont(1), 41, 1);
+            g.save();
+            g.translate(T * .04, T * .06);
+            g.fillStyle = 'rgba(0,0,0,.4)';
+            g.fill(P);
+            g.restore();
+            g.fillStyle = s === 'n' ? FACE : TOP;
+            g.fill(P);
+            g.save();
+            g.clip(P);
+            tex(g, X, Y, T, T, T, 'overlay', .8, .7);
+            if (w === 'H') {
+                for (var i = 0; i < 6; i++) {
+                    g.fillStyle = "rgba(".concat(70 + r0() * 60, ",").concat(120 + r0() * 60, ",").concat(40 + r0() * 30, ",.45)");
+                    g.beginPath();
+                    g.arc(X + r0() * T, Y + r0() * T, T * (.04 + r0() * .06), 0, 7);
+                    g.fill();
+                }
+            }
+            g.restore();
+            g.strokeStyle = w === 'H' ? 'rgba(12,30,8,.75)' : '#0b0a0c';
+            g.lineWidth = Math.max(1.2, T * (w === 'H' ? .04 : .075));
+            g.stroke(Q);
+        });
+        [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (_c) {
+            var _e = __read(_c, 2), dx = _e[0], dy = _e[1];
+            if (!isR(t(x + dx, y + dy)) || isR(t(x + dx, y)) || isR(t(x, y + dy)))
+                return;
+            var P = cornerPath(X, Y, T, dx, dy, T * (.2 + .16 * hash(x + dx, y + dy, 9)));
+            g.fillStyle = dy < 0 ? FACE : TOP;
+            g.fill(P);
+            g.strokeStyle = w === 'H' ? 'rgba(12,30,8,.75)' : '#0b0a0c';
+            g.lineWidth = Math.max(1.2, T * (w === 'H' ? .035 : .06));
+            g.stroke(P);
+        });
+    }
+    // détails semés au hasard (mais toujours au même endroit)
+    function decals(g, x, y, T, c, dens) {
+        if (!dens)
+            return;
+        var X = x * T, Y = y * T, r = rng(x * 31 + 7, y * 17 + 3), P = function (p) { return r() < p * dens; }, t = function (a, b) { return tileAt(a, b); }, W = function (k) { var _c; return !!((_c = TERR[k]) === null || _c === void 0 ? void 0 : _c.wall); };
+        var nearW = SIDES.some(function (_c) {
+            var _e = __read(_c, 3), s = _e[0], dx = _e[1], dy = _e[2];
+            return W(t(x + dx, y + dy));
+        }), lw = Math.max(1, T * .018);
+        var crack = function (col) { g.strokeStyle = col || 'rgba(20,16,12,.55)'; g.lineWidth = lw; g.beginPath(); var px = X + T * (.2 + r() * .6), py = Y + T * (.2 + r() * .6); g.moveTo(px, py); var a = r() * 6.28; for (var i = 0; i < 4; i++) {
+            px += Math.cos(a + (r() - .5) * 1.4) * T * .1;
+            py += Math.sin(a + (r() - .5) * 1.4) * T * .1;
+            g.lineTo(px, py);
+            if (r() < .35) {
+                g.moveTo(px, py);
+                g.lineTo(px + (r() - .5) * T * .12, py + (r() - .5) * T * .12);
+                g.moveTo(px, py);
+            }
+        } g.stroke(); };
+        var blot = function (col, n, sz) { for (var i = 0; i < n; i++) {
+            g.fillStyle = col;
+            g.beginPath();
+            g.ellipse(X + T * (.15 + r() * .7), Y + T * (.15 + r() * .7), T * sz * (.5 + r()), T * sz * (.35 + r() * .6), r() * 3, 0, 7);
+            g.fill();
+        } };
+        var leaf = function () { var cl = ['#a0522d', '#c27c2c', '#7a5a1e', '#8f3b1b', '#b8962e'][Math.floor(r() * 5)]; for (var i = 0; i < 2 + Math.floor(r() * 3); i++) {
+            var lx = X + r() * T, ly = Y + r() * T, a = r() * 6.28, L = T * (.035 + r() * .025);
+            g.save();
+            g.translate(lx, ly);
+            g.rotate(a);
+            g.fillStyle = cl;
+            g.beginPath();
+            g.ellipse(0, 0, L, L * .5, 0, 0, 7);
+            g.fill();
+            g.strokeStyle = 'rgba(0,0,0,.3)';
+            g.lineWidth = .8;
+            g.beginPath();
+            g.moveTo(-L, 0);
+            g.lineTo(L, 0);
+            g.stroke();
+            g.restore();
+        } };
+        var twig = function () { g.strokeStyle = '#4a3420'; g.lineWidth = Math.max(1, T * .02); g.beginPath(); var a = r() * 6.28, cx = X + T * (.2 + r() * .6), cy = Y + T * (.2 + r() * .6), L = T * (.12 + r() * .1); g.moveTo(cx - Math.cos(a) * L, cy - Math.sin(a) * L); g.lineTo(cx + Math.cos(a) * L, cy + Math.sin(a) * L); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(a + .7) * L * .5, cy + Math.sin(a + .7) * L * .5); g.stroke(); };
+        var flowers = function () { var cl = ['#f2e27a', '#f4f4fb', '#d9789f', '#9f8fe0'][Math.floor(r() * 4)]; for (var i = 0; i < 3 + Math.floor(r() * 4); i++) {
+            var fx = X + r() * T, fy = Y + r() * T, R = T * .018;
+            g.fillStyle = cl;
+            for (var k = 0; k < 5; k++) {
+                g.beginPath();
+                g.arc(fx + Math.cos(k * 1.26) * R, fy + Math.sin(k * 1.26) * R, R * .8, 0, 7);
+                g.fill();
+            }
+            g.fillStyle = '#e0a030';
+            g.beginPath();
+            g.arc(fx, fy, R * .6, 0, 7);
+            g.fill();
+        } };
+        var shroom = function () { var fx = X + T * (.2 + r() * .6), fy = Y + T * (.2 + r() * .6); for (var i = 0; i < 2 + Math.floor(r() * 2); i++) {
+            var mx = fx + (r() - .5) * T * .12, my = fy + (r() - .5) * T * .12, R = T * (.03 + r() * .02);
+            g.fillStyle = 'rgba(0,0,0,.3)';
+            g.beginPath();
+            g.ellipse(mx + 1, my + 2, R, R * .7, 0, 0, 7);
+            g.fill();
+            g.fillStyle = r() < .5 ? '#b8432a' : '#c8b28a';
+            g.beginPath();
+            g.arc(mx, my, R, 0, 7);
+            g.fill();
+            g.fillStyle = 'rgba(255,255,255,.7)';
+            g.beginPath();
+            g.arc(mx - R * .3, my - R * .3, R * .22, 0, 7);
+            g.fill();
+        } };
+        var web = function () {
+            var W2 = function (k) { return W(k); };
+            var cn = [[-1, -1], [1, -1], [-1, 1], [1, 1]].find(function (_c) {
+                var _e = __read(_c, 2), dx = _e[0], dy = _e[1];
+                return W2(t(x + dx, y)) && W2(t(x, y + dy));
+            });
+            if (!cn)
+                return;
+            var cx = X + (cn[0] > 0 ? T : 0), cy = Y + (cn[1] > 0 ? T : 0), R = T * .42, sx = -cn[0], sy = -cn[1];
+            g.strokeStyle = 'rgba(235,235,240,.55)';
+            g.lineWidth = Math.max(.7, T * .009);
+            g.beginPath();
+            for (var i = 0; i <= 4; i++) {
+                var a = i / 4 * Math.PI / 2;
+                g.moveTo(cx, cy);
+                g.lineTo(cx + sx * Math.cos(a) * R, cy + sy * Math.sin(a) * R);
+            }
+            for (var k = 1; k <= 3; k++) {
+                var rr = R * k / 3.4;
+                for (var i = 0; i < 4; i++) {
+                    var a0 = i / 4 * Math.PI / 2, a1 = (i + 1) / 4 * Math.PI / 2;
+                    g.moveTo(cx + sx * Math.cos(a0) * rr, cy + sy * Math.sin(a0) * rr);
+                    g.quadraticCurveTo(cx + sx * Math.cos((a0 + a1) / 2) * rr * .8, cy + sy * Math.sin((a0 + a1) / 2) * rr * .8, cx + sx * Math.cos(a1) * rr, cy + sy * Math.sin(a1) * rr);
+                }
+            }
+            g.stroke();
+        };
+        var puddle = function () { var px = X + T * (.25 + r() * .5), py = Y + T * (.25 + r() * .5), R = T * (.1 + r() * .1); g.fillStyle = 'rgba(30,45,60,.55)'; g.beginPath(); g.ellipse(px, py, R * 1.4, R, r() * 3, 0, 7); g.fill(); g.fillStyle = 'rgba(200,225,255,.22)'; g.beginPath(); g.ellipse(px - R * .4, py - R * .3, R * .5, R * .18, 0, 0, 7); g.fill(); };
+        var stal = function () { var px = X + T * (.25 + r() * .5), py = Y + T * (.25 + r() * .5), R = T * (.06 + r() * .05); g.fillStyle = 'rgba(0,0,0,.35)'; g.beginPath(); g.ellipse(px + R * .4, py + R * .6, R * 1.1, R * .8, 0, 0, 7); g.fill(); var gr = g.createRadialGradient(px - R * .3, py - R * .3, 0, px, py, R); gr.addColorStop(0, '#8a8074'); gr.addColorStop(1, '#3a332c'); g.fillStyle = gr; g.beginPath(); g.arc(px, py, R, 0, 7); g.fill(); };
+        var stone = ['p', 'c', 'd', 'y', 'j', 'k'].includes(c);
+        if (stone) {
+            if (P(.13))
+                crack();
+            if (P(nearW ? .32 : .07))
+                blot("rgba(".concat(60 + r() * 30, ",").concat(95 + r() * 30, ",").concat(40 + r() * 20, ",.35)"), 2 + Math.floor(r() * 3), .07);
+            if (P(.08))
+                blot('rgba(15,12,10,.18)', 1, .16);
+            if (P(.07))
+                pebbles(g, X, Y, T, r, 3, function (v) { return "hsl(30,6%,".concat(30 + v * 25, "%)"); });
+            if (nearW && P(.25))
+                web();
+        }
+        else if (c === 'w' || c === 'u') {
+            if (P(.09))
+                blot('rgba(25,15,8,.22)', 1, .14);
+            if (P(.08)) {
+                g.strokeStyle = 'rgba(255,230,190,.12)';
+                g.lineWidth = lw;
+                g.beginPath();
+                var sx = X + r() * T, sy = Y + r() * T;
+                g.moveTo(sx, sy);
+                g.lineTo(sx + (r() - .5) * T * .4, sy + (r() - .5) * T * .15);
+                g.stroke();
+            }
+            if (nearW && P(.15))
+                web();
+        }
+        else if (c === 'h' || c === 'f') {
+            if (P(.1))
+                flowers();
+            if (P(.06))
+                leaf();
+            if (P(.05))
+                pebbles(g, X, Y, T, r, 2, function (v) { return "hsl(40,8%,".concat(50 + v * 20, "%)"); });
+            if (P(.035))
+                shroom();
+        }
+        else if (c === 't' || c === 'b') {
+            if (P(.14))
+                leaf();
+            if (P(.09))
+                twig();
+            if (P(.05))
+                shroom();
+        }
+        else if (c === 's') {
+            if (P(.08))
+                pebbles(g, X, Y, T, r, 2, function (v) { return "hsl(35,15%,".concat(55 + v * 25, "%)"); });
+            if (P(.05))
+                twig();
+        }
+        else if (c === 'v') {
+            if (P(.07))
+                puddle();
+            if (P(.08))
+                stal();
+            if (P(.1))
+                crack('rgba(10,8,6,.5)');
+            if (P(.06))
+                pebbles(g, X, Y, T, r, 3, function (v) { return "hsl(30,6%,".concat(28 + v * 20, "%)"); });
+        }
+        else if (c === 'n') {
+            if (P(.06))
+                pebbles(g, X, Y, T, r, 2, function (v) { return "hsl(210,8%,".concat(45 + v * 20, "%)"); });
+            if (P(.05))
+                twig();
+        }
+        else if (c === 'i') {
+            if (P(.18))
+                crack('rgba(255,255,255,.55)');
+        }
+    }
     var WTOP = { m: ['#34333a', '#24242a'], M: ['#5a2a1e', '#3a1810'], T: ['#8a8272', '#5f574b'], P: ['#5a3a1e', '#2e1c0e'], H: ['#2c4a1e', '#16290f'], o: ['#3a3530', '#221e1a'] };
     function drawCell(g, x, y, T) {
+        var _c;
         var X = x * T, Y = y * T, c = tileAt(x, y) || 'p', r = rng(x, y), isW = function (k) { var _c; return !!((_c = TERR[k]) === null || _c === void 0 ? void 0 : _c.wall); }, nb = function (dx, dy) { var v = tileAt(x + dx, y + dy); return v == null ? c : v; };
         g.save();
         g.beginPath();
@@ -3098,6 +3433,14 @@ var __values = (this && this.__values) || function(o) {
         else if (!drawBase2(g, x, y, T, c, r)) {
             drawBase(g, X, Y, T, c, r);
             tex(g, X, Y, T, T, T, 'overlay', .35, 1);
+        }
+        if (!isW(c)) {
+            try {
+                blendCell(g, x, y, T, c);
+                decals(g, x, y, T, c, (_c = S.map.deco) !== null && _c !== void 0 ? _c : 1);
+                rockEdge(g, x, y, T);
+            }
+            catch (e) { }
         }
         var edge = function (s, c0, c1, w) {
             var W = T * w;
@@ -3129,6 +3472,21 @@ var __values = (this && this.__values) || function(o) {
                 drawBase(g, X, Y, T, c, r);
                 tex(g, X, Y, T, T, T, 'overlay', .55, .9);
                 tex(g, X, Y, T, T, T, 'multiply', .25, 2.5);
+            }
+            else if (c === 'o') {
+                g.fillStyle = WTOP.o[0];
+                g.fillRect(X, Y, T, T);
+                tex(g, X, Y, T, T, T, 'overlay', .9, 2.6);
+                tex(g, X, Y, T, T, T, 'soft-light', .7, 7);
+                for (var i = 0; i < 3; i++) {
+                    g.strokeStyle = 'rgba(0,0,0,.25)';
+                    g.lineWidth = Math.max(1, T * .015);
+                    g.beginPath();
+                    var px = X + r() * T, py = Y + r() * T;
+                    g.moveTo(px, py);
+                    g.lineTo(px + (r() - .5) * T * .5, py + (r() - .5) * T * .5);
+                    g.stroke();
+                }
             }
             else if (c !== 'H' && c !== 'P') {
                 var C_2 = WTOP[c] || WTOP.m;
@@ -3173,12 +3531,27 @@ var __values = (this && this.__values) || function(o) {
                 g.fillStyle = 'rgba(0,0,0,.4)';
                 for (var i = 0; i < 3; i++)
                     g.fillRect(X + (i + .5) * T / 3 + ((y % 2) * T / 6), Y + T * .72, 1.5, T * .28);
+                {
+                    var fg = g.createLinearGradient(0, Y + T * .72, 0, Y + T);
+                    fg.addColorStop(0, 'rgba(255,255,255,.1)');
+                    fg.addColorStop(.35, 'rgba(0,0,0,0)');
+                    fg.addColorStop(1, 'rgba(0,0,0,.45)');
+                    g.fillStyle = fg;
+                    g.fillRect(X, Y + T * .72, T, T * .28);
+                }
+                if (!isW(nb(-1, 1))) {
+                    var sg = g.createLinearGradient(X, 0, X + T * .25, 0);
+                    sg.addColorStop(0, 'rgba(0,0,0,.35)');
+                    sg.addColorStop(1, 'rgba(0,0,0,0)');
+                    g.fillStyle = sg;
+                    g.fillRect(X, Y + T * .72, T * .25, T * .28);
+                }
             }
             Object.entries(D).forEach(function (_c) {
                 var _e = __read(_c, 2), s = _e[0], _f = __read(_e[1], 2), dx = _f[0], dy = _f[1];
                 if (isW(nb(dx, dy)))
                     return;
-                g.fillStyle = '#0b0a0c';
+                g.fillStyle = (c === 'o' || c === 'H') ? 'rgba(11,10,12,.35)' : '#0b0a0c';
                 if (s === 'n')
                     g.fillRect(X, Y, T, OL);
                 if (s === 'w')
@@ -3192,8 +3565,10 @@ var __values = (this && this.__values) || function(o) {
             });
         }
         else {
-            if (isW(nb(0, -1)))
+            if (isW(nb(0, -1))) {
                 edge('n', 'rgba(0,0,0,.7)', 'rgba(0,0,0,0)', .5);
+                edge('n', 'rgba(0,0,0,.35)', 'rgba(0,0,0,0)', .9);
+            }
             if (isW(nb(-1, 0)))
                 edge('w', 'rgba(0,0,0,.55)', 'rgba(0,0,0,0)', .38);
             if (isW(nb(1, 0)))
@@ -3214,11 +3589,11 @@ var __values = (this && this.__values) || function(o) {
             Object.entries(D).forEach(function (_c) {
                 var _e = __read(_c, 2), s = _e[0], _f = __read(_e[1], 2), dx = _f[0], dy = _f[1];
                 var n = nb(dx, dy);
-                if (water_1 && !WAT_1.includes(n) && !isW(n)) {
+                if (water_1 && !WAT_1.includes(n) && !isW(n) && !BLP[n]) {
                     edge(s, 'rgba(10,8,6,.55)', 'rgba(10,8,6,0)', .18);
                     edge(s, c === 'z' ? 'rgba(190,220,140,.35)' : 'rgba(220,240,255,.35)', 'rgba(255,255,255,0)', .08);
                 }
-                if (!water_1 && WAT_1.includes(n)) {
+                if (!water_1 && WAT_1.includes(n) && !BLP[c]) {
                     g.fillStyle = 'rgba(10,8,6,.6)';
                     if (s === 'n')
                         g.fillRect(X, Y, T, OL * .6);
@@ -3240,6 +3615,322 @@ var __values = (this && this.__values) || function(o) {
             });
         }
         g.restore();
+    }
+    // Profondeur des murs : plus on s'éloigne du sol, plus la masse s'assombrit (calque lissé, sans coutures)
+    var WDCV = null, WDK = '';
+    function wallDepthLayer() {
+        var _c;
+        var m = S.map;
+        if (m.kind !== 'tiles' || !m.tiles)
+            return null;
+        var k = m.cols + 'x' + m.rows + '|' + m.tiles;
+        if (k !== WDK) {
+            WDK = k;
+            var W_1 = m.cols, H_1 = m.rows, D_1 = new Float32Array(W_1 * H_1).fill(99), q_1 = [];
+            for (var i = 0; i < W_1 * H_1; i++)
+                if (!((_c = TERR[m.tiles[i]]) === null || _c === void 0 ? void 0 : _c.wall)) {
+                    D_1[i] = 0;
+                    q_1.push(i);
+                }
+            var _loop_3 = function (h) {
+                var i = q_1[h], x = i % W_1, y = (i - x) / W_1;
+                [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(function (_c) {
+                    var _e = __read(_c, 2), dx = _e[0], dy = _e[1];
+                    var a = x + dx, b = y + dy;
+                    if (a < 0 || b < 0 || a >= W_1 || b >= H_1)
+                        return;
+                    var j = b * W_1 + a, v = D_1[i] + (dx && dy ? 1.4 : 1);
+                    if (v < D_1[j]) {
+                        D_1[j] = v;
+                        q_1.push(j);
+                    }
+                });
+            };
+            for (var h = 0; h < q_1.length; h++) {
+                _loop_3(h);
+            }
+            if (!WDCV) {
+                WDCV = document.createElement('canvas');
+                WDCV.className = 'wdepth';
+            }
+            var S2 = 4;
+            WDCV.width = W_1 * S2;
+            WDCV.height = H_1 * S2;
+            var g = WDCV.getContext('2d'), sm = document.createElement('canvas');
+            sm.width = W_1;
+            sm.height = H_1;
+            var sg = sm.getContext('2d'), id = sg.createImageData(W_1, H_1);
+            for (var i = 0; i < W_1 * H_1; i++) {
+                var d = D_1[i] >= 99 ? 6 : D_1[i], a = d <= 0 ? 0 : Math.min(1, (d - .5) / 2.4);
+                id.data[i * 4] = 6;
+                id.data[i * 4 + 1] = 5;
+                id.data[i * 4 + 2] = 8;
+                id.data[i * 4 + 3] = Math.max(0, a) * 175;
+            }
+            sg.putImageData(id, 0, 0);
+            g.imageSmoothingEnabled = true;
+            g.imageSmoothingQuality = 'high';
+            g.clearRect(0, 0, W_1 * S2, H_1 * S2);
+            g.drawImage(sm, 0, 0, W_1 * S2, H_1 * S2);
+        }
+        return WDCV;
+    }
+    var animOn = function () { return !RM && S.mapAnim !== false; };
+    // Eau et lave animées : petit calque basse résolution, ~9 images/s, seulement sur les cases liquides
+    var LIQ = { cv: null, key: '', cells: [], raf: 0, last: 0 }, LQ = 20;
+    function liqLayer() {
+        var m = S.map;
+        if (!animOn() || m.kind !== 'tiles' || !m.tiles) {
+            LIQ.cells = [];
+            return null;
+        }
+        var k = m.cols + 'x' + m.rows + '|' + m.tiles;
+        if (k !== LIQ.key) {
+            LIQ.key = k;
+            LIQ.cells = [];
+            for (var i = 0; i < m.tiles.length; i++) {
+                var t = m.tiles[i];
+                if ('eEzl'.includes(t))
+                    LIQ.cells.push([i % m.cols, Math.floor(i / m.cols), t]);
+            }
+            if (!LIQ.cv) {
+                LIQ.cv = document.createElement('canvas');
+                LIQ.cv.className = 'liq';
+            }
+            LIQ.cv.width = m.cols * LQ;
+            LIQ.cv.height = m.rows * LQ;
+        }
+        if (!LIQ.cells.length)
+            return null;
+        if (!LIQ.raf)
+            LIQ.raf = requestAnimationFrame(liqTick);
+        return LIQ.cv;
+    }
+    function liqTick(now) {
+        LIQ.raf = 0;
+        var cv = LIQ.cv;
+        if (!cv || !cv.isConnected || !LIQ.cells.length || !animOn())
+            return;
+        LIQ.raf = requestAnimationFrame(liqTick);
+        if (now - LIQ.last < 110)
+            return;
+        LIQ.last = now;
+        var g = cv.getContext('2d'), t = now / 1000;
+        g.clearRect(0, 0, cv.width, cv.height);
+        g.lineCap = 'round';
+        LIQ.cells.forEach(function (_c) {
+            var _e = __read(_c, 3), x = _e[0], y = _e[1], k = _e[2];
+            var X = x * LQ, Y = y * LQ, h = hash(x, y, 5);
+            if (k === 'l') {
+                var a = .18 + .16 * Math.sin(t * 1.6 + h * 6.28);
+                g.fillStyle = "rgba(255,".concat(150 + Math.round(60 * h), ",60,").concat(a, ")");
+                g.fillRect(X, Y, LQ, LQ);
+                var ph = (t * .35 + h) % 1;
+                if (ph < .55) {
+                    var r = LQ * (.06 + .22 * ph), bx = X + LQ * (.2 + .6 * hash(x, y, Math.floor(t * .35 + h))), by = Y + LQ * (.2 + .6 * hash(y, x, Math.floor(t * .35 + h)));
+                    g.strokeStyle = "rgba(255,235,160,".concat(.7 * (1 - ph / .55), ")");
+                    g.lineWidth = 1.2;
+                    g.beginPath();
+                    g.arc(bx, by, r, 0, 6.28);
+                    g.stroke();
+                }
+            }
+            else {
+                g.strokeStyle = k === 'z' ? 'rgba(220,255,180,.22)' : 'rgba(235,248,255,.26)';
+                g.lineWidth = 1;
+                g.save();
+                g.beginPath();
+                g.rect(X, Y, LQ, LQ);
+                g.clip();
+                for (var j = 0; j < 3; j++) {
+                    var yy = Y + LQ * (j + .5) / 3 + Math.sin(t * 1.3 + x * .9 + j * 2.1) * LQ * .08, off = ((t * (k === 'E' ? .25 : .4) + h + j * .37) % 1) * LQ * 2 - LQ * .5;
+                    g.beginPath();
+                    g.moveTo(X + off - LQ * .35, yy);
+                    g.quadraticCurveTo(X + off, yy - LQ * .07, X + off + LQ * .35, yy);
+                    g.stroke();
+                }
+                var sp = (Math.sin(t * 2.2 + h * 40) + 1) / 2;
+                if (sp > .93) {
+                    g.fillStyle = "rgba(255,255,255,".concat((sp - .93) * 8, ")");
+                    g.beginPath();
+                    g.arc(X + LQ * hash(x, y, 9), Y + LQ * hash(y, x, 9), 1.3, 0, 6.28);
+                    g.fill();
+                }
+                g.restore();
+            }
+        });
+    }
+    // Flammes qui vacillent : un halo par source de feu (transform/opacité seulement, léger pour la TV)
+    function flickers(b, cs) {
+        if (!animOn())
+            return;
+        var L = lightsList().filter(function (l) { return l.f && l.o; }).slice(0, 14);
+        L.forEach(function (l, i) {
+            var R = Math.min(l.r, 4) * cs * .55, d = document.createElement('div');
+            d.className = 'flk';
+            d.style.cssText = "left:".concat(l.x * cs - R, "px;top:").concat(l.y * cs - R, "px;width:").concat(2 * R, "px;height:").concat(2 * R, "px;animation-delay:-").concat((hash(Math.round(l.x * 10), Math.round(l.y * 10), 3) * 2).toFixed(2), "s;animation-duration:").concat((1.3 + hash(i, 7, 1) * .9).toFixed(2), "s");
+            b.appendChild(d);
+        });
+    }
+    // Brouillard de guerre : volutes de fumée qui dérivent dans les zones cachées (TV)
+    var FSMK = '', FSMU = '';
+    function fogSmoke(b, F) {
+        if (!TVM || !animOn())
+            return;
+        var k = FOGCK;
+        if (k !== FSMK) {
+            FSMK = k;
+            try {
+                FSMU = F.toDataURL();
+            }
+            catch (e) {
+                FSMU = '';
+            }
+        }
+        if (!FSMU)
+            return;
+        var w = document.createElement('div');
+        w.className = 'fsmk';
+        w.style.cssText = "width:".concat(F.style.width, ";height:").concat(F.style.height, ";-webkit-mask-image:url(").concat(FSMU, ");mask-image:url(").concat(FSMU, ")");
+        var i = document.createElement('div');
+        i.className = 'fsmki';
+        i.style.backgroundImage = "url(".concat(smokeTex(), ")");
+        w.appendChild(i);
+        b.appendChild(w);
+    }
+    var _SMK = null;
+    function smokeTex() {
+        if (_SMK)
+            return _SMK;
+        var N = 256, c = document.createElement('canvas');
+        c.width = c.height = N;
+        var g = c.getContext('2d');
+        var _loop_4 = function (k) {
+            var x = hash(k, 1, 4) * N, y = hash(k, 2, 4) * N, r = N * (.08 + hash(k, 3, 4) * .18);
+            [[0, 0], [N, 0], [-N, 0], [0, N], [0, -N]].forEach(function (_c) {
+                var _e = __read(_c, 2), dx = _e[0], dy = _e[1];
+                var gr = g.createRadialGradient(x + dx, y + dy, 0, x + dx, y + dy, r);
+                gr.addColorStop(0, 'rgba(150,155,175,.085)');
+                gr.addColorStop(1, 'rgba(150,155,175,0)');
+                g.fillStyle = gr;
+                g.fillRect(x + dx - r, y + dy - r, 2 * r, 2 * r);
+            });
+        };
+        for (var k = 0; k < 70; k++) {
+            _loop_4(k);
+        }
+        return _SMK = c.toDataURL();
+    }
+    // Apparition d'une nouvelle carte : fondu depuis le noir, en cercle qui s'ouvre
+    function mapReveal() { var mw = $('#mapwrap'); if (!mw || RM || !mw.animate)
+        return; try {
+        mw.animate([{ opacity: 0, clipPath: 'circle(0% at 50% 50%)' }, { opacity: .6, offset: .35 }, { opacity: 1, clipPath: 'circle(85% at 50% 50%)' }], { duration: 1500, easing: 'cubic-bezier(.3,.6,.3,1)' });
+    }
+    catch (e) { } }
+    /* ---------- Caler la grille sur une image importée ---------- */
+    function gridCal(src, done) {
+        if (!src || isRef(src)) {
+            toast('Image pas encore chargée');
+            return;
+        }
+        var im = new Image();
+        im.onload = function () {
+            var W = im.naturalWidth, H = im.naturalHeight;
+            var z = Math.min(1, 720 / W), R = null, mode = 'draw', st = null;
+            modal("<h2>Caler la grille sur l\u2019image</h2><div class=\"sub\">Trace un rectangle qui suit exactement les traits de la grille de ton image, sur une case ou plusieurs (plus il couvre de cases, plus c\u2019est pr\u00E9cis). Indique ensuite combien de cases il couvre.</div>\n    <div class=\"row\" style=\"justify-content:space-between;flex-wrap:wrap;gap:6px\"><div class=\"seg\"><button type=\"button\" data-gm=\"draw\" class=\"on\">\u270F Tracer</button><button type=\"button\" data-gm=\"pan\">\u270B D\u00E9placer</button></div>\n      <div class=\"zoom\"><button type=\"button\" id=\"gzO\" aria-label=\"D\u00E9zoomer\">\u2212</button><button type=\"button\" id=\"gzI\" aria-label=\"Zoomer\">+</button></div></div>\n    <div id=\"gcW\" style=\"position:relative;overflow:auto;max-height:52vh;border:1px solid var(--line-2);border-radius:8px;background:#222;margin:8px 0;touch-action:none\"><div id=\"gcIn\" style=\"position:relative\"><img id=\"gcImg\" src=\"".concat(src, "\" style=\"display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none\" draggable=\"false\" alt=\"\"><canvas id=\"gcCv\" style=\"position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%\"></canvas></div></div>\n    <div class=\"grid3\"><label class=\"fld\">Cases en largeur<input id=\"gNx\" type=\"number\" min=\"1\" max=\"60\" value=\"1\"></label><label class=\"fld\">Cases en hauteur<input id=\"gNy\" type=\"number\" min=\"1\" max=\"60\" value=\"1\"></label><div class=\"fld\">R\u00E9sultat<b id=\"gRes\" style=\"font-size:16px;padding-top:6px\">\u2014</b></div></div>\n    <div class=\"row\"><button class=\"btn\" id=\"mCancel\" type=\"button\">Annuler</button><button class=\"btn primary\" id=\"mOk\" type=\"button\" disabled>Appliquer</button></div>"), function (el) {
+                var v = function (q) { return el.querySelector(q); }, inn = v('#gcIn'), cv = v('#gcCv'), wr = v('#gcW');
+                var calc = function () {
+                    if (!R || R.w < 4 || R.h < 4)
+                        return null;
+                    var nx = Math.max(1, +v('#gNx').value || 1), ny = Math.max(1, +v('#gNy').value || 1), cw = R.w / nx, ch = R.h / ny, ox = ((R.x % cw) + cw) % cw, oy = ((R.y % ch) + ch) % ch;
+                    return { cw: cw, ch: ch, ox: ox, oy: oy, cols: Math.floor((W - ox) / cw + .03), rows: Math.floor((H - oy) / ch + .03), W: W, H: H };
+                };
+                var draw = function () {
+                    inn.style.width = Math.round(W * z) + 'px';
+                    cv.width = Math.round(W * z);
+                    cv.height = Math.round(H * z);
+                    var g = cv.getContext('2d'), r = calc();
+                    g.clearRect(0, 0, cv.width, cv.height);
+                    if (r) {
+                        g.strokeStyle = 'rgba(255,230,120,.75)';
+                        g.lineWidth = 1;
+                        g.beginPath();
+                        for (var i = 0; i <= r.cols; i++) {
+                            var x = (r.ox + i * r.cw) * z;
+                            g.moveTo(x, r.oy * z);
+                            g.lineTo(x, (r.oy + r.rows * r.ch) * z);
+                        }
+                        for (var j = 0; j <= r.rows; j++) {
+                            var y = (r.oy + j * r.ch) * z;
+                            g.moveTo(r.ox * z, y);
+                            g.lineTo((r.ox + r.cols * r.cw) * z, y);
+                        }
+                        g.stroke();
+                        g.fillStyle = 'rgba(0,0,0,.45)';
+                        g.fillRect(0, 0, cv.width, r.oy * z);
+                        g.fillRect(0, (r.oy + r.rows * r.ch) * z, cv.width, cv.height);
+                        g.fillRect(0, 0, r.ox * z, cv.height);
+                        g.fillRect((r.ox + r.cols * r.cw) * z, 0, cv.width, cv.height);
+                    }
+                    if (R) {
+                        g.strokeStyle = '#ff4d2e';
+                        g.lineWidth = 2;
+                        g.strokeRect(R.x * z, R.y * z, R.w * z, R.h * z);
+                    }
+                    var ok = r && r.cols >= 2 && r.rows >= 2 && r.cols <= 60 && r.rows <= 60;
+                    v('#gRes').textContent = r ? "".concat(r.cols, " \u00D7 ").concat(r.rows, " cases").concat(r.cols > 60 || r.rows > 60 ? ' (max 60)' : '') : '—';
+                    v('#mOk').disabled = !ok;
+                };
+                var pos = function (e) { var b = cv.getBoundingClientRect(); return [(e.clientX - b.left) / z, (e.clientY - b.top) / z]; };
+                cv.addEventListener('pointerdown', function (e) { e.preventDefault(); try {
+                    cv.setPointerCapture(e.pointerId);
+                }
+                catch (_) { } var p = pos(e); st = mode === 'draw' ? { p: p } : { sx: wr.scrollLeft, sy: wr.scrollTop, cx: e.clientX, cy: e.clientY }; });
+                cv.addEventListener('pointermove', function (e) { if (!st)
+                    return; if (mode === 'draw') {
+                    var p = pos(e);
+                    R = { x: Math.min(st.p[0], p[0]), y: Math.min(st.p[1], p[1]), w: Math.abs(p[0] - st.p[0]), h: Math.abs(p[1] - st.p[1]) };
+                    draw();
+                }
+                else {
+                    wr.scrollLeft = st.sx - (e.clientX - st.cx);
+                    wr.scrollTop = st.sy - (e.clientY - st.cy);
+                } });
+                var up = function () { st = null; };
+                cv.addEventListener('pointerup', up);
+                cv.addEventListener('pointercancel', up);
+                el.querySelectorAll('[data-gm]').forEach(function (b) { return b.onclick = function () { mode = b.dataset.gm; el.querySelectorAll('[data-gm]').forEach(function (x) { return x.classList.toggle('on', x === b); }); }; });
+                v('#gzI').onclick = function () { z = Math.min(4, z * 1.4); draw(); };
+                v('#gzO').onclick = function () { z = Math.max(.15, z / 1.4); draw(); };
+                v('#gNx').oninput = draw;
+                v('#gNy').oninput = draw;
+                v('#mCancel').onclick = close;
+                v('#mOk').onclick = function () { var r = calc(); if (!r)
+                    return; close(); r.img = im; done(r); };
+                draw();
+            });
+        };
+        im.src = src;
+    }
+    function applyCal(m, r) {
+        var cp = Math.max(24, Math.min(Math.round(Math.max(r.cw, r.ch)), Math.floor(2400 / Math.max(r.cols, r.rows)))), c = document.createElement('canvas');
+        c.width = r.cols * cp;
+        c.height = r.rows * cp;
+        var g = c.getContext('2d');
+        g.imageSmoothingQuality = 'high';
+        var sw = Math.min(r.cols * r.cw, r.W - r.ox), sh = Math.min(r.rows * r.ch, r.H - r.oy);
+        g.fillStyle = '#222';
+        g.fillRect(0, 0, c.width, c.height);
+        g.drawImage(r.img, r.ox, r.oy, sw, sh, 0, 0, sw / r.cw * cp, sh / r.ch * cp);
+        m.src = c.toDataURL('image/jpeg', .88);
+        m.cols = r.cols;
+        m.rows = r.rows;
+        m.grid = true;
+        sampleURL = null;
+        S.objs = (S.objs || []).filter(function (o) { return o.x < m.cols && o.y < m.rows; });
+        S.chars.forEach(function (ch) { ch.x = Math.max(0, Math.min(ch.x, m.cols - sz(ch))); ch.y = Math.max(0, Math.min(ch.y, m.rows - sz(ch))); });
+        dirty();
+        toast("Grille cal\u00E9e : ".concat(r.cols, " \u00D7 ").concat(r.rows, " cases"));
     }
     var tileCv = null, tileKey = '';
     var tileT = function () { return Math.max(36, Math.min(96, Math.floor(Math.sqrt(11e6 / (S.map.cols * S.map.rows))))); };
@@ -3621,11 +4312,11 @@ var __values = (this && this.__values) || function(o) {
         out.par = par;
         out.cost = best;
         for (var d = 0; d <= max; d++) {
-            var _loop_3 = function (x, y) {
+            var _loop_5 = function (x, y) {
                 if (best.get(x + ',' + y) !== d)
                     return "continue";
                 for (var dx = -1; dx <= 1; dx++) {
-                    var _loop_4 = function (dy) {
+                    var _loop_6 = function (dy) {
                         if (!dx && !dy)
                             return "continue";
                         var nx = x + dx, ny = y + dy, k = nx + ',' + ny;
@@ -3641,14 +4332,14 @@ var __values = (this && this.__values) || function(o) {
                         (bk[nd] || (bk[nd] = [])).push([nx, ny]);
                     };
                     for (var dy = -1; dy <= 1; dy++) {
-                        _loop_4(dy);
+                        _loop_6(dy);
                     }
                 }
             };
             try {
                 for (var _e = (e_3 = void 0, __values((bk[d] || []))), _f = _e.next(); !_f.done; _f = _e.next()) {
                     var _g = __read(_f.value, 2), x = _g[0], y = _g[1];
-                    _loop_3(x, y);
+                    _loop_5(x, y);
                 }
             }
             catch (e_3_1) { e_3 = { error: e_3_1 }; }
@@ -4236,6 +4927,11 @@ var __values = (this && this.__values) || function(o) {
         b.innerHTML = '';
         b.appendChild(bgEl);
         {
+            var wd = m.kind === 'tiles' && m.tiles ? wallDepthLayer() : null;
+            if (wd)
+                b.appendChild(wd);
+        }
+        {
             var tn_1 = m.tone || {};
             bgEl.style.filter = tn_1.b && Math.abs(tn_1.b - 1) > .01 ? "brightness(".concat(tn_1.b, ")") : '';
             if (tn_1.c && tn_1.a > 0) {
@@ -4360,16 +5056,32 @@ var __values = (this && this.__values) || function(o) {
                 e.title = o.name;
             b.appendChild(e);
         });
+        {
+            var L = liqLayer();
+            if (L)
+                b.appendChild(L);
+        }
         var LT = lightLayers();
         if (LT) {
             b.appendChild(LT.d);
             b.appendChild(LT.g);
         }
+        {
+            var lt = m.light || 'interieur';
+            if (lt === 'crepuscule' || lt === 'nuit') {
+                var d = document.createElement('div');
+                d.className = 'ambt ' + lt;
+                b.appendChild(d);
+            }
+        }
+        flickers(b, cs);
         if (m.fog) {
             fogCompute();
             var F = fogLayer();
-            if (F)
+            if (F) {
                 b.appendChild(F);
+                fogSmoke(b, F);
+            }
         }
         if (!TVM && (ui.ed || S.turn < 0))
             (m.spawns || []).forEach(function (k, i) { var _c = __read(k.split(',').map(Number), 2), x = _c[0], y = _c[1]; var d = document.createElement('div'); d.className = 'spawn'; d.style.cssText = "left:".concat(x * cs, "px;top:").concat(y * cs, "px;width:").concat(cs, "px;height:").concat(cs, "px;font-size:").concat(Math.max(9, cs * .22), "px"); d.textContent = 'PJ ' + (i + 1); b.appendChild(d); });
@@ -4378,7 +5090,7 @@ var __values = (this && this.__values) || function(o) {
             var t = document.createElement('div'), span = cs * sz(c), tz = Math.round(span * .88), off = (span - tz) / 2, p = Math.max(0, c.hp / c.hpMax);
             var figu = c.img && c.tokStyle === 'figurine';
             t.className = "tok ".concat(ui.multi && ui.multi.includes(c.id) ? 'picked' : '', " ").concat(c.hid ? 'hidtok' : '', " ").concat(ui.ed && ui.edSel === c.id ? 'sel' : '', " ").concat(c.side, " ").concat(figu ? 'figu' : '', " ").concat(square(c) ? 'sq' : '', " ").concat(c.id === ui.sel ? 'sel' : '', " ").concat(curC && curC.id === c.id ? 'cur' : '', " ").concat(targets.has(c.id) || area.has(c.id) ? 'target' : '', " ").concat(c.hp <= 0 ? 'down' : '');
-            t.style.cssText = "left:".concat(c.x * cs + off, "px;top:").concat(c.y * cs + off, "px;width:").concat(tz, "px;height:").concat(tz, "px;--c:").concat(c.color, ";--p:").concat(p, ";--hpc:").concat(p > .5 ? '#4cbf80' : p > .25 ? '#e0a83a' : '#e2624d', ";z-index:").concat(c.hp > 0 ? 3 : 2);
+            t.style.cssText = "left:".concat(c.x * cs + off, "px;top:").concat(c.y * cs + off, "px;width:").concat(tz, "px;height:").concat(tz, "px;--c:").concat(c.color, ";--p:").concat(p, ";--hpc:").concat(p > .5 ? '#4cbf80' : p > .25 ? '#e0a83a' : '#e2624d', ";z-index:").concat(c.hp > 0 ? 3 : 2).concat(elevOf(c) > 0 ? ';--elv:' + Math.min(4, elevOf(c)) : '');
             var visible = c.conds.filter(function (k) { return k !== 'concentration'; }).length, efi = efIcons(c);
             if (figu)
                 t.innerHTML = "<div class=\"ring\"></div><div class=\"base\"></div><div class=\"fimg\" style=\"background-image:url('".concat(imgU(c.img), "');--rot:").concat(c.rot || 0, "deg\"></div>").concat(c.label ? "<span class=\"tlab\">".concat(esc(c.label), "</span>") : '').concat(visible ? "<span class=\"cnd\">".concat(visible, "</span>") : '').concat(efi).concat(elevBadge(c));
@@ -4649,7 +5361,7 @@ var __values = (this && this.__values) || function(o) {
                 }
                 pts.unshift(st);
                 var trap = null;
-                var _loop_5 = function (i) {
+                var _loop_7 = function (i) {
                     var _c = __read(pts[i].split(',').map(Number), 2), px = _c[0], py = _c[1];
                     var tp = S.objs.find(function (o) { return o.type === 'piege' && !o.spent && covers({ x: px, y: py, size: sz(sel) }, o.x, o.y); });
                     if (tp && fits(sel, px, py, 'end')) {
@@ -4659,7 +5371,7 @@ var __values = (this && this.__values) || function(o) {
                     }
                 };
                 for (var i = 1; i < pts.length; i++) {
-                    var state_2 = _loop_5(i);
+                    var state_2 = _loop_7(i);
                     if (state_2 === "break")
                         break;
                 }
@@ -4895,12 +5607,12 @@ var __values = (this && this.__values) || function(o) {
     }
     function sparkles(c) {
         var p = ctr(c), cs = S.map.cell * sz(c);
-        var _loop_6 = function (i) {
+        var _loop_8 = function (i) {
             var d = spawn('spark', p.x + (Math.random() - .5) * cs * .8, p.y + (Math.random() - .2) * cs * .5);
             anim(d, [{ transform: 'translate(-50%,-50%) scale(.3)', opacity: 0 }, { transform: 'translate(-50%,-150%) scale(1)', opacity: 1, offset: .3 }, { transform: "translate(-50%,-".concat(300 + Math.random() * 250, "%) scale(.4)"), opacity: 0 }], { duration: 900 + Math.random() * 500, delay: i * 60, easing: 'ease-out' }).then(function () { return d.remove(); });
         };
         for (var i = 0; i < 10; i++) {
-            _loop_6(i);
+            _loop_8(i);
         }
         var e = tokEl(c.id);
         anim(e, [{ filter: 'drop-shadow(0 0 0 #4fe08a)' }, { filter: 'drop-shadow(0 0 12px #4fe08a)' }, { filter: 'drop-shadow(0 0 0 #4fe08a)' }], { duration: 900 });
@@ -5346,15 +6058,24 @@ var __values = (this && this.__values) || function(o) {
                     var rx = d !== 1 && d < critOn_1 && tot >= AC && a._mir !== 'dup' ? reactDefense(att, a, tgt, tot, AC) : null;
                     if (rx && !el._rx) {
                         el._rx = 1;
-                        el.innerHTML = "".concat(head, "<div class=\"verdict hit\">Touch\u00E9\u2026 sauf si</div><div class=\"how\">").concat(esc(rx.txt), "</div><div class=\"row\"><button class=\"btn\" id=\"rxNo\" type=\"button\">Non</button><button class=\"btn primary\" id=\"rxYes\" type=\"button\">").concat(esc(rx.btn), "</button></div>");
+                        var remote = rx.who && rx.who.side === 'pj' && aooPhone(rx.who);
+                        el.innerHTML = "".concat(head, "<div class=\"verdict hit\">Touch\u00E9\u2026 sauf si</div><div class=\"how\">").concat(esc(rx.txt), "</div>").concat(remote ? phoneNote(rx.who) : '', "<div class=\"row\"><button class=\"btn\" id=\"rxNo\" type=\"button\">Non</button><button class=\"btn primary\" id=\"rxYes\" type=\"button\">").concat(esc(rx.btn), "</button></div>");
+                        var rq_1 = null, done_1 = false;
                         var again_1 = function () { close(); resolveSingle._skipRx = true; resolveSingle._d = d; CS_SKIP = true; resolveSingle(att, a, tgt); };
-                        el.querySelector('#rxNo').onclick = again_1;
-                        el.querySelector('#rxYes').onclick = function () { var r = rx.use(); if (r && r.then) {
+                        var no_1 = function () { if (done_1)
+                            return; done_1 = true; if (rq_1)
+                            rq_1.stop(); log("".concat(esc(rx.who ? rx.who.name : tgt.name), " n\u2019utilise pas sa r\u00E9action.")); again_1(); }, yes_1 = function () { if (done_1)
+                            return; done_1 = true; if (rq_1)
+                            rq_1.stop(); var r = rx.use(); if (r && r.then) {
                             close();
                             r.then(again_1);
                         }
                         else
                             again_1(); };
+                        el.querySelector('#rxNo').onclick = no_1;
+                        el.querySelector('#rxYes').onclick = yes_1;
+                        if (remote)
+                            rq_1 = phoneAsk(rx.who, { title: 'Réaction : ' + rx.btn + ' ?', txt: rx.ptxt || rx.txt, opts: ['Non', rx.btn] }, function (i) { return i ? yes_1() : no_1(); });
                         return;
                     }
                     var lvl = spend(att, a);
@@ -6809,8 +7530,8 @@ var __values = (this && this.__values) || function(o) {
             return true;
         }
         if (X.wpn) {
-            var W_1 = (c.actions || []).filter(function (x) { return x.kind === 'attaque' && (+x.range || 1.5) <= 3; });
-            if (!W_1.length) {
+            var W_2 = (c.actions || []).filter(function (x) { return x.kind === 'attaque' && (+x.range || 1.5) <= 3; });
+            if (!W_2.length) {
                 toast('Il faut une arme de corps à corps');
                 return true;
             }
@@ -6818,10 +7539,10 @@ var __values = (this && this.__values) || function(o) {
             if (tier_1 && WX_1.e && WX_1.e.moveDmg)
                 WX_1.e.moveDmg.d = (tier_1 + 1) + 'd8';
             var go_2 = function (w) { var b = Object.assign({}, w, { id: a.id, name: a.name + ' (' + w.name + ')', cost: a.cost, rep: 0, repKey: '', slot: 0, cant: a, dmg: w.dmg + (tier_1 ? '+' + tier_1 + 'd8' : ''), sx: { wpnOf: WX_1, cant: a.name } }); ui.act = b; ui.mode = 'target'; render(); };
-            if (W_1.length === 1)
-                go_2(W_1[0]);
+            if (W_2.length === 1)
+                go_2(W_2[0]);
             else
-                modal("<h2>".concat(esc(a.name), "</h2><div class=\"sub\">Avec quelle arme ?</div><div class=\"quick\" style=\"flex-direction:column;align-items:stretch\">").concat(W_1.map(function (w, i) { return "<button class=\"btn\" type=\"button\" data-w=\"".concat(i, "\">").concat(esc(w.name), " \u00B7 ").concat(esc(w.dmg), "</button>"); }).join(''), "</div>"), function (el) { return el.querySelectorAll('[data-w]').forEach(function (b) { return b.onclick = function () { close(); go_2(W_1[+b.dataset.w]); }; }); });
+                modal("<h2>".concat(esc(a.name), "</h2><div class=\"sub\">Avec quelle arme ?</div><div class=\"quick\" style=\"flex-direction:column;align-items:stretch\">").concat(W_2.map(function (w, i) { return "<button class=\"btn\" type=\"button\" data-w=\"".concat(i, "\">").concat(esc(w.name), " \u00B7 ").concat(esc(w.dmg), "</button>"); }).join(''), "</div>"), function (el) { return el.querySelectorAll('[data-w]').forEach(function (b) { return b.onclick = function () { close(); go_2(W_2[+b.dataset.w]); }; }); });
             return true;
         }
         var b = a.sx ? a : spAct(a, X);
@@ -7076,9 +7797,9 @@ var __values = (this && this.__values) || function(o) {
             return;
         }
         if (a.kind === 'sort_att' || a.kind === 'attaque') {
-            var q_1 = tgts.slice();
+            var q_2 = tgts.slice();
             var first_1 = true;
-            var next_1 = function () { var t = q_1.shift(); if (!t) {
+            var next_1 = function () { var t = q_2.shift(); if (!t) {
                 if (X.tpA)
                     ui.pendTp = Object.assign({}, a, { sx: null, gr: { src: a.name }, tp: 36, _free: 1 });
                 endAction();
@@ -7495,11 +8216,11 @@ var __values = (this && this.__values) || function(o) {
             else if (!X.wpnOf && (X.c || X.e))
                 spApply(att, a, Object.assign({}, X, { rs: X.rs || null }), hitL, 'hit');
             if (X.wpnOf) {
-                var W_2 = X.wpnOf;
-                if (W_2.e)
-                    hitL.forEach(function (t) { var e = efAdd(t, spEf(att, a, {}, W_2.e)); if (e)
+                var W_3 = X.wpnOf;
+                if (W_3.e)
+                    hitL.forEach(function (t) { var e = efAdd(t, spEf(att, a, {}, W_3.e)); if (e)
                         log("".concat(esc(t.name), " : ").concat(esc(efLbl(e)), ".")); });
-                if (W_2.x === 'gfb')
+                if (W_3.x === 'gfb')
                     spGFB(att, a, live[0]);
             }
             if ((X.ls || a.ls) && n > 0)
@@ -8100,7 +8821,7 @@ var __values = (this && this.__values) || function(o) {
             return 'bord';
         var B = blocked();
         for (var j = 0; j < s; j++) {
-            var _loop_7 = function (i) {
+            var _loop_9 = function (i) {
                 var e_6, _c;
                 var cx = x + i, cy = y + j, k = cx + ',' + cy, tc = tileAt(cx, cy);
                 if (B.has(k) && !(tc && HAZ[tc]))
@@ -8121,7 +8842,7 @@ var __values = (this && this.__values) || function(o) {
                 }
             };
             for (var i = 0; i < s; i++) {
-                var state_3 = _loop_7(i);
+                var state_3 = _loop_9(i);
                 if (typeof state_3 === "object")
                     return state_3.value;
             }
@@ -8406,15 +9127,16 @@ var __values = (this && this.__values) || function(o) {
             return null;
         var sh = (tgt.actions || []).find(function (x) { return /^bouclier(\s*\(|$)/i.test(x.name) && x.kind !== 'attaque'; });
         var shN = !sh && /Réactions :[^.]*Bouclier/.test(tgt.note || '');
+        var pt = "".concat(att.name, " te touche avec ").concat(a.name, " : ").concat(tot, " contre ta CA ").concat(AC, ".");
         if (shN && tot < AC + 5)
-            return { txt: "".concat(tgt.name, " peut lancer Bouclier (r\u00E9action, +5 CA jusqu\u2019\u00E0 son prochain tour) : l\u2019attaque (").concat(tot, ") raterait."), btn: 'Lancer Bouclier', use: function () { tgt.res.reaction = false; tgt.acB = 5; log("<b>".concat(esc(tgt.name), "</b> lance Bouclier : +5 CA.")); sfxRelay('magie'); } };
+            return { who: tgt, txt: "".concat(tgt.name, " peut lancer Bouclier (r\u00E9action, +5 CA jusqu\u2019\u00E0 son prochain tour) : l\u2019attaque (").concat(tot, ") raterait."), btn: 'Lancer Bouclier', use: function () { tgt.res.reaction = false; tgt.acB = 5; log("<b>".concat(esc(tgt.name), "</b> lance Bouclier : +5 CA.")); sfxRelay('magie'); } };
         if (sh && tot < AC + 5 && slotFor(tgt, sh) !== -1)
-            return { txt: "".concat(tgt.name, " peut lancer Bouclier (r\u00E9action, +5 CA jusqu\u2019\u00E0 son prochain tour) : l\u2019attaque (").concat(tot, ") raterait."), btn: 'Lancer Bouclier', use: function () { spend(tgt, __assign(__assign({}, sh), { cost: 'reaction' })); tgt.res.reaction = false; tgt.acB = 5; log("<b>".concat(esc(tgt.name), "</b> lance Bouclier : +5 CA.")); sfxRelay('magie'); } };
+            return { who: tgt, ptxt: pt + ' Avec Bouclier (réaction, un emplacement de niveau 1, +5 CA jusqu’à ton prochain tour), l’attaque rate.', txt: "".concat(tgt.name, " peut lancer Bouclier (r\u00E9action, +5 CA jusqu\u2019\u00E0 son prochain tour) : l\u2019attaque (").concat(tot, ") raterait."), btn: 'Lancer Bouclier', use: function () { spend(tgt, __assign(__assign({}, sh), { cost: 'reaction' })); tgt.res.reaction = false; tgt.acB = 5; log("<b>".concat(esc(tgt.name), "</b> lance Bouclier : +5 CA.")); sfxRelay('magie'); } };
         var pm = String(tgt.note || '').match(/Parade(?:\s*\(\+(\d+) CA\))?/);
         if (pm && a.kind === 'attaque' && (+a.range || 1.5) <= 3) {
             var p_1 = +(pm[1] || 2);
             if (tot < AC + p_1)
-                return { txt: "".concat(tgt.name, " peut parer (r\u00E9action, +").concat(p_1, " CA) : l\u2019attaque (").concat(tot, ") raterait."), btn: 'Parer', use: function () { tgt.res.reaction = false; tgt.acB = (tgt.acB || 0) + p_1; log("<b>".concat(esc(tgt.name), "</b> pare l\u2019attaque (+").concat(p_1, " CA).")); } };
+                return { who: tgt, ptxt: pt + " En parant (r\u00E9action, +".concat(p_1, " CA), l\u2019attaque rate."), txt: "".concat(tgt.name, " peut parer (r\u00E9action, +").concat(p_1, " CA) : l\u2019attaque (").concat(tot, ") raterait."), btn: 'Parer', use: function () { tgt.res.reaction = false; tgt.acB = (tgt.acB || 0) + p_1; log("<b>".concat(esc(tgt.name), "</b> pare l\u2019attaque (+").concat(p_1, " CA).")); } };
         }
         return null;
     }
@@ -8432,8 +9154,31 @@ var __values = (this && this.__values) || function(o) {
         if (!L.length)
             return false;
         modal("<h2>Contresort ?</h2><div class=\"sub\">".concat(esc(att.name), " lance <b>").concat(esc(a.name), "</b></div><div class=\"how\">").concat(L.map(function (o) { return esc(o.name); }).join(', '), " ").concat(L.length > 1 ? 'peuvent' : 'peut', " r\u00E9agir avec <b>Contresort</b> : le sort \u00E9choue (jet de caract\u00E9ristique si le sort est de niveau 4 ou plus).</div>\n    <div>").concat(L.map(function (o) { return "<div class=\"tgtrow\"><b>".concat(esc(o.name), "</b><span></span><button class=\"btn sm primary\" type=\"button\" data-cs=\"").concat(o.id, "\">Contresort</button></div>"); }).join(''), "</div>\n    <div class=\"row\"><button class=\"btn\" id=\"csNo\" type=\"button\">Laisser passer</button></div>"), function (el) {
-            el.querySelector('#csNo').onclick = function () { close(); CS_SKIP = true; cont(); };
+            var RQ = [], done = false;
+            var stopAll = function () { RQ.forEach(function (r) { return r && r.stop(); }); RQ = []; };
+            el.querySelector('#csNo').onclick = function () { if (done)
+                return; done = true; stopAll(); close(); CS_SKIP = true; cont(); };
+            var rem = L.filter(function (o) { return o.side === 'pj' && aooPhone(o); });
+            var nos = 0;
+            rem.forEach(function (o) { return RQ.push(phoneAsk(o, { title: 'Réaction : Contresort ?', txt: "".concat(att.name, " lance ").concat(a.name, ". Avec Contresort (r\u00E9action, un emplacement de niveau 3), tu peux faire \u00E9chouer le sort."), opts: ['Laisser passer', 'Contresort'] }, function (i) {
+                if (done)
+                    return;
+                if (i) {
+                    var b = el.querySelector("[data-cs=\"".concat(o.id, "\"]"));
+                    if (b)
+                        b.click();
+                }
+                else if (++nos === L.length) {
+                    el.querySelector('#csNo').click();
+                }
+            })); });
+            if (rem.length)
+                el.querySelector('.how').insertAdjacentHTML('afterend', "<p class=\"hint\" style=\"margin:6px 0 0\">\uD83D\uDCF1 Question envoy\u00E9e sur le t\u00E9l\u00E9phone de ".concat(rem.map(function (o) { return esc(o.name); }).join(', '), ". Tu peux aussi r\u00E9pondre \u00E0 sa place.</p>"));
             el.querySelectorAll('[data-cs]').forEach(function (b) { return b.onclick = function () {
+                if (done)
+                    return;
+                done = true;
+                stopAll();
                 var o = byId(b.dataset.cs), ca = (o.actions || []).find(function (x) { return /^contresort/i.test(x.name); });
                 if (ca)
                     spend(o, __assign(__assign({}, ca), { cost: 'reaction' }));
@@ -8691,7 +9436,14 @@ var __values = (this && this.__values) || function(o) {
         }).join(''), "</div>\n    ").concat(pal).concat(brush, "<p class=\"hint\">").concat(HINTS[E.tool], "</p>\n    <div class=\"sect\"><h3>Brouillard de guerre</h3><label class=\"check\"><input type=\"checkbox\" id=\"eFog\" ").concat(S.map.fog ? 'checked' : '', "> Activ\u00E9 : la TV et les joueurs ne voient que ce que les PJ ont explor\u00E9</label>\n      ").concat(S.map.fog ? "<div class=\"row\" style=\"justify-content:flex-start;gap:6px;flex-wrap:wrap\"><label class=\"fld\" style=\"margin:0\">Vision des PJ<select id=\"eFogR\">".concat([[4, '6 m'], [6, '9 m'], [8, '12 m'], [12, '18 m'], [20, '30 m']].map(function (_c) {
             var _e = __read(_c, 2), v = _e[0], l = _e[1];
             return "<option value=\"".concat(v, "\" ").concat(fogRad() === v ? 'selected' : '', ">").concat(l, "</option>");
-        }).join(''), "</select></label><button class=\"btn sm\" id=\"eFogA\" type=\"button\">Tout r\u00E9v\u00E9ler</button><button class=\"btn sm\" id=\"eFogN\" type=\"button\">Tout recouvrir</button></div>") : '', "</div>\n    <div class=\"sect\"><h3>Carte</h3><div class=\"quick\"><button class=\"btn sm\" id=\"eGrid\" type=\"button\">Image, grille et taille\u2026</button>").concat(tiles ? "<button class=\"btn sm\" id=\"eFill\" type=\"button\">Tout remplir : ".concat(esc(TERR[E.terr].n), "</button><button class=\"btn sm\" id=\"eBorder\" type=\"button\">Murs autour</button>") : '', "\n      <button class=\"btn sm\" id=\"eClrS\" type=\"button\">Effacer les surfaces</button><button class=\"btn sm\" id=\"eClrO\" type=\"button\">Effacer les objets</button></div></div>");
+        }).join(''), "</select></label><button class=\"btn sm\" id=\"eFogA\" type=\"button\">Tout r\u00E9v\u00E9ler</button><button class=\"btn sm\" id=\"eFogN\" type=\"button\">Tout recouvrir</button></div>") : '', "</div>\n    <div class=\"sect\"><h3>Carte</h3><div class=\"quick\"><button class=\"btn sm\" id=\"eGrid\" type=\"button\">Image, grille et taille\u2026</button>").concat(tiles ? "<button class=\"btn sm\" id=\"eFill\" type=\"button\">Tout remplir : ".concat(esc(TERR[E.terr].n), "</button><button class=\"btn sm\" id=\"eBorder\" type=\"button\">Murs autour</button>") : '', "\n      <button class=\"btn sm\" id=\"eClrS\" type=\"button\">Effacer les surfaces</button><button class=\"btn sm\" id=\"eClrO\" type=\"button\">Effacer les objets</button></div>\n      ").concat(tiles ? "<div class=\"fld\" style=\"margin-top:8px\">D\u00E9tails au sol (fissures, mousse, feuilles, fleurs\u2026)<div class=\"seg\">".concat([[0, 'Aucun'], [1, 'Normal'], [2, 'Beaucoup']].map(function (_c) {
+            var _e;
+            var _f = __read(_c, 2), v = _f[0], l = _f[1];
+            return "<button type=\"button\" data-deco=\"".concat(v, "\" class=\"").concat(((_e = S.map.deco) !== null && _e !== void 0 ? _e : 1) === v ? 'on' : '', "\">").concat(l, "</button>");
+        }).join(''), "</div></div>") : '', "\n      ").concat(S.map.kind === 'img' && S.map.src ? "<div class=\"quick\" style=\"margin-top:8px\"><button class=\"btn sm\" id=\"eCal\" type=\"button\">\uD83D\uDCD0 Caler la grille sur l\u2019image</button></div>" : '', "</div>");
+        p.querySelectorAll('[data-deco]').forEach(function (b) { return b.onclick = function () { S.map.deco = +b.dataset.deco; tileCv = null; dirty(); save(); render(); }; });
+        if ($('#eCal'))
+            $('#eCal').onclick = function () { return gridCal(S.map.src, function (r) { applyCal(S.map, r); save(); render(); }); };
         $('#eMaps').onclick = function () { ui.pick = true; ui.edSel = null; ui.edObj = null; save(); render(); };
         $('#ePlay').onclick = function () { closeEditor(); toast('Mode combat : ' + ((curMapE() || {}).name || '')); };
         $('#eTest').onclick = startTest;
@@ -8828,30 +9580,30 @@ var __values = (this && this.__values) || function(o) {
                 renderBoard();
                 break;
             case 'hauteur': {
-                var H_1 = S.map.elev || (S.map.elev = {}), n_1 = E.elev == null ? 1 : E.elev;
+                var H_2 = S.map.elev || (S.map.elev = {}), n_1 = E.elev == null ? 1 : E.elev;
                 cells.forEach(function (kk) { if (n_1)
-                    H_1[kk] = n_1;
+                    H_2[kk] = n_1;
                 else
-                    delete H_1[kk]; });
+                    delete H_2[kk]; });
                 dirty();
                 renderBoard();
                 break;
             }
             case 'mur': {
-                var W_3 = new Set(S.map.walls || []);
+                var W_4 = new Set(S.map.walls || []);
                 if (first)
-                    wallAdd = !W_3.has(k);
-                cells.forEach(function (kk) { return wallAdd ? W_3.add(kk) : W_3.delete(kk); });
-                S.map.walls = __spreadArray([], __read(W_3), false);
+                    wallAdd = !W_4.has(k);
+                cells.forEach(function (kk) { return wallAdd ? W_4.add(kk) : W_4.delete(kk); });
+                S.map.walls = __spreadArray([], __read(W_4), false);
                 dirty();
                 renderBoard();
                 break;
             }
             case 'gomme': {
-                var W_4 = new Set(S.map.walls || []);
-                cells.forEach(function (kk) { delete sf[kk]; W_4.delete(kk); if (S.map.elev)
+                var W_5 = new Set(S.map.walls || []);
+                cells.forEach(function (kk) { delete sf[kk]; W_5.delete(kk); if (S.map.elev)
                     delete S.map.elev[kk]; });
-                S.map.walls = __spreadArray([], __read(W_4), false);
+                S.map.walls = __spreadArray([], __read(W_5), false);
                 S.objs = S.objs.filter(function (o) { return !ocells(o).some(function (k) { return cells.includes(k); }); });
                 dirty();
                 renderBoard();
@@ -8962,13 +9714,13 @@ var __values = (this && this.__values) || function(o) {
             var lab_1 = Array(cols * rows).fill(-1);
             var best = -1, bestN = 0;
             var zones = [];
-            var _loop_8 = function (i) {
+            var _loop_10 = function (i) {
                 if (!g_2[i] && lab_1[i] < 0) {
-                    var id_1 = zones.length, q_2 = [i];
+                    var id_1 = zones.length, q_3 = [i];
                     lab_1[i] = id_1;
                     var n = 0;
-                    var _loop_10 = function () {
-                        var j = q_2.pop();
+                    var _loop_12 = function () {
+                        var j = q_3.pop();
                         n++;
                         var x = j % cols, y = Math.floor(j / cols);
                         [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (_c) {
@@ -8976,12 +9728,12 @@ var __values = (this && this.__values) || function(o) {
                             var k = I(x + dx, y + dy);
                             if (inb(x + dx, y + dy) && !g_2[k] && lab_1[k] < 0) {
                                 lab_1[k] = id_1;
-                                q_2.push(k);
+                                q_3.push(k);
                             }
                         });
                     };
-                    while (q_2.length) {
-                        _loop_10();
+                    while (q_3.length) {
+                        _loop_12();
                     }
                     zones.push(n);
                     if (n > bestN) {
@@ -8991,7 +9743,7 @@ var __values = (this && this.__values) || function(o) {
                 }
             };
             for (var i = 0; i < g_2.length; i++) {
-                _loop_8(i);
+                _loop_10(i);
             }
             for (var i = 0; i < g_2.length; i++)
                 if (lab_1[i] === best)
@@ -9018,7 +9770,7 @@ var __values = (this && this.__values) || function(o) {
         }
         else { // salles et couloirs
             var want = Math.max(4, Math.round(cols * rows / 70));
-            var _loop_9 = function (tries) {
+            var _loop_11 = function (tries) {
                 var w = 4 + R(Math.min(7, Math.floor(cols / 3))), h = 3 + R(Math.min(5, Math.floor(rows / 3))), x = 1 + R(cols - w - 2), y = 1 + R(rows - h - 2);
                 if (x < 1 || y < 1)
                     return "continue";
@@ -9027,21 +9779,46 @@ var __values = (this && this.__values) || function(o) {
                 rooms.push({ x: x, y: y, w: w, h: h });
             };
             for (var tries = 0; tries < want * 30 && rooms.length < want; tries++) {
-                _loop_9(tries);
+                _loop_11(tries);
             }
             if (rooms.length < Math.min(3, want) && (genDungeon.n = (genDungeon.n || 0) + 1) < 30)
                 return genDungeon(cols, rows, theme);
             genDungeon.n = 0;
+            // formes variées : rectangle, coins coupés, ronde, en L, en croix
             rooms.forEach(function (o) {
+                var rr = Math.random(), cx = o.x + (o.w - 1) / 2, cy = o.y + (o.h - 1) / 2;
+                o.shape = o.w >= 5 && o.h >= 5 && rr < .2 ? 'rond' : o.w >= 5 && o.h >= 4 && rr < .42 ? 'oct' : o.w >= 6 && o.h >= 5 && rr < .58 ? 'L' : o.w >= 7 && o.h >= 5 && rr < .68 ? 'croix' : 'rect';
+                var cut = 1 + (o.w >= 8 && o.h >= 7 ? 1 : 0), Lc = Math.random() < .5, Lx = Math.floor(o.w / 2), Ly = Math.floor(o.h / 2);
+                o.has = function (x, y) {
+                    if (x < o.x || y < o.y || x >= o.x + o.w || y >= o.y + o.h)
+                        return false;
+                    var i = x - o.x, j = y - o.y;
+                    switch (o.shape) {
+                        case 'rond': return Math.pow(((x - cx) / (o.w / 2)), 2) + Math.pow(((y - cy) / (o.h / 2)), 2) <= 1.08;
+                        case 'oct': return Math.min(i, o.w - 1 - i) + Math.min(j, o.h - 1 - j) >= cut;
+                        case 'L': return Lc ? !(i >= Lx && j < Ly) : !(i < Lx && j >= Ly);
+                        case 'croix': {
+                            var bw = Math.max(2, Math.floor(o.w / 3)), bh = Math.max(2, Math.floor(o.h / 3));
+                            return (i >= bw && i < o.w - bw) || (j >= bh && j < o.h - bh);
+                        }
+                    }
+                    return true;
+                };
                 for (var y = o.y; y < o.y + o.h; y++)
                     for (var x = o.x; x < o.x + o.w; x++)
-                        t[I(x, y)] = T.f;
+                        if (o.has(x, y))
+                            t[I(x, y)] = T.f;
                 if (T.carpet && o.w >= 5 && o.h >= 4 && Math.random() < .5)
                     for (var y = o.y + 1; y < o.y + o.h - 1; y++)
                         for (var x = o.x + 1; x < o.x + o.w - 1; x++)
-                            t[I(x, y)] = T.carpet;
+                            if (o.has(x, y) && o.has(x - 1, y) && o.has(x + 1, y) && o.has(x, y - 1) && o.has(x, y + 1))
+                                t[I(x, y)] = T.carpet;
             });
-            var inRoom_1 = function (x, y) { return rooms.some(function (o) { return x >= o.x && x < o.x + o.w && y >= o.y && y < o.y + o.h; }); };
+            var inRoom_1 = function (x, y) { return rooms.some(function (o) { return o.has(x, y); }); };
+            var pick = function (o) { var L = []; for (var y = o.y; y < o.y + o.h; y++)
+                for (var x = o.x; x < o.x + o.w; x++)
+                    if (o.has(x, y))
+                        L.push([x, y]); return L[R(L.length)] || [o.x, o.y]; };
             rooms.sort(function (a, b) { return (a.x + a.w / 2) - (b.x + b.w / 2); });
             var doors_1 = [];
             var carve_1 = function (x, y) { if (!inb(x, y))
@@ -9050,19 +9827,51 @@ var __values = (this && this.__values) || function(o) {
                 return true;
             } };
             for (var i = 1; i < rooms.length; i++) {
-                var a = rooms[i - 1], b = rooms[i], ax = a.x + R(a.w), ay = a.y + R(a.h), bx = b.x + R(b.w), by = b.y + R(b.h);
+                var a = rooms[i - 1], b = rooms[i], _c = __read(pick(a), 2), ax = _c[0], ay = _c[1], _e = __read(pick(b), 2), bx = _e[0], by = _e[1];
                 var path = [];
-                if (Math.random() < .5) {
-                    for (var x = Math.min(ax, bx); x <= Math.max(ax, bx); x++)
-                        path.push([x, ay, 1]);
-                    for (var y = Math.min(ay, by); y <= Math.max(ay, by); y++)
-                        path.push([bx, y, 0]);
+                if (Math.random() < .45) {
+                    if (Math.random() < .5) {
+                        for (var x = Math.min(ax, bx); x <= Math.max(ax, bx); x++)
+                            path.push([x, ay, 1]);
+                        for (var y = Math.min(ay, by); y <= Math.max(ay, by); y++)
+                            path.push([bx, y, 0]);
+                    }
+                    else {
+                        for (var y = Math.min(ay, by); y <= Math.max(ay, by); y++)
+                            path.push([ax, y, 0]);
+                        for (var x = Math.min(ax, bx); x <= Math.max(ax, bx); x++)
+                            path.push([x, by, 1]);
+                    }
                 }
-                else {
-                    for (var y = Math.min(ay, by); y <= Math.max(ay, by); y++)
-                        path.push([ax, y, 0]);
-                    for (var x = Math.min(ax, bx); x <= Math.max(ax, bx); x++)
-                        path.push([x, by, 1]);
+                else { // couloir sinueux : avance vers la cible avec des détours
+                    var x = ax, y = ay, guard = 0;
+                    path.push([x, y, 1]);
+                    while ((x !== bx || y !== by) && guard++ < 400) {
+                        var dx = Math.sign(bx - x), dy = Math.sign(by - y);
+                        var hz = dx && (!dy || Math.random() < Math.abs(bx - x) / (Math.abs(bx - x) + Math.abs(by - y)));
+                        if (Math.random() < .18) {
+                            if (hz && inb(x, y + (Math.random() < .5 ? 1 : -1)) && dy === 0) {
+                                y += Math.random() < .5 ? 1 : -1;
+                                if (!inb(x, y))
+                                    y = Math.max(1, Math.min(rows - 2, y));
+                                path.push([x, y, 0]);
+                                continue;
+                            }
+                            if (!hz && dx === 0) {
+                                var nx = x + (Math.random() < .5 ? 1 : -1);
+                                if (inb(nx, y)) {
+                                    x = nx;
+                                    path.push([x, y, 1]);
+                                    continue;
+                                }
+                            }
+                        }
+                        if (hz)
+                            x += dx;
+                        else
+                            y += dy;
+                        path.push([x, y, hz ? 1 : 0]);
+                    }
                 }
                 path.forEach(function (_c) {
                     var _e = __read(_c, 3), x = _e[0], y = _e[1], h = _e[2];
@@ -9092,8 +9901,10 @@ var __values = (this && this.__values) || function(o) {
                 rooms.forEach(function (o) { if (o.w >= 6 && Math.random() < .6) {
                     var y = o.y + Math.floor(o.h / 2);
                     for (var x = o.x; x < o.x + o.w; x++)
-                        t[I(x, y)] = T.canal;
-                    t[I(o.x + Math.floor(o.w / 2), y)] = 'u';
+                        if (o.has(x, y))
+                            t[I(x, y)] = T.canal;
+                    if (o.has(o.x + Math.floor(o.w / 2), y))
+                        t[I(o.x + Math.floor(o.w / 2), y)] = 'u';
                 } });
             // portes (une par entrée, en évitant les portes collées)
             var dk_1 = new Set();
@@ -9480,6 +10291,7 @@ var __values = (this && this.__values) || function(o) {
             render();
             histRec();
             $('#mapwrap').scrollTo(0, 0);
+            mapReveal();
             toast('Carte : ' + e.name);
             after && after();
         };
@@ -10161,14 +10973,14 @@ var __values = (this && this.__values) || function(o) {
                         if (!db)
                             return [2 /*return*/, new Map()];
                         return [2 /*return*/, new Promise(function (res) { var m = new Map(); try {
-                                var t = db.transaction('img', 'readonly'), q_3 = t.objectStore('img').openCursor();
-                                q_3.onsuccess = function () { var c = q_3.result; if (c) {
+                                var t = db.transaction('img', 'readonly'), q_4 = t.objectStore('img').openCursor();
+                                q_4.onsuccess = function () { var c = q_4.result; if (c) {
                                     m.set(c.key, c.value);
                                     c.continue();
                                 }
                                 else
                                     res(m); };
-                                q_3.onerror = function () { return res(m); };
+                                q_4.onerror = function () { return res(m); };
                             }
                             catch (e) {
                                 res(m);
@@ -10357,8 +11169,8 @@ var __values = (this && this.__values) || function(o) {
         });
     }
     /* ---------- Lumières ---------- */
-    var AMB = { jour: 0, interieur: .45, sombre: .7, nuit: .88 };
-    var AMBN = { jour: '☀ Plein jour', interieur: '◐ Intérieur', sombre: '☾ Sombre', nuit: '● Nuit noire' };
+    var AMB = { jour: 0, crepuscule: .32, interieur: .45, sombre: .7, nuit: .88 };
+    var AMBN = { jour: '☀ Plein jour', crepuscule: '◒ Crépuscule', interieur: '◐ Intérieur', sombre: '☾ Sombre', nuit: '● Nuit noire' };
     var LCOL = { feu: '255,128,36', bougie: '255,205,130', froid: '130,195,255', magie: '190,140,255', vert: '140,240,120', blanc: '255,244,220', rouge: '255,70,60' };
     var LCOLN = { feu: 'Flamme', bougie: 'Bougie', blanc: 'Blanche', froid: 'Bleue', magie: 'Violette', vert: 'Verte', rouge: 'Rouge' };
     var CLIGHT = { torche: [6, 'feu', 'Une torche'], lanterne: [6, 'bougie', 'Une lanterne'], lumiere: [5, 'blanc', 'Sort Lumière'], feerique: [3, 'magie', 'Lueur magique'] };
@@ -10538,7 +11350,7 @@ var __values = (this && this.__values) || function(o) {
         modal("<h2>\u00C9clairage</h2><div class=\"sub\">L\u2019ambiance de cette carte. Torches, braseros, feux, lave et sorts de feu \u00E9clairent autour d\u2019eux ; les murs projettent des ombres.</div>\n    <div class=\"seg\" style=\"flex-wrap:wrap\">".concat(Object.entries(AMBN).map(function (_c) {
             var _e = __read(_c, 2), k = _e[0], v = _e[1];
             return "<button type=\"button\" class=\"".concat(cur === k ? 'on' : '', "\" data-amb=\"").concat(k, "\">").concat(v, "</button>");
-        }).join(''), "</div>\n    <label class=\"check\"><input type=\"checkbox\" id=\"lFull\" ").concat(S.lightFull ? 'checked' : '', "> Sur cet \u00E9cran, voir l\u2019obscurit\u00E9 aussi forte que sur la TV</label>\n    <div class=\"sect\"><h3>Luminosit\u00E9 et teinte de la carte</h3>\n      <label class=\"fld lrow\">Luminosit\u00E9 g\u00E9n\u00E9rale <output>").concat(Math.round(((_c = (S.map.tone || {}).b) !== null && _c !== void 0 ? _c : 1) * 100), " %</output><input type=\"range\" id=\"tB\" min=\"30\" max=\"160\" step=\"5\" value=\"").concat(Math.round(((_e = (S.map.tone || {}).b) !== null && _e !== void 0 ? _e : 1) * 100), "\"></label>\n      <div class=\"fld\">Teinte<div class=\"pantone\">").concat(TSW.map(function (_c) {
+        }).join(''), "</div>\n    <label class=\"check\"><input type=\"checkbox\" id=\"lFull\" ").concat(S.lightFull ? 'checked' : '', "> Sur cet \u00E9cran, voir l\u2019obscurit\u00E9 aussi forte que sur la TV</label>\n    <label class=\"check\"><input type=\"checkbox\" id=\"lAnim\" ").concat(S.mapAnim === false ? '' : 'checked', "> Animer l\u2019eau, la lave, les flammes et le brouillard (d\u00E9coche si la TV rame)</label>\n    <div class=\"sect\"><h3>Luminosit\u00E9 et teinte de la carte</h3>\n      <label class=\"fld lrow\">Luminosit\u00E9 g\u00E9n\u00E9rale <output>").concat(Math.round(((_c = (S.map.tone || {}).b) !== null && _c !== void 0 ? _c : 1) * 100), " %</output><input type=\"range\" id=\"tB\" min=\"30\" max=\"160\" step=\"5\" value=\"").concat(Math.round(((_e = (S.map.tone || {}).b) !== null && _e !== void 0 ? _e : 1) * 100), "\"></label>\n      <div class=\"fld\">Teinte<div class=\"pantone\">").concat(TSW.map(function (_c) {
             var _e = __read(_c, 2), h = _e[0], n = _e[1];
             return "<button type=\"button\" class=\"pt ".concat(((S.map.tone || {}).c || '') === h ? 'on' : '', "\" data-tc=\"").concat(h, "\" style=\"--pc:").concat(h || 'transparent', "\" aria-label=\"").concat(n, "\"><i ").concat(h ? '' : 'style="background:repeating-linear-gradient(45deg,#ddd 0 6px,#fff 6px 12px)"', "></i><span>").concat(n, "</span></button>");
         }).join(''), "\n        <label class=\"pt custom ").concat((S.map.tone || {}).c && !TSW.some(function (_c) {
@@ -10547,6 +11359,7 @@ var __values = (this && this.__values) || function(o) {
         }) ? 'on' : '', "\" style=\"--pc:").concat((S.map.tone || {}).c || '#ff8024', "\"><input type=\"color\" id=\"tC\" value=\"").concat((S.map.tone || {}).c || '#ff8024', "\" aria-label=\"Teinte libre\"><i></i><span>Autre\u2026</span></label></div></div>\n      <label class=\"fld lrow\">Force de la teinte <output>").concat(Math.round(((_f = (S.map.tone || {}).a) !== null && _f !== void 0 ? _f : .35) * 100), " %</output><input type=\"range\" id=\"tA\" min=\"0\" max=\"100\" step=\"5\" value=\"").concat(Math.round(((_g = (S.map.tone || {}).a) !== null && _g !== void 0 ? _g : .35) * 100), "\"></label></div>\n    <p class=\"hint\">Ajoute des lumi\u00E8res avec l\u2019\u00E9diteur, outil Objets \u203A Lumi\u00E8res. Un personnage peut aussi porter une torche (bouton Modifier de sa fiche).</p>\n    <div class=\"row\"><button class=\"btn primary\" id=\"mOk\" type=\"button\">Fermer</button></div>"), function (el) {
             el.querySelectorAll('[data-amb]').forEach(function (b) { return b.onclick = function () { S.map.light = b.dataset.amb; save(); render(); close(); lightModal(); }; });
             el.querySelector('#lFull').onchange = function (e) { S.lightFull = e.target.checked; save(); render(); };
+            el.querySelector('#lAnim').onchange = function (e) { S.mapAnim = e.target.checked; save(); render(); };
             el.querySelector('#mOk').onclick = close;
             var T = function () { return S.map.tone || (S.map.tone = { b: 1, c: '', a: .35 }); };
             var st = 0;
@@ -10650,7 +11463,7 @@ var __values = (this && this.__values) || function(o) {
         return k;
     }
     function tvPublish() {
-        var _c;
+        var _c, _e;
         var T = tvTarget();
         if (!T || !S.tvOn || TVM)
             return;
@@ -10664,7 +11477,7 @@ var __values = (this && this.__values) || function(o) {
         } }); };
         if (m.kind === 'video' && m.vid)
             tvVidSend(T, m.vid);
-        put('map', { vid: m.kind === 'video' ? (m.vid || '') : '', fog: m.fog ? 1 : 0, seen: m.fog ? (m.seen || '') : '', vis: m.fog ? (m.vis || '') : '', id: S.curMap || '', cols: m.cols, rows: m.rows, kind: m.kind, tiles: m.tiles || null, grid: !!m.grid, surf: m.surf || {}, elev: m.elev || {}, light: m.light || 'interieur', wx: m.wx || '', wxI: (_c = m.wxI) !== null && _c !== void 0 ? _c : .6, tone: m.tone || null, bg: m.kind === 'img' && m.src && !isRef(m.src) ? tvImgKey(T, m.src) : null });
+        put('map', { anim: S.mapAnim === false ? 0 : 1, deco: (_c = m.deco) !== null && _c !== void 0 ? _c : 1, vid: m.kind === 'video' ? (m.vid || '') : '', fog: m.fog ? 1 : 0, seen: m.fog ? (m.seen || '') : '', vis: m.fog ? (m.vis || '') : '', id: S.curMap || '', cols: m.cols, rows: m.rows, kind: m.kind, tiles: m.tiles || null, grid: !!m.grid, surf: m.surf || {}, elev: m.elev || {}, light: m.light || 'interieur', wx: m.wx || '', wxI: (_e = m.wxI) !== null && _e !== void 0 ? _e : .6, tone: m.tone || null, bg: m.kind === 'img' && m.src && !isRef(m.src) ? tvImgKey(T, m.src) : null });
         put('objs', (S.objs || []).filter(function (o) { return !(o.type === 'piege' && o.hidden); }).map(function (o) { var _c, _e, _f; return ({ id: o.id, type: o.type, name: o.name, x: o.x, y: o.y, rot: o.rot || 0, open: !!o.open, on: !!o.on, secret: !!o.secret, lit: o.lit !== false, spent: !!o.spent, vert: !!o.vert, lr: o.lr || 0, lc: o.lc || '', li: (_c = o.li) !== null && _c !== void 0 ? _c : 1, hp: (_e = o.hp) !== null && _e !== void 0 ? _e : 0, hpMax: (_f = o.hpMax) !== null && _f !== void 0 ? _f : 0, broken: !!o.broken, sc: o.sc || 1 }); }));
         put('toks', S.chars.filter(function (c) { return !c.hid && charSeen(c); }).map(function (c) { return ({ pet: c.petOf ? 1 : 0, mtype: c.side !== 'pj' ? foeType(c) : '', base: c.side !== 'pj' ? foeBase(c) : '', por: c.side !== 'pj' && foePorId(c) ? tvImgKey(T, 'ref:' + foePorId(c)) : null, pory: c.side !== 'pj' ? ((S.bestPorY || {})[foeBase(c)] || 0) : 0, porz: c.side !== 'pj' ? ((S.bestPorZ || {})[foeBase(c)] || 100) : 100, porx: c.side !== 'pj' ? ((S.bestPorX || {})[foeBase(c)] || 0) : 0, bust: c.side === 'pj' && c.bust ? tvImgKey(T, c.bust) : null, id: c.id, name: c.name, side: c.side, color: c.color, x: c.x, y: c.y, size: sz(c), hp: c.hp, hpMax: c.hpMax, conds: c.conds || [], img: tvImgKey(T, c.img), tokStyle: c.tokStyle || '', label: c.label || '', shape: c.shape || '', rot: c.rot || 0, light: c.light || '' }); }));
         tvPublishSt(T);
@@ -10923,17 +11736,20 @@ var __values = (this && this.__values) || function(o) {
         }); });
     }
     function tvApply(k, v) {
-        var _c, _e;
+        var _c, _e, _f, _g, _h;
         if (v == null)
             return;
         if (k === 'map') {
             var old = S.map;
-            if (v.tiles !== old.tiles || v.cols !== old.cols || v.rows !== old.rows)
+            if (v.tiles !== old.tiles || v.cols !== old.cols || v.rows !== old.rows || ((_c = v.deco) !== null && _c !== void 0 ? _c : 1) !== ((_e = old.deco) !== null && _e !== void 0 ? _e : 1))
                 tileCv = null;
+            if (old && old.id && v.id && old.id !== v.id)
+                mapReveal();
             FOGCK = '';
-            S.map = { fog: !!v.fog, seen: v.seen || '', vis: v.vis || '', cols: v.cols, rows: v.rows, cell: old.cell || 60, kind: v.kind, tiles: v.tiles || null, grid: !!v.grid, surf: v.surf || {}, elev: v.elev || {}, light: v.light, wx: v.wx || '', wxI: (_c = v.wxI) !== null && _c !== void 0 ? _c : .6, tone: v.tone || null, walls: [], src: v.bg ? (IMGS.get(v.bg) || null) : null, bgk: v.bg || null, id: v.id };
+            S.mapAnim = v.anim !== 0;
+            S.map = { deco: (_f = v.deco) !== null && _f !== void 0 ? _f : 1, fog: !!v.fog, seen: v.seen || '', vis: v.vis || '', cols: v.cols, rows: v.rows, cell: old.cell || 60, kind: v.kind, tiles: v.tiles || null, grid: !!v.grid, surf: v.surf || {}, elev: v.elev || {}, light: v.light, wx: v.wx || '', wxI: (_g = v.wxI) !== null && _g !== void 0 ? _g : .6, tone: v.tone || null, walls: [], src: v.bg ? (IMGS.get(v.bg) || null) : null, bgk: v.bg || null, id: v.id };
             S.map.vid = v.vid || null;
-            (_e = $('#tvvid')) === null || _e === void 0 ? void 0 : _e.remove();
+            (_h = $('#tvvid')) === null || _h === void 0 ? void 0 : _h.remove();
             if (S.map.kind === 'video' && !vidURL(S.map.vid) && !videoURL)
                 vidLoad(S.map.vid).then(function (u) { if (u) {
                     tvRender(true);
@@ -11041,6 +11857,15 @@ var __values = (this && this.__values) || function(o) {
         b.style.marginTop = oy + 'px';
         fx.style.left = ox + 'px';
         fx.style.top = oy + 'px';
+        {
+            var v = $('#tvvig');
+            if (!v) {
+                v = document.createElement('div');
+                v.id = 'tvvig';
+                document.body.appendChild(v);
+            }
+            v.style.left = PW + 'px';
+        }
         var L = cam ? ox + r.x * cs - (W - r.w * cs) / 2 : 0, Tp = cam ? r.y * cs - (H - r.h * cs) / 2 : 0;
         if (TVS.lastCs === cs && !RM)
             tvPan(mw, L, Tp);
@@ -11326,14 +12151,14 @@ var __values = (this && this.__values) || function(o) {
             return SDEC;
         var x = SND.ctx;
         SDEC = Promise.all(Object.entries(SAMPLES).map(function (_c) { return __awaiter(_this, [_c], void 0, function (_e) {
-            var _loop_11, arr_1, arr_1_1, b64, e_12_1;
+            var _loop_13, arr_1, arr_1_1, b64, e_12_1;
             var e_12, _f;
             var _g = __read(_e, 2), k = _g[0], arr = _g[1];
             return __generator(this, function (_h) {
                 switch (_h.label) {
                     case 0:
                         SBUF[k] = [];
-                        _loop_11 = function (b64) {
+                        _loop_13 = function (b64) {
                             var bin_1, _j, _k, e_13;
                             return __generator(this, function (_l) {
                                 switch (_l.label) {
@@ -11360,7 +12185,7 @@ var __values = (this && this.__values) || function(o) {
                     case 2:
                         if (!!arr_1_1.done) return [3 /*break*/, 5];
                         b64 = arr_1_1.value;
-                        return [5 /*yield**/, _loop_11(b64)];
+                        return [5 /*yield**/, _loop_13(b64)];
                     case 3:
                         _h.sent();
                         _h.label = 4;
@@ -11897,7 +12722,7 @@ var __values = (this && this.__values) || function(o) {
     }
     function tvPublishSfx() {
         return __awaiter(this, void 0, void 0, function () {
-            var T, _loop_12, _c, _e, k, e_17_1;
+            var T, _loop_14, _c, _e, k, e_17_1;
             var e_17, _f;
             return __generator(this, function (_g) {
                 switch (_g.label) {
@@ -11908,7 +12733,7 @@ var __values = (this && this.__values) || function(o) {
                         if (!T)
                             return [2 /*return*/];
                         TVS.sfxSent = TVS.sfxSent || {};
-                        _loop_12 = function (k) {
+                        _loop_14 = function (k) {
                             var v, b, d;
                             return __generator(this, function (_h) {
                                 switch (_h.label) {
@@ -11943,7 +12768,7 @@ var __values = (this && this.__values) || function(o) {
                     case 2:
                         if (!!_e.done) return [3 /*break*/, 5];
                         k = _e.value;
-                        return [5 /*yield**/, _loop_12(k)];
+                        return [5 /*yield**/, _loop_14(k)];
                     case 3:
                         _g.sent();
                         _g.label = 4;
@@ -12959,7 +13784,21 @@ var __values = (this && this.__values) || function(o) {
         } save(); render(); f(att, a, t, crit, next); };
         next();
     }
-    function cfAsk(title, txt, btns, cb) { modal("<h2>".concat(esc(title), "</h2><div class=\"how\">").concat(txt, "</div><div class=\"row\" style=\"flex-wrap:wrap\">").concat(btns.map(function (b, i) { return "<button class=\"btn ".concat(i ? 'primary' : '', "\" type=\"button\" data-cfb=\"").concat(i, "\">").concat(esc(b), "</button>"); }).join(''), "</div>"), function (el) { return el.querySelectorAll('[data-cfb]').forEach(function (b) { return b.onclick = function () { close(); cb(+b.dataset.cfb); }; }); }); }
+    function cfAsk(title, txt, btns, cb, who) {
+        var rq = null, done = false;
+        var fin = function (i) { if (done)
+            return; done = true; if (rq)
+            rq.stop(); close(); cb(i); };
+        var remote = who && who.side === 'pj' && aooPhone(who);
+        modal("<h2>".concat(esc(title), "</h2><div class=\"how\">").concat(txt, "</div>").concat(remote ? phoneNote(who) : '', "<div class=\"row\" style=\"flex-wrap:wrap\">").concat(btns.map(function (b, i) { return "<button class=\"btn ".concat(i ? 'primary' : '', "\" type=\"button\" data-cfb=\"").concat(i, "\">").concat(esc(b), "</button>"); }).join(''), "</div>"), function (el) { return el.querySelectorAll('[data-cfb]').forEach(function (b) { return b.onclick = function () { return fin(+b.dataset.cfb); }; }); });
+        if (remote) {
+            try {
+                navigator.vibrate && 0;
+            }
+            catch (e) { }
+            rq = phoneAsk(who, { title: title, txt: txt, opts: btns }, function (i) { return fin(i); });
+        }
+    }
     function cfSmite(att, a, t, crit, next) {
         var L = Object.keys(att.slots || {}).map(Number).filter(function (l) { return att.slots[l][1] < att.slots[l][0]; }).sort(function (x, y) { return x - y; }), evil = /mort|fi[ée]lon/i.test(foeType(t) || '');
         cfAsk('Châtiment divin', "<b>".concat(esc(att.name), "</b> touche ").concat(esc(t.name), ". D\u00E9penser un emplacement pour ajouter des d\u00E9g\u00E2ts radiants ?").concat(evil ? '<br>+1d8 contre ce ' + esc(foeType(t).toLowerCase()) + '.' : '').concat(crit ? '<br>Coup critique : dés doublés.' : ''), ['Non'].concat(L.map(function (l) { return "Niveau ".concat(l, " (").concat(Math.min(5, 1 + l) + (evil ? 1 : 0), "d8)"); })), function (i) {
@@ -12973,7 +13812,7 @@ var __values = (this && this.__values) || function(o) {
             if (crit)
                 n *= 2;
             dieAsk(att, "Ch\u00E2timent divin (niv. ".concat(l, ")"), n + 'd8', function (v) { curDT = 'radiant'; damage(t, v); curDT = ''; log("<b>".concat(esc(att.name), "</b> \u00B7 Ch\u00E2timent divin (niv. ").concat(l, ") : ").concat(esc(t.name), " subit ").concat(v, " d\u00E9g\u00E2ts radiants.")); queueFx({ att: att, a: { kind: 'none' }, hits: [{ c: t, dm: v, kind: 'crit', kill: t.hp === 0 }], label: 'Châtiment divin' }); runFx(); next(); });
-        });
+        }, att);
     }
     function cfStun(att, a, t, crit, next) {
         cfAsk('Frappe étourdissante', "<b>".concat(esc(att.name), "</b> peut d\u00E9penser 1 point de ki (").concat(cfLeft(att, 'ki'), " restants) : ").concat(esc(t.name), " fait un JdS de Constitution DD ").concat(att.cfp.stun.dc, " ou est \u00E9tourdi jusqu\u2019\u00E0 la fin du prochain tour de ").concat(esc(att.name), "."), ['Non', 'Frappe étourdissante'], function (i) {
@@ -12983,11 +13822,15 @@ var __values = (this && this.__values) || function(o) {
             }
             cfUse(att, 'ki');
             quickSave(t, 'CON', att.cfp.stun.dc, 'Frappe étourdissante', function () { log("".concat(esc(t.name), " r\u00E9siste \u00E0 la Frappe \u00E9tourdissante.")); next(); }, function () { efAdd(t, { n: 'Frappe étourdissante', ic: '💫', src: att.id, c: ['étourdi'], left: null, ex: 'se', nx: 1 }); log("<b>".concat(esc(t.name), "</b> est \u00E9tourdi\u00B7e (Frappe \u00E9tourdissante).")); next(); });
-        });
+        }, att);
     }
     function cfOuragan(att, a, t, crit, next) {
         cfAsk('Fureur de l’ouragan', "<b>".concat(esc(t.name), "</b> peut utiliser sa r\u00E9action (").concat(cfLeft(t, 'ouragan'), " restante").concat(cfLeft(t, 'ouragan') > 1 ? 's' : '', ") : ").concat(esc(att.name), " subit 2d8 d\u00E9g\u00E2ts, JdS de Dext\u00E9rit\u00E9 DD ").concat(t.cfp.ouragan.dc, " pour moiti\u00E9."), ['Non', 'Foudre', 'Tonnerre'], function (i) {
             if (!i) {
+                next();
+                return;
+            }
+            if (!t.res.reaction || t.hp <= 0) {
                 next();
                 return;
             }
@@ -12999,7 +13842,7 @@ var __values = (this && this.__values) || function(o) {
                 var hit = function (n) { curDT = dt; damage(att, n); curDT = ''; log("".concat(esc(att.name), " subit ").concat(n, " d\u00E9g\u00E2ts de ").concat(dt, " (Fureur de l\u2019ouragan).")); queueFx({ att: t, a: { kind: 'none' }, hits: [{ c: att, dm: n, kind: 'hit', kill: att.hp === 0 }], label: 'Fureur de l’ouragan' }); runFx(); next(); };
                 quickSave(att, 'DEX', t.cfp.ouragan.dc, 'Fureur de l’ouragan', function () { return hit(Math.floor(v / 2)); }, function () { return hit(v); });
             });
-        });
+        }, t);
     }
     // réaction du barde (Collège du savoir) : retirer son dé d'inspiration à une attaque ennemie
     function cfCutting(att, a, tgt, tot, AC) {
@@ -13011,7 +13854,7 @@ var __values = (this && this.__values) || function(o) {
         var mx = maxDice(b.cfp.cw);
         if (tot - mx >= AC)
             return null;
-        return { txt: "".concat(b.name, " peut utiliser Mots cinglants (r\u00E9action, 1 inspiration) : l\u2019attaque (").concat(tot, ") perd ").concat(b.cfp.cw, " et pourrait rater."), btn: 'Mots cinglants', use: function () { return new Promise(function (res) { return dieAsk(b, 'Mots cinglants', b.cfp.cw, function (v) { b.res.reaction = false; cfUse(b, 'insp'); efAdd(att, { n: 'Mots cinglants', ic: '🗯', src: b.id, left: 1, use: 'atk', m: { atkB: -v } }); log("<b>".concat(esc(b.name), "</b> lance des Mots cinglants : \u2212").concat(v, " \u00E0 l\u2019attaque de ").concat(esc(att.name), ".")); floatText(att, '−' + v, 'info'); res(); }); }); } };
+        return { who: b, ptxt: "".concat(att.name, " touche ").concat(tgt.name, " avec ").concat(a.name, " (").concat(tot, " contre CA ").concat(AC, "). Avec Mots cinglants (r\u00E9action, 1 inspiration), l\u2019attaque perd ").concat(b.cfp.cw, " et peut rater."), txt: "".concat(b.name, " peut utiliser Mots cinglants (r\u00E9action, 1 inspiration) : l\u2019attaque (").concat(tot, ") perd ").concat(b.cfp.cw, " et pourrait rater."), btn: 'Mots cinglants', use: function () { return new Promise(function (res) { return dieAsk(b, 'Mots cinglants', b.cfp.cw, function (v) { b.res.reaction = false; cfUse(b, 'insp'); efAdd(att, { n: 'Mots cinglants', ic: '🗯', src: b.id, left: 1, use: 'atk', m: { atkB: -v } }); log("<b>".concat(esc(b.name), "</b> lance des Mots cinglants : \u2212").concat(v, " \u00E0 l\u2019attaque de ").concat(esc(att.name), ".")); floatText(att, '−' + v, 'info'); res(); }); }); } };
     }
     var cfDone = function (att, a, txt, ft) { queueFx({ att: att, a: a, hits: [], label: a.name }); log(txt); if (ft)
         floatText(att, ft, 'info'); endAction(); };
@@ -14546,13 +15389,13 @@ var __values = (this && this.__values) || function(o) {
     }
     function sbTvSync() {
         return __awaiter(this, void 0, void 0, function () {
-            var P, _loop_13, _c, _e, _f, id, e;
+            var P, _loop_15, _c, _e, _f, id, e;
             var e_26, _g;
             return __generator(this, function (_h) {
                 P = SBTV.p || {};
                 Object.keys(SBP).forEach(function (id) { var e = P[id]; if (!e || e.s !== SBP[id].s)
                     sbStop(id, true); });
-                _loop_13 = function (id, e) {
+                _loop_15 = function (id, e) {
                     var h = SBP[id];
                     if (h && h.s === e.s) {
                         h.v = e.v;
@@ -14573,7 +15416,7 @@ var __values = (this && this.__values) || function(o) {
                 try {
                     for (_c = __values(Object.entries(P)), _e = _c.next(); !_e.done; _e = _c.next()) {
                         _f = __read(_e.value, 2), id = _f[0], e = _f[1];
-                        _loop_13(id, e);
+                        _loop_15(id, e);
                     }
                 }
                 catch (e_26_1) { e_26 = { error: e_26_1 }; }
@@ -14785,6 +15628,29 @@ var __values = (this && this.__values) || function(o) {
     }
     var aooPhone = function (f) { var N = net(); return !!(N && NETS.tid && !NETS.passive && typeof isOnline === 'function' && isOnline(f)); };
     // demande envoyée au téléphone du joueur : il choisit lui-même d'attaquer ou non (puis lance ses vrais dés)
+    // question envoyée au téléphone d'un joueur (réaction, choix après un coup…) ; cb(index du bouton choisi)
+    var plainTxt = function (t) { return String(t || '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"'); };
+    function phoneAsk(c, o, cb) {
+        if (!c || c.side !== 'pj' || !aooPhone(c))
+            return null;
+        var N = net();
+        if (!N)
+            return null;
+        var rid = N.push(TP('rolls/' + c.id), { kind: 'react', title: o.title, txt: plainTxt(o.txt), opts: o.opts, status: 'open', ts: Date.now() });
+        var path = TP("rolls/".concat(c.id, "/").concat(rid));
+        var un = null, done = false;
+        un = N.on(path, function (v) { if (done || !v || v.status !== 'answered')
+            return; done = true; try {
+            un && un();
+        }
+        catch (e) { } N.remove(path).catch(function () { }); cb(Math.max(0, +v.choice || 0)); });
+        return { stop: function () { if (done)
+                return; done = true; try {
+                un && un();
+            }
+            catch (e) { } N.remove(path).catch(function () { }); } };
+    }
+    var phoneNote = function (c) { return "<p class=\"hint\" style=\"margin:6px 0 0\">\uD83D\uDCF1 Question envoy\u00E9e sur le t\u00E9l\u00E9phone de ".concat(esc(c.name), ". Tu peux aussi r\u00E9pondre \u00E0 sa place.</p>"); };
     function aooAsk(f, c, W, cb) {
         var N = net();
         if (!N)
@@ -14964,7 +15830,7 @@ var __values = (this && this.__values) || function(o) {
     }
     function tvPublishAmb() {
         return __awaiter(this, void 0, void 0, function () {
-            var T, _loop_14, _c, _e, a, e_29_1;
+            var T, _loop_16, _c, _e, a, e_29_1;
             var e_29, _f;
             return __generator(this, function (_g) {
                 switch (_g.label) {
@@ -14975,7 +15841,7 @@ var __values = (this && this.__values) || function(o) {
                         if (!T)
                             return [2 /*return*/];
                         TVS.ambSent = TVS.ambSent || {};
-                        _loop_14 = function (a) {
+                        _loop_16 = function (a) {
                             var b, d;
                             return __generator(this, function (_h) {
                                 switch (_h.label) {
@@ -15005,7 +15871,7 @@ var __values = (this && this.__values) || function(o) {
                     case 2:
                         if (!!_e.done) return [3 /*break*/, 5];
                         a = _e.value;
-                        return [5 /*yield**/, _loop_14(a)];
+                        return [5 /*yield**/, _loop_16(a)];
                     case 3:
                         _g.sent();
                         _g.label = 4;
@@ -15645,7 +16511,7 @@ var __values = (this && this.__values) || function(o) {
         }
         pts.unshift(st);
         var trap = null;
-        var _loop_15 = function (i) {
+        var _loop_17 = function (i) {
             var _c = __read(pts[i].split(',').map(Number), 2), px = _c[0], py = _c[1];
             var tp = S.objs.find(function (o) { return o.type === 'piege' && !o.spent && covers({ x: px, y: py, size: sz(c) }, o.x, o.y); });
             if (tp && fits(c, px, py, 'end')) {
@@ -15655,7 +16521,7 @@ var __values = (this && this.__values) || function(o) {
             }
         };
         for (var i = 1; i < pts.length; i++) {
-            var state_4 = _loop_15(i);
+            var state_4 = _loop_17(i);
             if (state_4 === "break")
                 break;
         }
@@ -16009,7 +16875,7 @@ var __values = (this && this.__values) || function(o) {
     /* ---------- Carte ---------- */
     $('#bMap').onclick = function () {
         var m = S.map;
-        modal("<h2>Battle map</h2><div class=\"sub\">Dessine ta carte avec l\u2019\u00E9diteur, ou importe une image ou une vid\u00E9o en boucle. R\u00E8gle colonnes et lignes pour que la grille colle \u00E0 celle de ta carte (1 case = 1,5 m).</div>\n    <label class=\"fld\">Fichier image ou vid\u00E9o<input type=\"file\" id=\"mf\" accept=\"image/*,video/*\"></label>\n    <div class=\"grid3\"><label class=\"fld\">Colonnes<input type=\"number\" id=\"mc\" min=\"4\" max=\"60\" value=\"".concat(m.cols, "\"></label><label class=\"fld\">Lignes<input type=\"number\" id=\"mr\" min=\"4\" max=\"60\" value=\"").concat(m.rows, "\"></label>\n      <label class=\"fld\">Taille de case (zoom)<input type=\"range\" id=\"mz\" min=\"20\" max=\"140\" value=\"").concat(m.cell, "\"></label></div>\n    <label class=\"check\"><input type=\"checkbox\" id=\"mg\" ").concat(m.grid ? 'checked' : '', "> Afficher la grille</label>\n    <div class=\"note\" style=\"color:var(--muted)\">Vid\u00E9o : MP4 ou WebM, muette et en boucle (60 Mo max, id\u00E9alement moins de 20 Mo). Elle est gard\u00E9e sur cette tablette et envoy\u00E9e une fois \u00E0 l\u2019\u00E9cran TV.</div>\n    <div class=\"row\" style=\"justify-content:space-between\"><span style=\"display:flex;gap:8px;flex-wrap:wrap\"><button class=\"btn\" id=\"mList\" type=\"button\">Mes cartes (renommer, supprimer\u2026)</button><button class=\"btn\" id=\"mNew\" type=\"button\">Nouvelle carte dessin\u00E9e</button><button class=\"btn\" id=\"mw\" type=\"button\">Ouvrir l\u2019\u00E9diteur</button><button class=\"btn ghost\" id=\"ms\" type=\"button\">Carte d\u2019exemple</button></span>\n      <button class=\"btn primary\" id=\"mOk\" type=\"button\">Appliquer</button></div>"), function (el) {
+        modal("<h2>Battle map</h2><div class=\"sub\">Dessine ta carte avec l\u2019\u00E9diteur, ou importe une image ou une vid\u00E9o en boucle. R\u00E8gle colonnes et lignes pour que la grille colle \u00E0 celle de ta carte (1 case = 1,5 m).</div>\n    <label class=\"fld\">Fichier image ou vid\u00E9o<input type=\"file\" id=\"mf\" accept=\"image/*,video/*\"></label>\n    <div class=\"grid3\"><label class=\"fld\">Colonnes<input type=\"number\" id=\"mc\" min=\"4\" max=\"60\" value=\"".concat(m.cols, "\"></label><label class=\"fld\">Lignes<input type=\"number\" id=\"mr\" min=\"4\" max=\"60\" value=\"").concat(m.rows, "\"></label>\n      <label class=\"fld\">Taille de case (zoom)<input type=\"range\" id=\"mz\" min=\"20\" max=\"140\" value=\"").concat(m.cell, "\"></label></div>\n    <label class=\"check\"><input type=\"checkbox\" id=\"mg\" ").concat(m.grid ? 'checked' : '', "> Afficher la grille</label>\n    <div class=\"row\" style=\"justify-content:flex-start\"><button class=\"btn\" id=\"mCal\" type=\"button\">\uD83D\uDCD0 Caler la grille sur l\u2019image</button><span class=\"hint\" style=\"margin:0\">Trace une case de la grille de ton image : colonnes, lignes et d\u00E9calage se r\u00E8glent tout seuls.</span></div>\n    <div class=\"note\" style=\"color:var(--muted)\">Vid\u00E9o : MP4 ou WebM, muette et en boucle (60 Mo max, id\u00E9alement moins de 20 Mo). Elle est gard\u00E9e sur cette tablette et envoy\u00E9e une fois \u00E0 l\u2019\u00E9cran TV.</div>\n    <div class=\"row\" style=\"justify-content:space-between\"><span style=\"display:flex;gap:8px;flex-wrap:wrap\"><button class=\"btn\" id=\"mList\" type=\"button\">Mes cartes (renommer, supprimer\u2026)</button><button class=\"btn\" id=\"mNew\" type=\"button\">Nouvelle carte dessin\u00E9e</button><button class=\"btn\" id=\"mw\" type=\"button\">Ouvrir l\u2019\u00E9diteur</button><button class=\"btn ghost\" id=\"ms\" type=\"button\">Carte d\u2019exemple</button></span>\n      <button class=\"btn primary\" id=\"mOk\" type=\"button\">Appliquer</button></div>"), function (el) {
             var pending = null;
             el.querySelector('#mf').onchange = function (e) {
                 var f = e.target.files[0];
@@ -16061,6 +16927,10 @@ var __values = (this && this.__values) || function(o) {
                 save();
             };
             el.querySelector('#mOk').onclick = function () { apply(); close(); render(); };
+            el.querySelector('#mCal').onclick = function () { var src = pending && pending.kind === 'img' ? pending.src : m.kind === 'img' ? m.src : null; if (!src) {
+                toast('Importe d’abord une image');
+                return;
+            } apply(); render(); gridCal(m.src, function (r) { applyCal(m, r); save(); render(); }); };
             el.querySelector('#mw').onclick = function () { apply(); close(); openEditor(); };
             el.querySelector('#mNew').onclick = function () { close(); newMapModal(); };
             el.querySelector('#mList').onclick = function () { close(); mapsModal(); };

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='04/11-15h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='05/11-14h10';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -1303,10 +1303,21 @@ function aooModal(rid,r,n){try{navigator.vibrate&&navigator.vibrate([100,50,100,
     el.querySelector('[data-x=no]').onclick=()=>ans('no');el.querySelector('[data-x=yes]').onclick=()=>ans('yes')});
   // toucher à côté ne ferme pas la demande
   const ov=$('#modalRoot .ov');if(ov){const sh=document.createElement('div');sh.style.cssText='position:absolute;top:0;right:0;bottom:0;left:0';ov.insertBefore(sh,ov.firstChild);const m=ov.querySelector('.modal');if(m&&getComputedStyle(m).position==='static')m.style.position='relative'}}
+// Réaction proposée par la table (Bouclier, Contresort, Fureur de l'ouragan, Mots cinglants, Châtiment…)
+function reactModal(rid,r,n){try{navigator.vibrate&&navigator.vibrate([90,40,90,40,200])}catch(e){}
+  const opts=Array.isArray(r.opts)?r.opts:Object.values(r.opts||{});const O=opts.length?opts:['Non','Oui'];
+  modal(`<h2 id="rxMark">⚡ ${esc(r.title||'Réaction')}</h2><div class="how">${esc(r.txt||'').replace(/\n/g,'<br>')}</div>
+    ${n>1?`<p class="sub" style="margin:0 0 6px">${n-1} autre(s) demande(s) en attente.</p>`:''}
+    <div class="row" style="justify-content:flex-end;flex-wrap:wrap">${O.map((o,i)=>`<button class="btn ${i?'primary':''}" data-rx="${i}" type="button" style="${i?'padding:12px 20px':''}">${esc(o)}</button>`).join('')}</div>`,el=>{
+    el.querySelectorAll('[data-rx]').forEach(b=>b.onclick=()=>{const N=net();if(!N)return;const i=+b.dataset.rx;
+      N.update(TP(`rolls/${CON.cid}/${rid}`),{choice:i,status:'answered'}).then(()=>toast(i?O[i]+' : envoyé au MJ':'Tu ne réagis pas')).catch(()=>toast('Envoi impossible'));
+      CON.rollOpen=null;close();setTimeout(showRolls,100)})});
+  const ov=$('#modalRoot .ov');if(ov){const sh=document.createElement('div');sh.style.cssText='position:absolute;top:0;right:0;bottom:0;left:0';ov.insertBefore(sh,ov.firstChild);const m=ov.querySelector('.modal');if(m&&getComputedStyle(m).position==='static')m.style.position='relative'}}
 function showRolls(){const open=Object.entries(CON.rolls||{}).filter(([k,r])=>r&&r.status==='open').sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
   clearTimeout(CON.rollT);if(!open.length){if(CON.rollOpen){const was=CON.rollOpen;CON.rollT=setTimeout(()=>{const still=Object.values(CON.rolls||{}).some(r=>r&&r.status==='open');if(!still&&CON.rollOpen===was){CON.rollOpen=null;close()}},1200)}return}
-  const [rid,r]=open[0];if(CON.rollOpen===rid&&($('#rv')||$('#aooMark')))return;CON.rollOpen=rid;
+  const [rid,r]=open[0];if(CON.rollOpen===rid&&($('#rv')||$('#aooMark')||$('#rxMark')))return;CON.rollOpen=rid;
   if(r.kind==='aoo'){aooModal(rid,r,open.length);return}
+  if(r.kind==='react'){reactModal(rid,r,open.length);return}
   try{navigator.vibrate&&navigator.vibrate(80)}catch(e){}
   const d20=r.kind!=='dmg';
   modal(`<h2>Le MJ te demande un jet</h2><div class="how"><b>${esc(r.label)}</b><br>${esc(r.detail||'')}</div>
