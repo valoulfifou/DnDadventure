@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='06/11-14h35';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='06/11-16h15';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -420,7 +420,7 @@ button{cursor:pointer}
 @media (min-width:960px){.mapwrap{max-height:calc(100vh - 150px)}}
 .board{position:relative;user-select:none;-webkit-user-select:none}
 .board .bg{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
-.smlist{display:flex;flex-direction:column;gap:4px;margin:4px 0 8px}.smrow{display:grid;grid-template-columns:minmax(0,1fr) 84px 64px 34px;gap:6px;align-items:center}.smrow input{min-width:0;padding:7px 8px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);font:inherit;font-size:14px}
+.smlist{display:flex;flex-direction:column;gap:4px;margin:4px 0 8px}.smrow{display:grid;grid-template-columns:minmax(0,1fr) 84px 64px 34px;gap:6px;align-items:center}.smrow .smd{grid-column:1/-1;font-size:12.5px;padding:5px 8px;margin-top:-2px;color:var(--muted)}.smrow{padding-bottom:4px;border-bottom:1px dashed var(--line)}.smrow input{min-width:0;padding:7px 8px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);font:inherit;font-size:14px}
 .smlog{margin-top:8px;font-size:13px}.smlog summary{cursor:pointer;font-weight:600}.smlog div{padding:3px 0;border-top:1px solid var(--line)}.smlog time{opacity:.6;margin-right:6px}
 #shopChip{position:fixed;left:14px;bottom:14px;z-index:60;display:flex;border-radius:999px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.25)}#shopChip button{border:0;background:#2f6b2a;color:#fff;font:inherit;font-size:14px;padding:9px 14px;cursor:pointer}#shopChip button+button{background:#24521f;padding:9px 12px}
 #shopQ{position:fixed;right:14px;bottom:14px;z-index:300;display:flex;flex-direction:column;gap:8px;max-width:min(380px,calc(100vw - 28px))}#shopQ .sq{background:var(--surface);border:2px solid #2f6b2a;border-radius:12px;padding:10px 12px;box-shadow:0 8px 26px rgba(0,0,0,.3);font-size:14px}#shopQ .row{margin-top:8px;gap:6px}#shopQ input{flex:1;min-width:0;padding:7px 8px;border:1px solid var(--line-2);border-radius:8px;font:inherit}
@@ -6092,7 +6092,7 @@ var __values = (this && this.__values) || function(o) {
                     }
                     var lvl = spend(att, a);
                     lastLvl = lvl || +a.slot || 0;
-                    var crit = d >= critOn_1 || (info_1.autoCrit && tot >= AC && d !== 1);
+                    var crit = (d >= critOn_1 || (info_1.autoCrit && tot >= AC && d !== 1)) && !(tgt && tgt.pnocrit);
                     var hit = d !== 1 && (d >= critOn_1 || tot >= AC);
                     efUse(att, 'atk');
                     if (!tgt.isObj)
@@ -7138,6 +7138,10 @@ var __values = (this && this.__values) || function(o) {
             });
         efAll(att).forEach(function (e) { if (e.m && e.m.halfW && W)
             out.push({ half: 1, n: e.n }); });
+        if (a.xdm && a.kind === 'attaque')
+            [].concat(a.xdm).forEach(function (x) { if (!x || !x.d)
+                return; if (x.vs && !(tgt && new RegExp(x.vs, 'i').test(foeType(tgt) + ' ' + (tgt.name || ''))))
+                return; out.push({ d: x.d, t: x.t || '', n: a.name }); });
         cfXd(att, a, tgt, out);
         return out;
     }
@@ -8454,7 +8458,7 @@ var __values = (this && this.__values) || function(o) {
             return n;
         var dt = (curDT || '').toLowerCase(), E = efAll(t);
         var hit = function (L) { return L.some(function (x) { return x === 'all' || dt && x === dt || String(x).startsWith('allbut:') && dt !== String(x).slice(7); }); };
-        var I = [].concat.apply([], __spreadArray([], __read(E.map(function (e) { return e.m && e.m.imm || []; })), false)), R = [].concat.apply([], __spreadArray(__spreadArray([], __read(E.map(function (e) { return e.m && e.m.res || []; })), false), [has(t, 'pétrifié') ? ['all'] : []], false));
+        var I = [].concat.apply([], __spreadArray([], __read(E.map(function (e) { return e.m && e.m.imm || []; })), false)), R = [].concat.apply([], __spreadArray(__spreadArray([], __read(E.map(function (e) { return e.m && e.m.res || []; })), false), [t.pres || [], has(t, 'pétrifié') ? ['all'] : []], false));
         if (I.length && hit(I)) {
             log("".concat(esc(t.name), " est immunis\u00E9\u00B7e").concat(dt ? ' (' + esc(dt) + ')' : '', "."));
             return 0;
@@ -14315,15 +14319,40 @@ var __values = (this && this.__values) || function(o) {
         ['Flèches (20)', 100, 'a'], ['Carreaux d’arbalète (20)', 100, 'a'], ['Billes de fronde (20)', 4, 'a'], ['Carquois', 100, 'a'],
         ['Armure matelassée', 500, 'r'], ['Armure de cuir', 1000, 'r'], ['Armure de cuir clouté', 4500, 'r'], ['Armure de peau', 1000, 'r'], ['Chemise de mailles', 5000, 'r'], ['Armure d’écailles', 5000, 'r'], ['Cuirasse', 40000, 'r'],
         ['Demi-plate', 75000, 'r'], ['Broigne', 3000, 'r'], ['Cotte de mailles', 7500, 'r'], ['Clibanion', 20000, 'r'], ['Harnois', 150000, 'r'], ['Bouclier', 1000, 'r'],
+        ['Casque', 1000, 'r', 'eq', 'tete'], ['Heaume à visière', 2500, 'r', 'eq', 'tete'], ['Gantelets', 500, 'r', 'eq', 'mains'], ['Gants de cuir', 100, 'r', 'eq', 'mains'], ['Bottes ferrées', 300, 'r', 'eq', 'pieds'], ['Cape doublée de fourrure', 500, 'r', 'eq', 'cape'],
+        ['Cape de voyage', 100, 'g', 'eq', 'cape'], ['Chapeau à large bord', 50, 'g', 'eq', 'tete'], ['Bottes de voyage', 200, 'g', 'eq', 'pieds'], ['Anneau en argent', 2500, 'g', 'eq', 'anneau'], ['Pendentif en argent', 2500, 'g', 'eq', 'cou'],
         ['Potion de soins', 5000, 'p', 'potion', 'soins'], ['Potion de soins supérieurs', 15000, 'p', 'potion', 'sup'], ['Antidote', 5000, 'p'], ['Fiole d’acide', 2500, 'p'], ['Feu grégeois (flasque)', 5000, 'p'], ['Eau bénite (flasque)', 2500, 'p'],
         ['Poison (fiole)', 10000, 'p'], ['Kit de soins', 500, 'p'], ['Kit d’herboriste', 500, 'p'], ['Matériel d’alchimiste', 5000, 'p'], ['Parfum (fiole)', 500, 'p'],
-        ['Parchemin : Soins', 5000, 'm', 'parchemin', 'Soins'], ['Parchemin : Projectile magique', 5000, 'm', 'parchemin', 'Projectile magique'], ['Parchemin : Bouclier', 5000, 'm', 'parchemin', 'Bouclier'], ['Parchemin : Détection de la magie', 5000, 'm', 'parchemin', 'Détection de la magie'],
-        ['Parchemin : Mot de guérison', 5000, 'm', 'parchemin', 'Mot de guérison'], ['Parchemin : Vague tonnante', 5000, 'm', 'parchemin', 'Vague tonnante'], ['Parchemin : Arme spirituelle', 15000, 'm', 'parchemin', 'Arme spirituelle'], ['Parchemin : Restauration partielle', 15000, 'm', 'parchemin', 'Restauration partielle'],
+        ['Dague +1', 50000, 'm', 'mw', '', { b: 'Dague', m: 1, r: 'pc' }], ['Épée courte +1', 50000, 'm', 'mw', '', { b: 'Épée courte', m: 1, r: 'pc' }], ['Épée longue +1', 50000, 'm', 'mw', '', { b: 'Épée longue', m: 1, r: 'pc' }], ['Rapière +1', 50000, 'm', 'mw', '', { b: 'Rapière', m: 1, r: 'pc' }], ['Cimeterre +1', 50000, 'm', 'mw', '', { b: 'Cimeterre', m: 1, r: 'pc' }], ['Masse d’armes +1', 50000, 'm', 'mw', '', { b: 'Masse d’armes', m: 1, r: 'pc' }],
+        ['Marteau de guerre +1', 50000, 'm', 'mw', '', { b: 'Marteau de guerre', m: 1, r: 'pc' }], ['Hache d’armes +1', 50000, 'm', 'mw', '', { b: 'Hache d’armes', m: 1, r: 'pc' }], ['Arc court +1', 50000, 'm', 'mw', '', { b: 'Arc court', m: 1, r: 'pc' }], ['Arc long +1', 50000, 'm', 'mw', '', { b: 'Arc long', m: 1, r: 'pc' }], ['Arbalète légère +1', 50000, 'm', 'mw', '', { b: 'Arbalète légère', m: 1, r: 'pc' }],
+        ['Épée longue +2', 500000, 'm', 'mw', '', { b: 'Épée longue', m: 2, r: 'r' }], ['Masse d’armes +2', 500000, 'm', 'mw', '', { b: 'Masse d’armes', m: 2, r: 'r' }], ['Arc long +2', 500000, 'm', 'mw', '', { b: 'Arc long', m: 2, r: 'r' }], ['Épée longue +3', 5000000, 'm', 'mw', '', { b: 'Épée longue', m: 3, r: 'tr' }],
+        ['Épée ardente', 500000, 'm', 'mw', '', { b: 'Épée longue', xd: [{ d: '2d6', t: 'feu' }], r: 'r', h: 1 }], ['Épée radieuse', 500000, 'm', 'mw', '', { b: 'Épée longue', m: 2, dt: 'radiant', xd: [{ d: '1d8', t: 'radiant', vs: 'mort', vsn: 'morts-vivants' }], r: 'r', h: 1 }],
+        ['Masse d’anéantissement', 500000, 'm', 'mw', '', { b: 'Masse d’armes', xd: [{ d: '2d6', t: 'radiant', vs: 'fi[ée]lon|mort', vsn: 'fiélons et morts-vivants' }], r: 'r', h: 1 }], ['Masse destructrice', 500000, 'm', 'mw', '', { b: 'Masse d’armes', m: 1, r: 'r' }],
+        ['Tueuse de dragons', 500000, 'm', 'mw', '', { b: 'Épée longue', m: 1, xd: [{ d: '3d6', t: 'tranchant', vs: 'dragon', vsn: 'dragons' }], r: 'r' }], ['Tueuse de géants', 500000, 'm', 'mw', '', { b: 'Épée longue', m: 1, xd: [{ d: '2d6', t: 'tranchant', vs: 'g[ée]ant', vsn: 'géants' }], r: 'r' }],
+        ['Hache du berserker', 500000, 'm', 'mw', '', { b: 'Hache d’armes', m: 1, r: 'r', h: 1 }], ['Dague venimeuse', 500000, 'm', 'mw', '', { b: 'Dague', m: 1, r: 'r' }], ['Arme vicieuse', 500000, 'm', 'mw', '', { b: 'Épée longue', r: 'r' }], ['Arme vigilante', 50000, 'm', 'mw', '', { b: 'Épée longue', r: 'pc', h: 1 }],
+        ['Cimeterre de rapidité', 5000000, 'm', 'mw', '', { b: 'Cimeterre', m: 2, ba: 1, r: 'tr', h: 1 }], ['Marteau de lancer nain', 5000000, 'm', 'mw', '', { b: 'Marteau de guerre', m: 3, xd: [{ d: '1d8', t: 'contondant' }], r: 'tr', h: 1 }], ['Javeline de foudre', 50000, 'm', 'mw', '', { b: 'Javeline', r: 'pc' }], ['Trident de domination aquatique', 50000, 'm', 'mw', '', { b: 'Trident', r: 'pc', h: 1 }],
+        ['Armure de cuir +1', 500000, 'm', 'ma', '', { b: 'cuir', ac: 1, r: 'r' }], ['Armure de cuir clouté +1', 500000, 'm', 'ma', '', { b: 'clout', ac: 1, r: 'r' }], ['Chemise de mailles +1', 500000, 'm', 'ma', '', { b: 'chemise', ac: 1, r: 'r' }], ['Armure d’écailles +1', 500000, 'm', 'ma', '', { b: 'ecailles', ac: 1, r: 'r' }], ['Demi-plate +1', 500000, 'm', 'ma', '', { b: 'demiplate', ac: 1, r: 'r' }], ['Cotte de mailles +1', 500000, 'm', 'ma', '', { b: 'cotte', ac: 1, r: 'r' }], ['Harnois +1', 500000, 'm', 'ma', '', { b: 'harnois', ac: 1, r: 'r' }],
+        ['Armure de cuir clouté +2', 5000000, 'm', 'ma', '', { b: 'clout', ac: 2, r: 'tr' }], ['Cotte de mailles +2', 5000000, 'm', 'ma', '', { b: 'cotte', ac: 2, r: 'tr' }], ['Armure de cuir clouté enchantée', 500000, 'm', 'ma', '', { b: 'clout', ac: 1, r: 'r' }], ['Mailles elfiques', 500000, 'm', 'ma', '', { b: 'chemise', ac: 1, noStr: 1, r: 'r' }], ['Harnois nain', 5000000, 'm', 'ma', '', { b: 'harnois', ac: 2, r: 'tr' }],
+        ['Armure de mithral (cotte de mailles)', 50000, 'm', 'ma', '', { b: 'cotte', noStr: 1, r: 'pc' }], ['Armure de mithral (demi-plate)', 50000, 'm', 'ma', '', { b: 'demiplate', noStr: 1, r: 'pc' }], ['Armure d’adamantium (cotte de mailles)', 50000, 'm', 'ma', '', { b: 'cotte', nocrit: 1, r: 'pc' }], ['Armure d’adamantium (harnois)', 50000, 'm', 'ma', '', { b: 'harnois', nocrit: 1, r: 'pc' }],
+        ['Armure de résistance (feu)', 500000, 'm', 'ma', '', { b: 'clout', res: ['feu'], r: 'r', h: 1 }], ['Armure de résistance (froid)', 500000, 'm', 'ma', '', { b: 'chemise', res: ['froid'], r: 'r', h: 1 }], ['Armure de résistance (foudre)', 500000, 'm', 'ma', '', { b: 'ecailles', res: ['foudre'], r: 'r', h: 1 }], ['Armure de résistance (poison)', 500000, 'm', 'ma', '', { b: 'cuir', res: ['poison'], r: 'r', h: 1 }],
+        ['Armure d’écailles de dragon (rouge)', 5000000, 'm', 'ma', '', { b: 'ecailles', ac: 1, res: ['feu'], sv: 1, r: 'tr', h: 1 }], ['Armure d’écailles de dragon (bleu)', 5000000, 'm', 'ma', '', { b: 'ecailles', ac: 1, res: ['foudre'], sv: 1, r: 'tr', h: 1 }],
+        ['Bouclier +1', 50000, 'm', 'ma', '', { b: 'bouclier', ac: 1, r: 'pc' }], ['Bouclier +2', 500000, 'm', 'ma', '', { b: 'bouclier', ac: 2, r: 'r' }], ['Bouclier +3', 5000000, 'm', 'ma', '', { b: 'bouclier', ac: 3, r: 'tr' }], ['Bouclier sentinelle', 50000, 'm', 'ma', '', { b: 'bouclier', r: 'pc' }], ['Bouclier antiprojectiles', 500000, 'm', 'ma', '', { b: 'bouclier', r: 'r', h: 1 }],
+        ['Cape de protection', 50000, 'm', 'eq', 'cape', { ac: 1, sv: 1, r: 'pc', h: 1 }], ['Cape elfique', 50000, 'm', 'eq', 'cape', { r: 'pc', h: 1 }], ['Cape de déplacement', 500000, 'm', 'eq', 'cape', { r: 'r', h: 1 }], ['Cape de la raie manta', 50000, 'm', 'eq', 'cape', { r: 'pc' }],
+        ['Anneau de protection', 500000, 'm', 'eq', 'anneau', { ac: 1, sv: 1, r: 'r', h: 1 }], ['Anneau de résistance (feu)', 500000, 'm', 'eq', 'anneau', { res: ['feu'], r: 'r', h: 1 }], ['Anneau de résistance (froid)', 500000, 'm', 'eq', 'anneau', { res: ['froid'], r: 'r', h: 1 }], ['Anneau de résistance (foudre)', 500000, 'm', 'eq', 'anneau', { res: ['foudre'], r: 'r', h: 1 }], ['Anneau de résistance (tonnerre)', 500000, 'm', 'eq', 'anneau', { res: ['tonnerre'], r: 'r', h: 1 }],
+        ['Anneau de résistance au poison', 500000, 'm', 'eq', 'anneau', { res: ['poison'], r: 'r' }], ['Anneau d’esquive totale', 500000, 'm', 'eq', 'anneau', { r: 'r', h: 1 }], ['Anneau de nage', 50000, 'm', 'eq', 'anneau', { r: 'pc' }], ['Anneau de saut', 50000, 'm', 'eq', 'anneau', { r: 'pc', h: 1 }], ['Anneau de marche sur l’eau', 50000, 'm', 'eq', 'anneau', { r: 'pc' }], ['Anneau de feuille morte', 500000, 'm', 'eq', 'anneau', { r: 'r', h: 1 }], ['Anneau de chaleur constante', 50000, 'm', 'eq', 'anneau', { res: ['froid'], r: 'pc', h: 1 }], ['Anneau de barrière mentale', 50000, 'm', 'eq', 'anneau', { r: 'pc', h: 1 }],
+        ['Bottes elfiques', 50000, 'm', 'eq', 'pieds', { r: 'pc' }], ['Bottes ailées', 50000, 'm', 'eq', 'pieds', { r: 'pc', h: 1 }], ['Bottes de rapidité', 500000, 'm', 'eq', 'pieds', { r: 'r', h: 1 }], ['Bottes de sept lieues', 50000, 'm', 'eq', 'pieds', { spdMin: 9, r: 'pc', h: 1 }], ['Bottes des terres gelées', 50000, 'm', 'eq', 'pieds', { res: ['froid'], r: 'pc', h: 1 }], ['Chaussons de pattes d’araignée', 50000, 'm', 'eq', 'pieds', { r: 'pc', h: 1 }],
+        ['Gantelets de puissance d’ogre', 50000, 'm', 'eq', 'mains', { setS: { FOR: 19 }, r: 'pc', h: 1 }], ['Gants de nage et d’escalade', 50000, 'm', 'eq', 'mains', { r: 'pc', h: 1 }], ['Gants piégeurs de projectiles', 50000, 'm', 'eq', 'mains', { r: 'pc', h: 1 }], ['Bracelets de défense', 500000, 'm', 'eq', 'mains', { acNA: 2, r: 'r', h: 1 }], ['Bracelets d’archer', 50000, 'm', 'eq', 'mains', { r: 'pc', h: 1 }],
+        ['Amulette de santé', 500000, 'm', 'eq', 'cou', { setS: { CON: 19 }, r: 'r', h: 1 }], ['Amulette de protection contre le poison', 500000, 'm', 'eq', 'cou', { res: ['poison'], r: 'r' }], ['Amulette de cicatrisation', 50000, 'm', 'eq', 'cou', { r: 'pc', h: 1 }], ['Amulette d’antidétection', 50000, 'm', 'eq', 'cou', { r: 'pc', h: 1 }],
+        ['Bandeau d’intelligence', 50000, 'm', 'eq', 'tete', { setS: { INT: 19 }, r: 'pc', h: 1 }], ['Chapeau de déguisement', 50000, 'm', 'eq', 'tete', { r: 'pc', h: 1 }], ['Heaume de compréhension des langues', 50000, 'm', 'eq', 'tete', { r: 'pc' }], ['Heaume de télépathie', 50000, 'm', 'eq', 'tete', { r: 'pc', h: 1 }], ['Chapeau de magicien', 50000, 'm', 'eq', 'tete', { r: 'pc', h: 1 }],
         ['Sacoche à composantes', 2500, 'm'], ['Focaliseur arcanique (orbe)', 2000, 'm'], ['Symbole sacré (amulette)', 500, 'm'], ['Bâton druidique', 500, 'm'], ['Livre de sorts vierge', 5000, 'm'],
         ['Luth', 3500, 'm'], ['Flûte', 200, 'm'], ['Lyre', 3000, 'm'], ['Tambour', 600, 'm'], ['Outils de voleur', 2500, 'm'], ['Kit de déguisement', 2500, 'm'], ['Kit de contrefaçon', 1500, 'm'], ['Jeu de cartes', 50, 'm'], ['Dés à jouer', 10, 'm']
     ];
-    var SHOPT = { g: ['🎒', 'Bazar général'], a: ['⚔', 'Forgeron'], r: ['🛡', 'Armurier'], p: ['⚗', 'Apothicaire'], m: ['✨', 'Boutique des arcanes'] };
-    var SHOPN = { g: ['Le Bazar de {n}', 'Au Sac sans fond', 'Chez {n}', 'Le Comptoir de {n}'], a: ['La Forge de {n}', 'L’Enclume ardente', 'Les Lames de {n}'], r: ['L’Armurerie de {n}', 'Le Bouclier d’argent', 'La Cotte de {n}'], p: ['L’Alambic de {n}', 'Les Fioles de {n}', 'La Mandragore bleue'], m: ['Les Arcanes de {n}', 'Le Grimoire de {n}', 'L’Étoile filante'] };
+    // Parchemins : tous les sorts du niveau 0 à 5, prix selon le niveau
+    var SCR_OK = false;
+    function ensureScrolls() { if (SCR_OK || !window.SORTS)
+        return; SCR_OK = true; window.SORTS.filter(function (x) { return +x[1] <= 5; }).forEach(function (x) { return SHOPCAT.push(['Parchemin : ' + x[0], [25, 50, 150, 300, 500, 1000][+x[1]] * 100, 's', 'parchemin', x[0], +x[1]]); }); }
+    var SHOPT = { g: ['🎒', 'Bazar général'], a: ['⚔', 'Forgeron'], r: ['🛡', 'Armurier'], p: ['⚗', 'Apothicaire'], m: ['✨', 'Boutique des arcanes'], s: ['📜', 'Scribe (parchemins)'] };
+    var SHOPN = { s: ['Le Scriptorium de {n}', 'La Plume enchantée', 'Les Rouleaux de {n}'], g: ['Le Bazar de {n}', 'Au Sac sans fond', 'Chez {n}', 'Le Comptoir de {n}'], a: ['La Forge de {n}', 'L’Enclume ardente', 'Les Lames de {n}'], r: ['L’Armurerie de {n}', 'Le Bouclier d’argent', 'La Cotte de {n}'], p: ['L’Alambic de {n}', 'Les Fioles de {n}', 'La Mandragore bleue'], m: ['Les Arcanes de {n}', 'Le Grimoire de {n}', 'L’Étoile filante'] };
     var cpFmt = function (p) { p = Math.max(0, Math.round(+p || 0)); var o = Math.floor(p / 100), a = Math.floor(p % 100 / 10), c = p % 10; return [o ? o.toLocaleString('fr-FR') + ' po' : '', a ? a + ' pa' : '', c ? c + ' pc' : ''].filter(Boolean).join(' ') || 'gratuit'; };
     var poOf = function (p) { return String(Math.round(p) / 100).replace('.', ','); };
     var cpParse = function (v) { v = String(v || '').trim().replace(',', '.').toLowerCase(); if (!v)
@@ -14336,11 +14365,23 @@ var __values = (this && this.__values) || function(o) {
     // « Parchemin : Boule de feu » → parchemin utilisable en combat, prix selon le niveau du sort
     function scrollOf(n) { var m = /^parchemin\s*(?:de|:)?\s*:?\s*(.+)$/i.exec(String(n || '').trim()); if (!m)
         return null; var f = nkS(m[1]), S0 = (window.SORTS || []).find(function (x) { return nkS(x[0]) === f; }); return S0 ? { spell: S0[0], lvl: +S0[1] || 0, p: SCRP[+S0[1] || 0] * 100 } : null; }
-    var catFind = function (n) { var f = String(n || '').toLowerCase().trim(); return SHOPCAT.find(function (x) { return x[0].toLowerCase() === f; }); };
-    function shopItem(x, q) { return { id: 'i' + uid(), n: x[0], p: x[1], q: q == null ? -1 : q, k: x[3] || '', x: x[4] || '' }; }
+    var catFind = function (n) { ensureScrolls(); var f = String(n || '').toLowerCase().trim(); return SHOPCAT.find(function (x) { return x[0].toLowerCase() === f; }); };
+    function shopItem(x, q) { var mx = x[5] && typeof x[5] === 'object' ? JSON.parse(JSON.stringify(x[5])) : null; return Object.assign({ id: 'i' + uid(), n: x[0], p: x[1], q: q == null ? -1 : q, k: x[3] || '', x: x[4] || '', a: mx ? +mx.ac || 0 : x[3] === 'eq' ? +x[5] || 0 : 0 }, mx ? { mx: mx } : {}); }
+    function scrollPick(n, maxL) { ensureScrolls(); var P = SHOPCAT.filter(function (x) { return x[2] === 's' && x[5] <= maxL; }), W = [5, 6, 3, 1.5, .7, .4], out = []; var g = 0; while (out.length < n && g++ < 800) {
+        var x = P[Math.floor(Math.random() * P.length)];
+        if (!x || out.includes(x) || Math.random() > W[x[5]] / 6)
+            continue;
+        out.push(x);
+    } return out.sort(function (a, b) { return a[5] - b[5] || a[0].localeCompare(b[0]); }); }
     function shopFill(m) {
-        var P = SHOPCAT.filter(function (x) { return x[2] === m.type; }), N = Math.min(P.length, m.type === 'm' ? 9 : m.type === 'p' ? 8 : 14), S = P.slice().sort(function () { return Math.random() - .5; }).slice(0, N);
-        m.items = S.sort(function (a, b) { return SHOPCAT.indexOf(a) - SHOPCAT.indexOf(b); }).map(function (x) { return shopItem(x, x[1] >= 5000 || x[2] === 'p' || x[2] === 'm' ? 1 + Math.floor(Math.random() * 3) : -1); });
+        if (m.type === 's') {
+            m.items = scrollPick(14, 5).map(function (x) { return shopItem(x, 1 + Math.floor(Math.random() * 2)); });
+            return;
+        }
+        var P = SHOPCAT.filter(function (x) { return x[2] === m.type && !(x[5] && typeof x[5] === 'object' && x[5].r === 'tr' && Math.random() < .75); }), N = Math.min(P.length, m.type === 'm' ? 12 : m.type === 'p' ? 8 : 14), S = P.slice().sort(function () { return Math.random() - .5; }).slice(0, N);
+        if (m.type === 'm')
+            scrollPick(4, 2).forEach(function (x) { return S.push(x); });
+        m.items = S.sort(function (a, b) { return SHOPCAT.indexOf(a) - SHOPCAT.indexOf(b); }).map(function (x) { return shopItem(x, x[1] >= 50000 || x[3] === 'mw' || x[3] === 'ma' ? 1 : x[1] >= 5000 || x[2] === 'p' || x[2] === 'm' ? 1 + Math.floor(Math.random() * 3) : -1); });
     }
     function shopNew(express) {
         var c = stCamp();
@@ -14363,7 +14404,7 @@ var __values = (this && this.__values) || function(o) {
     var shopPrice = function (m, it) { return Math.max(0, Math.round(it.p * (100 + (+m.mod || 0)) / 100)); };
     function shopPayload(m) {
         return { status: 'shop', id: m.id, name: m.name, who: m.who || '', desc: m.desc || '', type: m.type, buy: +m.buy || 50, mod: +m.mod || 0, ts: Date.now(),
-            items: (m.items || []).filter(function (it) { return it.n && it.q !== 0; }).map(function (it) { return ({ id: it.id, n: it.n, p: shopPrice(m, it), q: it.q, k: it.k || '', x: it.x || '' }); }) };
+            items: (m.items || []).filter(function (it) { return it.n && it.q !== 0; }).map(function (it) { return ({ id: it.id, n: it.n, p: shopPrice(m, it), q: it.q, k: it.k || '', x: it.x || '', a: +it.a || 0, d: it.d || '', mx: it.mx || null }); }) };
     }
     // envoie (ou retire) la boutique sur le téléphone de chaque joueuse connectée
     function shopPub(force) {
@@ -14427,7 +14468,7 @@ var __values = (this && this.__values) || function(o) {
             var p = shopPrice(m, it);
             if (it.q > 0)
                 it.q--;
-            N.push(TP('rolls/' + cid), { kind: 'shopbuy', status: 'grant', ts: Date.now(), cost: p, shop: m.name, item: { n: it.n, k: it.k || '', x: it.x || '' } });
+            N.push(TP('rolls/' + cid), { kind: 'shopbuy', status: 'grant', ts: Date.now(), cost: p, shop: m.name, item: { n: it.n, k: it.k || '', x: it.x || '', a: +it.a || 0, d: it.d || '', mx: it.mx || null } });
             shopLog(m, "".concat(c.name, " ach\u00E8te ").concat(it.n, " (").concat(cpFmt(p), ")"));
             log("\uD83D\uDED2 <b>".concat(nm, "</b> ach\u00E8te ").concat(esc(it.n), " chez ").concat(esc(m.name), " (").concat(cpFmt(p), ")."));
             toast("\uD83D\uDED2 ".concat(c.name, " ach\u00E8te ").concat(it.n));
@@ -14491,6 +14532,7 @@ var __values = (this && this.__values) || function(o) {
     }
     var shopRefresh = function () { };
     function shopEdit(id) {
+        ensureScrolls();
         var c = stCamp(), m = c && (c.shops || []).find(function (x) { return x.id === id; });
         if (!m)
             return;
@@ -14502,7 +14544,7 @@ var __values = (this && this.__values) || function(o) {
         }).join(''), "</select></label>\n      <label class=\"fld\">Tenu par<input id=\"smW\" value=\"").concat(esc(m.who || ''), "\" placeholder=\"Nom du marchand\"></label><label class=\"fld\">Lieu<input id=\"smL\" value=\"").concat(esc(m.place || ''), "\" list=\"smLL\"><datalist id=\"smLL\">").concat((c.places || []).map(function (p) { return "<option value=\"".concat(esc(p.name), "\">"); }).join(''), "</datalist></label></div>\n    <label class=\"fld\">Description (vue par les joueuses)<input id=\"smD\" value=\"").concat(esc(m.desc || ''), "\" placeholder=\"Une \u00E9choppe encombr\u00E9e qui sent la cire et le cuir\u2026\"></label>\n    <div class=\"grid2\"><label class=\"fld\">Humeur des prix<select id=\"smM\">").concat([[-30, 'Bradés (−30 %)'], [-20, 'Généreux (−20 %)'], [-10, 'Sympa (−10 %)'], [0, 'Prix normaux'], [10, 'Un peu cher (+10 %)'], [25, 'Cher (+25 %)'], [50, 'Arnaqueur (+50 %)'], [100, 'Pénurie (×2)']].map(function (_c) {
             var _e = __read(_c, 2), v = _e[0], l = _e[1];
             return "<option value=\"".concat(v, "\" ").concat((+m.mod || 0) === v ? 'selected' : '', ">").concat(l, "</option>");
-        }).join(''), "</select></label>\n      <label class=\"fld\">Rach\u00E8te les objets \u00E0<select id=\"smB\">").concat([0, 25, 50, 75, 100].map(function (v) { return "<option value=\"".concat(v, "\" ").concat((+m.buy === v || (m.buy == null && v === 50)) ? 'selected' : '', ">").concat(v ? v + ' % du prix' : 'ne rachète rien', "</option>"); }).join(''), "</select></label></div>\n    <h3 style=\"margin:12px 0 4px\">Marchandises <small style=\"font-weight:400;opacity:.7\">prix de base en po (0,5 = 5 pa) \u00B7 stock vide = illimit\u00E9</small></h3>\n    <div class=\"smlist\">").concat(m.items.map(function (it) { return "<div class=\"smrow\" data-i=\"".concat(it.id, "\"><input data-k=\"n\" value=\"").concat(esc(it.n), "\" aria-label=\"Objet\"><input data-k=\"p\" value=\"").concat(poOf(it.p), "\" inputmode=\"decimal\" aria-label=\"Prix en po\"><input data-k=\"q\" value=\"").concat(it.q < 0 ? '' : it.q, "\" inputmode=\"numeric\" placeholder=\"\u221E\" aria-label=\"Stock\"><button type=\"button\" class=\"stib\" data-del=\"").concat(it.id, "\" aria-label=\"Retirer\">\u2715</button></div>"); }).join('') || '<p class="empty" style="margin:4px 0">Aucune marchandise.</p>', "</div>\n    <div class=\"row\" style=\"justify-content:flex-start;flex-wrap:wrap;gap:6px\"><input id=\"smAdd\" list=\"smCat\" placeholder=\"Catalogue, \u00AB Parchemin : Boule de feu \u00BB, ou un objet \u00E0 toi\u2026\" style=\"flex:1;min-width:200px\"><datalist id=\"smCat\">").concat(SHOPCAT.map(function (x) { return "<option value=\"".concat(esc(x[0]), "\">").concat(esc(cpFmt(x[1])), "</option>"); }).join(''), "</datalist><button class=\"btn sm\" id=\"smAddB\" type=\"button\">Ajouter</button><button class=\"btn sm\" id=\"smFill\" type=\"button\">\uD83C\uDFB2 Remplir au hasard</button></div>\n    ").concat((m.log || []).length ? "<details class=\"smlog\"><summary>Ventes et achats (".concat(m.log.length, ")</summary>").concat(m.log.map(function (l) { return "<div><time>".concat(new Date(l.ts).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), "</time> ").concat(esc(l.t), "</div>"); }).join(''), "</details>") : '', "\n    <div class=\"row\" style=\"justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:10px\"><button class=\"btn danger sm\" id=\"smDel\" type=\"button\">Supprimer</button>\n      <span style=\"display:flex;gap:8px;flex-wrap:wrap\"><button class=\"btn\" id=\"mOk\" type=\"button\">Fermer</button><button class=\"btn primary\" id=\"smOpen\" type=\"button\">").concat(isOpen() ? '■ Fermer la boutique' : '🛒 Ouvrir la boutique aux joueuses', "</button></span></div>"); };
+        }).join(''), "</select></label>\n      <label class=\"fld\">Rach\u00E8te les objets \u00E0<select id=\"smB\">").concat([0, 25, 50, 75, 100].map(function (v) { return "<option value=\"".concat(v, "\" ").concat((+m.buy === v || (m.buy == null && v === 50)) ? 'selected' : '', ">").concat(v ? v + ' % du prix' : 'ne rachète rien', "</option>"); }).join(''), "</select></label></div>\n    <h3 style=\"margin:12px 0 4px\">Marchandises <small style=\"font-weight:400;opacity:.7\">prix de base en po (0,5 = 5 pa) \u00B7 stock vide = illimit\u00E9</small></h3>\n    <div class=\"smlist\">").concat(m.items.map(function (it) { return "<div class=\"smrow\" data-i=\"".concat(it.id, "\"><input data-k=\"n\" value=\"").concat(esc(it.n), "\" aria-label=\"Objet\"><input data-k=\"p\" value=\"").concat(poOf(it.p), "\" inputmode=\"decimal\" aria-label=\"Prix en po\"><input data-k=\"q\" value=\"").concat(it.q < 0 ? '' : it.q, "\" inputmode=\"numeric\" placeholder=\"\u221E\" aria-label=\"Stock\"><button type=\"button\" class=\"stib\" data-del=\"").concat(it.id, "\" aria-label=\"Retirer\">\u2715</button><input data-k=\"d\" class=\"smd\" value=\"").concat(esc(it.d || ''), "\" placeholder=\"Description pour les joueuses (optionnel : objets connus d\u00E9j\u00E0 d\u00E9crits)\" aria-label=\"Description\"></div>"); }).join('') || '<p class="empty" style="margin:4px 0">Aucune marchandise.</p>', "</div>\n    <div class=\"row\" style=\"justify-content:flex-start;flex-wrap:wrap;gap:6px\"><input id=\"smAdd\" list=\"smCat\" placeholder=\"Catalogue, \u00AB Parchemin : Boule de feu \u00BB, ou un objet \u00E0 toi\u2026\" style=\"flex:1;min-width:200px\"><datalist id=\"smCat\">").concat(SHOPCAT.map(function (x) { return "<option value=\"".concat(esc(x[0]), "\">").concat(esc(cpFmt(x[1])), "</option>"); }).join(''), "</datalist><button class=\"btn sm\" id=\"smAddB\" type=\"button\">Ajouter</button><button class=\"btn sm\" id=\"smFill\" type=\"button\">\uD83C\uDFB2 Remplir au hasard</button></div>\n    ").concat((m.log || []).length ? "<details class=\"smlog\"><summary>Ventes et achats (".concat(m.log.length, ")</summary>").concat(m.log.map(function (l) { return "<div><time>".concat(new Date(l.ts).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), "</time> ").concat(esc(l.t), "</div>"); }).join(''), "</details>") : '', "\n    <div class=\"row\" style=\"justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:10px\"><button class=\"btn danger sm\" id=\"smDel\" type=\"button\">Supprimer</button>\n      <span style=\"display:flex;gap:8px;flex-wrap:wrap\"><button class=\"btn\" id=\"mOk\" type=\"button\">Fermer</button><button class=\"btn primary\" id=\"smOpen\" type=\"button\">").concat(isOpen() ? '■ Fermer la boutique' : '🛒 Ouvrir la boutique aux joueuses', "</button></span></div>"); };
         var bind = function (el) {
             var v = function (q) { return el.querySelector(q); }, sv = function () { stSave(); if (isOpen())
                 shopPub(); };
@@ -14522,18 +14564,26 @@ var __values = (this && this.__values) || function(o) {
                     it.n = i.value.trim();
                     var ct = catFind(it.n), sc = !ct && scrollOf(it.n);
                     if (ct) {
-                        it.k = ct[3] || '';
-                        it.x = ct[4] || '';
+                        var ni = shopItem(ct);
+                        it.k = ni.k;
+                        it.x = ni.x;
+                        it.a = ni.a;
+                        if (ni.mx)
+                            it.mx = ni.mx;
+                        else
+                            delete it.mx;
                     }
                     else if (sc) {
                         it.k = 'parchemin';
                         it.x = sc.spell;
                     }
-                    else {
+                    else if (!it.mx) {
                         it.k = '';
                         it.x = '';
                     }
                 }
+                if (k === 'd')
+                    it.d = i.value.trim();
                 if (k === 'p')
                     it.p = cpParse(i.value);
                 if (k === 'q')
@@ -18147,6 +18197,8 @@ var __values = (this && this.__values) || function(o) {
             });
             f.cres = R_3;
             f.cfp = k.cfp || {};
+            f.pres = Array.isArray(k.pres) ? k.pres : Object.values(k.pres || {});
+            f.pnocrit = +k.pnocrit || 0;
         }
         if (k.token) {
             f.img = k.token;
