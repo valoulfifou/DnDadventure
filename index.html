@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='06/11-16h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='06/11-17h05';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -278,7 +278,7 @@ body.mode-st .top .round{visibility:hidden}
 .sttoc .tl button .av{display:inline-block;width:20px;height:20px;border-radius:50%;background:#3a2a14 center/cover;vertical-align:-5px;margin-right:6px;color:#f2e6c8;font:10px/20px var(--f-display);text-align:center}
 .sttoc .add{font:13px Georgia,serif;color:#8a5a20}
 .lieupic{font-size:30px;background-color:#2f4a3a!important}
-a.npcl.lieul{color:#2a5a3a} .stread a.npcl.evtl{color:#5a3f8a;text-decoration-style:solid;white-space:nowrap}
+a.npcl.lieul{color:#2a5a3a} .stread a.npcl.shopl{color:#2f6b2a} .stread a.npcl.shopl:before{content:'🛒 ';font-weight:400} .stread a.npcl.evtl{color:#5a3f8a;text-decoration-style:solid;white-space:nowrap}
 .stchips .lieu i{background:#2f4a3a}
 
 .stfmt{flex-wrap:wrap;row-gap:4px}
@@ -5433,7 +5433,7 @@ function stGrow(t){const sv=[];for(let e=t.parentElement;e;e=e.parentElement)if(
   sv.forEach(a=>{if(Math.abs(a[0].scrollTop-a[1])>1)a[0].scrollTop=a[1]})}
 const ST_FS=[13,14,16,18,20,24,28,32];
 const ST_AL=[['left','M1 1.5h14M1 4.5h9M1 7.5h14M1 10.5h9','Aligné à gauche','justifyLeft'],['center','M1 1.5h14M4 4.5h8M1 7.5h14M4 10.5h8','Centré','justifyCenter'],['right','M1 1.5h14M6 4.5h9M1 7.5h14M6 10.5h9','Aligné à droite','justifyRight'],['justify','M1 1.5h14M1 4.5h14M1 7.5h14M1 10.5h14','Justifié','justifyFull']];
-function stNames(){const c=stCamp(),L=[];if(c){(c.npcs||[]).forEach(n=>{const nm=(n.name||'').trim();if(nm.length<2)return;L.push([nm,n.id,'npc']);const f=nm.split(/\s+/)[0];if(f&&f!==nm&&f.length>=3)L.push([f,n.id,'npc'])});(c.places||[]).forEach(p=>{const nm=(p.name||'').trim();if(nm.length>=3)L.push([nm,p.id,'lieu'])})}return L.sort((a,b)=>b[0].length-a[0].length)}
+function stNames(){const c=stCamp(),L=[];if(c){(c.npcs||[]).forEach(n=>{const nm=(n.name||'').trim();if(nm.length<2)return;L.push([nm,n.id,'npc']);const f=nm.split(/\s+/)[0];if(f&&f!==nm&&f.length>=3)L.push([f,n.id,'npc'])});(c.places||[]).forEach(p=>{const nm=(p.name||'').trim();if(nm.length>=3)L.push([nm,p.id,'lieu'])});(c.shops||[]).forEach(m=>{const nm=(m.name||'').trim();if(nm.length>=4&&nm!=='Nouveau marchand')L.push([nm,m.id,'shop'])})}return L.sort((a,b)=>b[0].length-a[0].length)}
 /* texte enrichi : gras, alignement et taille sur la sélection (le texte brut reste dans obj[key], le HTML dans obj[key_h]) */
 function stClean(html){const d=document.createElement('div');d.innerHTML=html;const OK={B:1,STRONG:1,I:1,EM:1,U:1,BR:1,DIV:1,P:1,SPAN:1,H3:1,H4:1,H5:1,BLOCKQUOTE:1};
   const walk=n=>{Array.prototype.slice.call(n.childNodes).forEach(c=>{if(c.nodeType===3)return;if(c.nodeType!==1){c.remove();return}
@@ -5457,7 +5457,7 @@ function stLinkify(html,skip){const L=stNames().filter(x=>x[1]!==skip);let re=nu
   const tw=document.createTreeWalker(d,NodeFilter.SHOW_TEXT),nodes=[];while(tw.nextNode())if(re&&!(tw.currentNode.parentNode.closest&&tw.currentNode.parentNode.closest('a.evtl')))nodes.push(tw.currentNode);
   nodes.forEach(n=>{const t=n.nodeValue;re.lastIndex=0;let last=0,m,frag=null;
     while((m=re.exec(t))){if(!frag)frag=document.createDocumentFragment();const st=m.index+m[1].length;frag.appendChild(document.createTextNode(t.slice(last,st)));
-      const X=map[m[2].toLowerCase()],a=document.createElement('a');a.className='npcl'+(X[2]==='lieu'?' lieul':'');a.href='#';if(X[2]==='lieu')a.dataset.lieu=X[1];else a.dataset.npc=X[1];a.textContent=m[2];frag.appendChild(a);last=st+m[2].length;hit++}
+      const X=map[m[2].toLowerCase()],a=document.createElement('a');a.className='npcl'+(X[2]==='lieu'?' lieul':X[2]==='shop'?' shopl':'');a.href='#';if(X[2]==='lieu')a.dataset.lieu=X[1];else if(X[2]==='shop'){a.dataset.shop=X[1];a.title='Ouvrir la boutique'}else a.dataset.npc=X[1];a.textContent=m[2];frag.appendChild(a);last=st+m[2].length;hit++}
     if(frag){frag.appendChild(document.createTextNode(t.slice(last)));n.parentNode.replaceChild(frag,n)}});
   return hit?d.innerHTML:null}
 function stRich(ta,obj,key,after){ta.style.display='none';
@@ -5481,7 +5481,7 @@ function stRich(ta,obj,key,after){ta.style.display='none';
   const sync=()=>{const h=document.activeElement===ed?null:stLinkify(stClean(ed.innerHTML),ui.stN);
     if(h===null){if(rd)rd.hidden=true;ed.hidden=false;return}
     if(!rd){rd=document.createElement('div');rd.className='stread';rd.tabIndex=0;rd.dataset.fid=ed.dataset.fid;ed.insertAdjacentElement('afterend',rd);
-      rd.addEventListener('click',e=>{const a=e.target.closest('a.npcl');if(a&&a.dataset.evt!==undefined){e.preventDefault();sfx('dice');evtGen({ctx:a.dataset.evt||undefined,sess:ui.stS||undefined});return}if(a){e.preventDefault();stPeek(a.dataset.lieu?'lieu':'npc',a.dataset.lieu||a.dataset.npc);return}edit(stOffsetAtPoint(rd,e.clientX,e.clientY))});
+      rd.addEventListener('click',e=>{const a=e.target.closest('a.npcl');if(a&&a.dataset.evt!==undefined){e.preventDefault();sfx('dice');evtGen({ctx:a.dataset.evt||undefined,sess:ui.stS||undefined});return}if(a&&a.dataset.shop){e.preventDefault();shopEdit(a.dataset.shop);return}if(a){e.preventDefault();stPeek(a.dataset.lieu?'lieu':'npc',a.dataset.lieu||a.dataset.npc);return}edit(stOffsetAtPoint(rd,e.clientX,e.clientY))});
       rd.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('a')){e.preventDefault();edit()}})}
     rd.innerHTML=h;rd.hidden=false;ed.hidden=true};
   bar.addEventListener('mousedown',e=>{if(e.target.closest('button'))e.preventDefault()});
