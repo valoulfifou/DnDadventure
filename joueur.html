@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='05/11-17h15';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='06/11-14h35';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -84,6 +84,21 @@
 .jparty{position:absolute;transform:translate(-30%,-115%);font-size:22px;color:#2f6b2a;text-shadow:0 0 3px #fff;z-index:3;pointer-events:none}
 
 @media(max-width:420px){.nav button{letter-spacing:.02em;font-size:11px}}
+
+.doll .dgrid{display:grid;grid-template-columns:76px 1fr 76px;gap:8px;align-items:stretch}.doll .dcol{display:flex;flex-direction:column;gap:8px}
+.eqs{width:100%;aspect-ratio:1;border:1.5px dashed #b9a988;border-radius:12px;background:rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:4px;font:inherit;color:var(--muted)}
+.eqs .ei{line-height:0;color:#9c8a66}.eqs .ei .ico{width:30px;height:30px}.ico{width:1.1em;height:1.1em;vertical-align:-.15em}h2 .ico,h3 .ico{width:.95em;height:.95em;color:var(--umber)}.eqs .en{font-size:10px;line-height:1.1;text-align:center;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.eqs.full{border:1.5px solid #8a6a2c;background:linear-gradient(#fff8e6,#f1e2bd);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.6),0 2px 6px rgba(80,50,10,.18)}.eqs.full .ei{color:#6b4a14}.eqs.full .en{font-weight:700}
+.doll .dmid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}.dpor{width:100%;max-width:170px;aspect-ratio:3/4;border-radius:50% 50% 14px 14px/38% 38% 14px 14px;background:#e7dcc2 center/cover;border:3px solid #8a6a2c;display:flex;align-items:center;justify-content:center;font-size:54px;font-family:var(--f-display);color:#8a6a2c;box-shadow:0 4px 14px rgba(60,40,10,.25)}
+.dstat{display:flex;gap:14px}.dstat span{display:flex;flex-direction:column;align-items:center}.dstat b{font-size:22px;font-family:var(--f-display)}.dstat small{font-size:11px;color:var(--muted)}
+.doll .drow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.doll .drow .eqs{aspect-ratio:auto;min-height:70px}
+.load{margin-top:12px}.lbar{position:relative;height:10px;border-radius:999px;background:#e5dccb;overflow:hidden}.lbar i{position:absolute;left:0;top:0;bottom:0;background:#4f8a3a;border-radius:999px}.lbar b{position:absolute;top:0;bottom:0;width:2px;background:rgba(0,0,0,.25)}
+.load.e .lbar i{background:#d08a1e}.load.h .lbar i{background:#b23a26}.ltx{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-top:4px;flex-wrap:wrap}
+.ilist{display:flex;flex-direction:column}.ir{display:flex;align-items:center;gap:10px;padding:9px 4px;border:0;border-top:1px solid var(--line);background:none;font:inherit;text-align:left;cursor:pointer;color:var(--ink);width:100%}.ir:first-child{border-top:0}.ir.on{background:rgba(79,138,58,.12);border-radius:8px}
+.ir .ii{width:34px;height:34px;border-radius:9px;background:#efe5cf;border:1px solid #dccca6;display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:#6b4a14}.ir .ii .ico{width:21px;height:21px}.ir .in2{flex:1;min-width:0;display:flex;flex-direction:column}.ir em{font-style:normal;font-size:12px;color:#4f8a3a}.ir .iw{font-size:12px;color:var(--muted);white-space:nowrap}
+.purse .fld input{padding:6px 8px}
+.shopc{border:2px solid #2f6b2a}.shpurse{margin:4px 0 8px}.shtabs{display:flex;gap:6px;margin-bottom:6px}.shtabs button{flex:1;border:1px solid var(--line);background:none;border-radius:999px;padding:7px;font:inherit;cursor:pointer}.shtabs button.on{background:#2f6b2a;color:#fff;border-color:transparent}
+.shl{display:flex;flex-direction:column}.shr{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}.shr span{flex:1;min-width:0}.shr em{font-style:normal;font-weight:700;white-space:nowrap}.shr.no{opacity:.6}
 </style>
 </head>
 <body>
@@ -421,6 +436,116 @@ function mkSpell(s){if(Array.isArray(s))return {id:uid(),name:s[0],lvl:s[1],kind
   return {id:uid(),name:'Nouveau sort',lvl:1,kind:'sort_att',cost:'action',range:18,area:0,save:'DEX',dmg:'1d8',dtype:'',half:false,note:'',prep:true}}
 
 /* ---------- Calculs ---------- */
+/* ---------- Inventaire, équipement façon BG3 et poids ---------- */
+const WGT={'dague':.5,'bâton':2,'gourdin':1,'massue':5,'hachette':1,'javeline':1,'lance':1.5,'marteau léger':1,'masse d’armes':2,'serpe':1,'arbalète légère':2.5,'arc court':1,'fléchettes':.125,'fronde':0,'épée longue':1.5,'épée courte':1,'rapière':1,'cimeterre':1.5,'hache d’armes':2,'hache à deux mains':3.5,'épée à deux mains':3,'marteau de guerre':1,'morgenstern':2,'maillet d’armes':5,'fléau':1,'hallebarde':3,'coutille':3,'pique':9,'fouet':1.5,'trident':2,'arc long':1,'arbalète lourde':9,'arbalète de poing':1.5,
+ 'torche':.5,'chandelle':0,'rations (1 jour)':1,'outre':2.5,'sac à dos':2.5,'sac de couchage':3.5,'couverture':1.5,'tente (2 personnes)':10,'corde de chanvre (15 m)':5,'corde en soie (15 m)':2.5,'grappin':2,'pied-de-biche':2.5,'pitons (10)':1.25,'marteau':1.5,'pelle':2.5,'pioche de mineur':5,'lanterne à capuchon':1,'lanterne sourde':1,'huile (flasque)':.5,'boîte à amadou':.5,'miroir en acier':.25,'chaîne (3 m)':5,'menottes':3,'cadenas':.5,'kit d’escalade':6,'matériel de pêche':2,'billes (sac de 1 000)':1,'chausse-trappes (sac de 20)':1,'gamelle':.5,'longue-vue':.5,'selle d’équitation':12.5,
+ 'flèches (20)':.5,'carreaux d’arbalète (20)':.75,'billes de fronde (20)':.75,'carquois':.5,'potion de soins':.25,'potion de soins supérieurs':.25,'fiole d’acide':.5,'feu grégeois (flasque)':.5,'eau bénite (flasque)':.5,'kit de soins':1.5,'kit d’herboriste':1.5,'matériel d’alchimiste':4,
+ 'sacoche à composantes':1,'focaliseur arcanique (orbe)':1.5,'symbole sacré (amulette)':.5,'bâton druidique':2,'livre de sorts vierge':1.5,'luth':1,'flûte':.5,'lyre':1,'tambour':1.5,'outils de voleur':.5,'kit de déguisement':1.5,'kit de contrefaçon':2.5,'bouclier':3};
+const ARMW={matelassee:4,cuir:5,clout:6.5,peaux:6,chemise:10,ecailles:22.5,cuirasse:10,demiplate:20,broigne:20,cotte:27.5,clibanion:30,harnois:32.5},ARMSTR={cotte:13,clibanion:15,harnois:15};
+const ARMNAME={'armure matelassée':'matelassee','armure de cuir':'cuir','armure de cuir clouté':'clout','armure de peau':'peaux','chemise de mailles':'chemise','armure d’écailles':'ecailles','cuirasse':'cuirasse','demi-plate':'demiplate','broigne':'broigne','cotte de mailles':'cotte','clibanion':'clibanion','harnois':'harnois'};
+const IICO={tete:'M5 14a7 7 0 0 1 14 0v5h-4v-3.5h-6V19H5z M12 7V4.5 M8.5 12h7',
+ cou:'M6 3c0 6 2.5 9.5 6 10.5C15.5 12.5 18 9 18 3 M12 13.5a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4z',
+ cape:'M8 4h8l1.2 3L19 20l-3.5-1.8L12 20l-3.5-1.8L5 20 6.8 7z M9.5 4 12 7.5 14.5 4',
+ armure:'M8 3l4 2 4-2 3.5 3.5L17 9.5V19l-5 2-5-2V9.5L4.5 6.5z M12 5v16 M9 12h6',
+ mains:'M8.5 21v-5.5L6 12V7.5a1.1 1.1 0 0 1 2.2 0V11 M8.2 11V5.2a1.1 1.1 0 0 1 2.2 0V10 M10.4 10V4.2a1.1 1.1 0 0 1 2.2 0V10 M12.6 10V5.2a1.1 1.1 0 0 1 2.2 0v6.3l1.6-1.6a1.3 1.3 0 0 1 2 1.6L15.5 16v5',
+ pieds:'M8 3h6v10l5 2.6V19H6v-3.2l2-2.3z M6 19h13 M8 8h6',
+ anneau:'M12 8.5a5.8 5.8 0 1 0 0 11.6 5.8 5.8 0 0 0 0-11.6z M9.6 5.8 12 3l2.4 2.8L12 8z',
+ epee:'M20 4v3.6L11.2 16.4 7.6 12.8 16.4 4z M5.8 11.2l7 7 M9.4 14.6 4.5 19.5',
+ bouclier:'M12 3l7 2.8V12c0 4.8-3.3 7.7-7 9-3.7-1.3-7-4.2-7-9V5.8z M12 3v18 M5 11h14',
+ arc:'M6 4c7.5 1 13 6.5 14 14 M6 4l14 14 M4 13l9-9 M13 4h-3.2 M13 4v3.2',
+ potion:'M10 3h4 M10.5 3v5.2L6.2 15.8A3 3 0 0 0 8.8 20.5h6.4a3 3 0 0 0 2.6-4.7L13.5 8.2V3 M7.6 14.5h8.8',
+ parchemin:'M8 4h10.5a2 2 0 0 1 0 4H16v10a2 2 0 0 1-2 2H5.5a2 2 0 0 1 0-4H8V6a2 2 0 0 1 2-2 M11 9.5h3 M11 12.5h3',
+ sac:'M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8 M5 8h14l-1.2 12H6.2z M9 12.5h6',
+ etoile:'M12 3.5l2.4 5.3 5.8.6-4.3 3.9 1.2 5.7L12 16.1 6.9 19l1.2-5.7L3.8 9.4l5.8-.6z',
+ marteau:'M14 4l6 6-2.2 2.2-6-6z M13.2 7.6 4 16.8 7.2 20l9.2-9.2'};
+const ico=(k,cl)=>`<svg class="ico ${cl||''}" viewBox="0 0 24 24" aria-hidden="true"><path d="${IICO[k]||IICO.sac}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const EQS={tete:['tete','Tête'],cou:['cou','Cou'],cape:['cape','Cape'],armure:['armure','Armure'],mains:['mains','Mains'],pieds:['pieds','Pieds'],anneau:['anneau','Anneau'],bouclier:['bouclier','Bouclier']};
+const wKey=n=>String(n||'').toLowerCase().replace(/'/g,'’').trim();
+const wOf=n=>{const k=wKey(n);if(WGT[k]!=null)return WGT[k];if(/^parchemin/.test(k))return 0;if(/^potion/.test(k))return .25;const a=ARMNAME[k];return a?ARMW[a]:null};
+const kgFmt=v=>(Math.round(v*10)/10).toLocaleString('fr-FR')+' kg';
+// remet l'inventaire d'aplomb avec l'armure et le bouclier choisis dans la Fiche
+function invSync(c){c.inv=c.inv||[];c.eqW=c.eqW||{};let ch=false;
+  const arm=c.inv.find(i=>i.slot==='armure'&&i.eq);
+  if(c.armor&&c.armor!=='aucune'&&(!arm||arm.arm!==c.armor)){if(arm){arm.eq='';ch=true}let it=c.inv.find(i=>i.slot==='armure'&&i.arm===c.armor);
+    if(!it){it={id:uid(),name:(ARMORS[c.armor]||{n:'Armure'}).n.replace(/\s*\(.*\)/,''),qty:1,note:'',slot:'armure',arm:c.armor,w:ARMW[c.armor]||0};c.inv.push(it)}it.eq='armure';ch=true}
+  if((!c.armor||c.armor==='aucune')&&arm){arm.eq='';ch=true}
+  const sh=c.inv.find(i=>i.slot==='bouclier'&&i.eq);
+  if(c.shield&&!sh){let it=c.inv.find(i=>i.slot==='bouclier');if(!it){it={id:uid(),name:'Bouclier',qty:1,note:'',slot:'bouclier',w:3};c.inv.push(it)}it.eq='off';delete c.eqW.off;ch=true}
+  if(!c.shield&&sh){sh.eq='';ch=true}
+  Object.keys(c.eqW).forEach(k=>{if(c.eqW[k]&&!(c.weapons||[]).some(w=>w.id===c.eqW[k])){delete c.eqW[k];ch=true}});
+  if(ch)save()}
+function loadOf(c){let t=0;(c.inv||[]).forEach(i=>{const w=i.w!=null&&i.w!==''?+i.w:wOf(i.name);t+=(+w||0)*Math.max(0,+i.qty||0)});
+  (c.weapons||[]).forEach(w=>{const v=w.w!=null&&w.w!==''?+w.w:wOf(w.name);t+=+v||0});
+  const coins=Object.values(c.money||{}).reduce((a,b)=>a+Math.max(0,+b||0),0);t+=coins/100;return t}
+const eqAc=c=>(c.inv||[]).filter(i=>i.eq&&+i.ac).reduce((a,i)=>a+(+i.ac||0),0);
+const itIcon=i=>ico(i.kind==='potion'?'potion':i.kind==='parchemin'?'parchemin':i.slot?EQS[i.slot][0]:'sac');
+function slotBox(c,k,lbl,icon,it,wp){const nm=it?it.name:wp?wp.name:'';return `<button type="button" class="eqs ${nm?'full':''}" data-a="eqslot" data-v="${k}"><span class="ei">${ico(wp?(k==='dist'?'arc':'epee'):icon)}</span><span class="en">${nm?esc(nm):lbl}</span></button>`}
+function dollHTML(c,D){const I=c.inv||[],eq=s=>I.find(i=>i.eq===s),W=id=>id&&(c.weapons||[]).find(w=>w.id===id),E=c.eqW||{};
+  const off=eq('off'),cap=D.cap,ld=D.load;
+  return `<div class="card doll"><h3>Équipement</h3><div class="dgrid">
+    <div class="dcol">${slotBox(c,'tete','Tête','tete',eq('tete'))}${slotBox(c,'cape','Cape','cape',eq('cape'))}${slotBox(c,'mains','Mains','mains',eq('mains'))}${slotBox(c,'anneau1','Anneau','anneau',eq('anneau1'))}</div>
+    <div class="dmid"><div class="dpor" style="${c.thumb||c.img?`background-image:url('${c.thumb||c.img}')`:''}">${c.thumb||c.img?'':esc((fullName(c)||'?')[0])}</div>
+      <div class="dstat"><span><b>${D.ac}</b><small>CA</small></span><span><b>${fm(D.spd)}</b><small>vitesse</small></span></div></div>
+    <div class="dcol">${slotBox(c,'cou','Cou','cou',eq('cou'))}${slotBox(c,'armure','Armure','armure',eq('armure'))}${slotBox(c,'pieds','Pieds','pieds',eq('pieds'))}${slotBox(c,'anneau2','Anneau','anneau',eq('anneau2'))}</div></div>
+    <div class="drow">${slotBox(c,'main','Arme principale','epee',null,W(E.main))}${slotBox(c,'off','Main secondaire','bouclier',off,off?null:W(E.off))}${slotBox(c,'dist','Distance','arc',null,W(E.dist))}</div>
+    <div class="load ${ld>cap||c.encV&&ld>D.capH?'h':c.encV&&ld>D.capE?'e':''}"><div class="lbar"><i style="width:${Math.min(100,ld/cap*100)}%"></i>${c.encV?`<b style="left:${D.capE/cap*100}%"></b><b style="left:${D.capH/cap*100}%"></b>`:''}</div>
+      <div class="ltx"><span>${ico('sac')} ${kgFmt(ld)} / ${kgFmt(cap)}</span><span>${ld>cap?'⚠ Surchargé : vitesse 1,5 m':c.encV&&ld>D.capH?'Lourdement encombré : −6 m, désavantage FOR/DEX/CON':c.encV&&ld>D.capE?'Encombré : −3 m':'OK'}</span></div>
+      <label class="check" style="margin-top:4px;font-size:13px"><input type="checkbox" data-f="encV" ${c.encV?'checked':''}> Règle d’encombrement détaillée (malus dès ${kgFmt(D.capE)})</label>
+      ${D.strPen?`<p class="sub" style="margin:4px 0 0">⚠ Armure trop lourde pour ta Force : −3 m de vitesse.</p>`:''}</div></div>`}
+function invListHTML(c){const I=(c.inv||[]),W=c.weapons||[],E=c.eqW||{},wn=i=>{const w=i.w!=null&&i.w!==''?+i.w:wOf(i.name);return w==null?'':kgFmt((+w||0)*(+i.qty||1))};
+  const wl=W.map(w=>{const s=Object.entries(E).find(([k,v])=>v===w.id);const wv=w.w!=null&&w.w!==''?+w.w:wOf(w.name);return `<button type="button" class="ir" data-a="wopen" data-v="${w.id}"><span class="ii">${ico(w.ranged?'arc':'epee')}</span><span class="in2"><b>${esc(w.name)}</b>${s?`<em>équipée · ${{main:'principale',off:'secondaire',dist:'distance'}[s[0]]}</em>`:''}</span><span class="iw">${wv!=null?kgFmt(+wv||0):''}</span></button>`});
+  const il=I.map(i=>`<button type="button" class="ir" data-a="iopen" data-v="${i.id}"><span class="ii">${itIcon(i)}</span><span class="in2"><b>${esc(i.name||'Objet sans nom')}${+i.qty>1?` <small>×${i.qty}</small>`:''}</b>${i.eq?`<em>équipé${+i.ac?' · +'+i.ac+' CA':''}</em>`:i.kind==='parchemin'&&i.spell?`<em>${esc(i.spell)}</em>`:''}</span><span class="iw">${wn(i)}</span></button>`);
+  return `<div class="card"><h3>Sac</h3><div class="ilist">${wl.concat(il).join('')||'<p class="empty" style="margin:0">Ton sac est vide.</p>'}</div>
+    <div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="btn" data-a="addi" type="button">+ Objet</button><button class="btn" data-a="addpot" type="button">+ Potion</button><button class="btn" data-a="addscr" type="button">+ Parchemin</button><button class="btn" data-a="addeq" type="button">+ Équipement</button></div>
+    <p class="sub" style="margin:6px 0 0">Touche un objet pour le modifier, l’équiper ou l’utiliser. Potions et parchemins apparaissent dans tes actions de combat.</p></div>`}
+function rollD(e){let t=0;String(e).replace(/\s/g,'').replace(/([+-]?)(\d*)d(\d+)|([+-]?)(\d+)/g,(m,s1,n,f,s2,k)=>{if(f){let r=0;for(let i=0;i<(+n||1);i++)r+=1+Math.floor(Math.random()*+f);t+=s1==='-'?-r:r}else if(k)t+=s2==='-'?-k:+k;return ''});return t}
+function itemModal(c,id){const it=(c.inv||[]).find(i=>i.id===id);if(!it)return;const D=calc(c);
+  const slotSel=`<select class="in" id="imS"><option value="">— aucun —</option>${Object.entries(EQS).map(([k,v])=>`<option value="${k}" ${it.slot===k?'selected':''}>${v[1]}</option>`).join('')}</select>`;
+  modal(`<h2>${itIcon(it)} ${esc(it.name||'Objet')}</h2>
+    <div class="grid3" style="grid-template-columns:minmax(0,2fr) 70px 90px"><label class="fld">Nom<input data-f="inv.${it.id}.name" value="${esc(it.name)}"></label><label class="fld">Qté<input data-f="inv.${it.id}.qty" type="number" min="0" value="${+it.qty||0}"></label><label class="fld">Poids (kg)<input data-f="inv.${it.id}.w" type="number" min="0" step="0.05" value="${it.w!=null&&it.w!==''?it.w:(wOf(it.name)??'')}" placeholder="?"></label></div>
+    <label class="fld">Type<select class="in" id="imK"><option value="">Objet</option><option value="potion" ${it.kind==='potion'?'selected':''}>Potion</option><option value="parchemin" ${it.kind==='parchemin'?'selected':''}>Parchemin de sort</option><option value="eq" ${!it.kind&&it.slot?'selected':''}>Équipement à porter</option></select></label>
+    ${it.kind==='potion'?`<label class="fld">Effet<select class="in" data-f="inv.${it.id}.pot">${Object.entries(POTS).map(([k,p])=>`<option value="${k}" ${(it.pot||'soins')===k?'selected':''}>${esc(p.n)} (${p.d})</option>`).join('')}</select></label>`:''}
+    ${it.kind==='parchemin'?`<label class="fld">Sort<input class="in" data-f="inv.${it.id}.spell" list="spellDL2" value="${esc(it.spell||'')}" placeholder="Nom du sort"><datalist id="spellDL2">${(window.SORTS||[]).map(x=>`<option value="${esc(x[0])}">`).join('')}</datalist></label>`:''}
+    ${!it.kind&&it.slot?`<div class="grid2"><label class="fld">Emplacement${slotSel}</label><label class="fld">Bonus de CA (objet magique)<input data-f="inv.${it.id}.ac" type="number" value="${+it.ac||0}"></label></div>
+      ${it.slot==='armure'?`<label class="fld">Type d’armure<select class="in" id="imA">${Object.entries(ARMORS).filter(([k])=>k!=='aucune').map(([k,v])=>`<option value="${k}" ${it.arm===k?'selected':''}>${esc(v.n)}</option>`).join('')}</select></label>`:''}`:''}
+    <label class="fld">Note<input data-f="inv.${it.id}.note" value="${esc(it.note||'')}" placeholder="Effets, histoire, harmonisation…"></label>
+    <div class="row" style="flex-wrap:wrap;gap:8px;justify-content:space-between"><button class="btn danger" id="imDel" type="button">Jeter</button>
+      <span style="display:flex;gap:8px;flex-wrap:wrap">${it.kind==='potion'?`<button class="btn" id="imDrink" type="button">Boire maintenant</button>`:''}${!it.kind&&it.slot?`<button class="btn primary" id="imEq" type="button">${it.eq?'Retirer':'Équiper'}</button>`:''}<button class="btn" id="mOk" type="button">Fermer</button></span></div>`,el=>{
+    const v=q=>el.querySelector(q),re=()=>{save();render();itemModal(c,id)};
+    v('#mOk').onclick=()=>{close();render()};
+    v('#imK').onchange=e=>{const k=e.target.value;if(it.eq)unequip(c,it);if(k==='potion'){it.kind='potion';it.pot=it.pot||'soins';delete it.slot}else if(k==='parchemin'){it.kind='parchemin';delete it.slot}else if(k==='eq'){delete it.kind;it.slot=it.slot||'cou'}else{delete it.kind;delete it.slot}re()};
+    if(v('#imS'))v('#imS').onchange=e=>{if(it.eq)unequip(c,it);it.slot=e.target.value||undefined;if(it.slot==='armure'&&!it.arm)it.arm='cuir';re()};
+    if(v('#imA'))v('#imA').onchange=e=>{it.arm=e.target.value;if(it.w==null||it.w==='')it.w=ARMW[it.arm];if(it.eq)c.armor=it.arm;re()};
+    if(v('#imEq'))v('#imEq').onclick=()=>{if(it.eq)unequip(c,it);else equip(c,it);save();close();render()};
+    if(v('#imDrink'))v('#imDrink').onclick=()=>{const P=POTS[it.pot]||POTS.soins,h=rollD(P.d),D2=calc(c);const before=c.hp==null?D2.hpMax:+c.hp;c.hp=Math.min(D2.hpMax,before+h);it.qty=Math.max(0,(+it.qty||0)-1);if(!it.qty)c.inv=c.inv.filter(x=>x!==it);if(c.hp>0){c.death={s:0,f:0};c.conds=(c.conds||[]).filter(k=>k!=='inconscient')}
+      save();close();render();toast(`🧪 ${P.n} : +${h} PV (${P.d}) → ${c.hp}/${D2.hpMax}`);};
+    v('#imDel').onclick=()=>{if(!confirm('Jeter '+(it.name||'cet objet')+' ?'))return;if(it.eq)unequip(c,it);c.inv=c.inv.filter(x=>x!==it);save();close();render()}})}
+function weaponModal(c,id){const w=(c.weapons||[]).find(x=>x.id===id);if(!w)return;const E=c.eqW||(c.eqW={}),cur=Object.keys(E).find(k=>E[k]===id);
+  modal(`<h2>${ico(w.ranged?'arc':'epee')} ${esc(w.name)}</h2><p class="sub">Les caractéristiques de l’arme se règlent dans l’onglet Fiche. Ici, tu choisis où tu la portes.</p>
+    <div class="seg" style="margin:8px 0">${[['','Au sac'],['main','Principale'],['off','Secondaire'],['dist','Distance']].map(([k,l])=>`<button type="button" data-ws="${k}" class="${(cur||'')===k?'on':''}">${l}</button>`).join('')}</div>
+    <label class="fld">Poids (kg)<input data-f="weapons.${w.id}.w" type="number" min="0" step="0.05" value="${w.w!=null&&w.w!==''?w.w:(wOf(w.name)??'')}"></label>
+    <div class="row"><button class="btn" id="mOk" type="button">Fermer</button></div>`,el=>{
+    el.querySelector('#mOk').onclick=()=>{close();render()};
+    el.querySelectorAll('[data-ws]').forEach(b=>b.onclick=()=>{Object.keys(E).forEach(k=>{if(E[k]===id)delete E[k]});const k=b.dataset.ws;if(k){if(k==='off'){const sh=(c.inv||[]).find(i=>i.eq==='off');if(sh)unequip(c,sh)}E[k]=id}save();close();render()})})}
+function equip(c,it){const s=it.slot;if(!s)return;let tgt=s;
+  if(s==='anneau'){tgt=(c.inv||[]).some(i=>i.eq==='anneau1')?((c.inv||[]).some(i=>i.eq==='anneau2')?'anneau1':'anneau2'):'anneau1'}
+  if(s==='bouclier'){tgt='off';if(c.eqW)delete c.eqW.off}
+  (c.inv||[]).forEach(i=>{if(i!==it&&i.eq===tgt)unequip(c,i)});it.eq=tgt;
+  if(s==='armure'){c.armor=it.arm||'cuir'}if(s==='bouclier')c.shield=true;toast(`${it.name} équipé`)}
+function unequip(c,it){if(it.eq==='armure'||it.slot==='armure'&&it.eq)c.armor='aucune';if(it.eq==='off'&&it.slot==='bouclier')c.shield=false;it.eq=''}
+function eqSlotModal(c,k){const isW=['main','off','dist'].includes(k),slot=k.startsWith('anneau')?'anneau':k==='off'?'bouclier':k;
+  const items=(c.inv||[]).filter(i=>!i.kind&&i.slot===slot),W=isW?(c.weapons||[]):[],E=c.eqW||(c.eqW={});
+  const curI=(c.inv||[]).find(i=>i.eq===k),curW=isW&&E[k];
+  modal(`<h2>${{main:'Arme principale',off:'Main secondaire',dist:'Arme à distance'}[k]||EQS[slot][1]}</h2>
+    <div class="ilist">${W.map(w=>`<button type="button" class="ir ${curW===w.id?'on':''}" data-pw="${w.id}"><span class="ii">${ico(w.ranged?'arc':'epee')}</span><span class="in2"><b>${esc(w.name)}</b><em>${esc(w.dice||'')} ${esc(w.dtype||'')}</em></span></button>`).join('')}
+      ${items.map(i=>`<button type="button" class="ir ${i.eq===k?'on':''}" data-pi="${i.id}"><span class="ii">${itIcon(i)}</span><span class="in2"><b>${esc(i.name)}</b>${+i.ac?`<em>+${i.ac} CA</em>`:''}</span></button>`).join('')}
+      ${!W.length&&!items.length?`<p class="empty" style="margin:0">Rien à mettre ici. Ajoute un équipement dans ton sac (type « Équipement à porter », emplacement ${EQS[slot]?EQS[slot][1].toLowerCase():''}).</p>`:''}</div>
+    <div class="row">${curI||curW?'<button class="btn" id="esOff" type="button">Retirer</button>':''}<button class="btn" id="mOk" type="button">Fermer</button></div>`,el=>{
+    el.querySelector('#mOk').onclick=close;
+    const off=el.querySelector('#esOff');if(off)off.onclick=()=>{if(curI)unequip(c,curI);if(curW)delete E[k];save();close();render()};
+    el.querySelectorAll('[data-pw]').forEach(b=>b.onclick=()=>{Object.keys(E).forEach(x=>{if(E[x]===b.dataset.pw)delete E[x]});if(k==='off'){const sh=(c.inv||[]).find(i=>i.eq==='off');if(sh)unequip(c,sh)}E[k]=b.dataset.pw;save();close();render()});
+    el.querySelectorAll('[data-pi]').forEach(b=>b.onclick=()=>{const it=c.inv.find(i=>i.id===b.dataset.pi);if(!it)return;if(k.startsWith('anneau')){(c.inv||[]).forEach(i=>{if(i!==it&&i.eq===k)unequip(c,i)});if(it.eq)unequip(c,it);it.eq=k}else equip(c,it);save();close();render()})})}
+
 function calc(c){
   const R=RACES[c.race]||RACES.autre,K=CLASSES[c.cls]||CLASSES.guerrier,L=Math.max(1,Math.min(20,+c.level||1));
   const asi={...R.asi};if(R.pick)(c.raceAsi||[]).slice(0,2).forEach(s=>{asi[s]=(asi[s]||0)+1});
@@ -432,9 +557,12 @@ function calc(c){
   const hpMax=+c.hpMax||hpAuto;
   const A=ARMORS[c.armor]||ARMORS.aucune;let ac;
   if(c.armor==='aucune'&&K.ua&&!(c.cls==='moine'&&c.shield))ac=10+mod.DEX+mod[K.ua];else ac=A.b+Math.min(mod.DEX,A.dex);
-  ac+=(c.shield?2:0)+(+c.acBonus||0);if(c.acOverride)ac=+c.acOverride;
+  ac+=(c.shield?2:0)+(+c.acBonus||0)+eqAc(c);if(c.acOverride)ac=+c.acOverride;
   let spd=R.spd;if(c.cls==='moine'&&c.armor==='aucune'&&!c.shield&&L>=2)spd+=[0,0,3,3,3,3,4.5,4.5,4.5,4.5,6,6,6,6,7.5,7.5,7.5,7.5,9,9,9][L];
-  if(c.cls==='barbare'&&L>=5&&!A.heavy)spd+=3;if(c.speedOverride)spd=+c.speedOverride;
+  if(c.cls==='barbare'&&L>=5&&!A.heavy)spd+=3;
+  const load=loadOf(c),capE=score.FOR*2.5,capH=score.FOR*5,cap=score.FOR*7.5,strPen=!!(ARMSTR[c.armor]&&score.FOR<ARMSTR[c.armor]&&c.race!=='nain');
+  if(strPen)spd-=3;if(load>cap)spd=Math.min(spd,1.5);else if(c.encV){if(load>capH)spd-=6;else if(load>capE)spd-=3}spd=Math.max(0,spd);
+  if(c.speedOverride)spd=+c.speedOverride;
   const init=mod.DEX+(+c.initBonus||0);
   const cast=K.cast?{stat:K.cast,mod:mod[K.cast],dc:8+prof+mod[K.cast],atk:prof+mod[K.cast]}:null;
   let slots=[],pact=null;
@@ -455,7 +583,7 @@ function calc(c){
     case 'roublard':rem.push(`Attaque sournoise ${Math.ceil(L/2)}d6`);if(L>=2)rem.push('Ruse : Foncer, Se désengager ou Se cacher en action bonus');break;
   }
   if(L>=5&&['guerrier','barbare','paladin','rodeur','moine'].includes(c.cls))rem.push(c.cls==='guerrier'&&L>=11?`Attaque supplémentaire (${L>=20?4:3} attaques)`:'Attaque supplémentaire (2 attaques)');
-  return {R,K,L,asi,score,mod,prof,saves,skill,hpMax,hpAuto,ac,spd,init,cast,slots,pact,res,rem,pp:10+skill['Perception']};
+  return {R,K,L,asi,score,mod,prof,saves,skill,hpMax,hpAuto,ac,spd,init,cast,slots,pact,res,rem,pp:10+skill['Perception'],load,cap,capE,capH,strPen};
 }
 const scaleCantrip=(d,L)=>{const m=1+(L>=5)+(L>=11)+(L>=17);return String(d).replace(/^(\d*)d/,(x,n)=>((+n||1)*m)+'d')};
 const withMod=(d,m)=>String(d||'').replace(/\bmod\b/g,String(m)).replace(/\+\-/g,'-').replace(/\+0$/,'');
@@ -653,7 +781,7 @@ function softRefresh(){if(touchT&&Date.now()-touchT<1500){clearTimeout(srT);srT=
 function appHTML(){const c=curC();
   if(!c)return renderList();
   const D=calc(c);if(c.hp==null)c.hp=D.hpMax;
-  const tabs=[['combat','Combat'],['fiche','Fiche'],['sorts','Sorts'],['sac','Sac'],['journal','Journal'],['notes','Notes']];
+  const tabs=[['combat','Combat'],['fiche','Fiche'],['sorts','Sorts'],['sac','Inventaire'],['journal','Journal'],['notes','Notes']];
   const body={combat:tabCombat,fiche:tabFiche,sorts:tabSorts,sac:tabSac,journal:tabJournal,notes:tabNotes}[view.tab](c,D);
   return `<div class="wrap">
     <div class="top"><button class="btn sm" data-a="home" type="button">‹ Mes personnages</button><span class="sp"></span>${joined()&&myChar()===c?'':'<button class="btn sm primary" data-a="joinT" type="button">Rejoindre une table</button>'}</div>
@@ -807,17 +935,11 @@ function tabSorts(c,D){
     <div class="row" style="justify-content:flex-start"><button class="btn sm" data-a="adds" type="button">+ Sort personnalisé</button></div>
     <p class="sub" style="margin:0">${(window.SORTS||[]).length} sorts (liste d’AideDD). Touche « i » pour lire l’effet complet.</p></div>`;
 }
-function tabSac(c){
+function tabSac(c){invSync(c);const D=calc(c);
   const M=[['pp','Platine'],['po','Or'],['pe','Électrum'],['pa','Argent'],['pc','Cuivre']];
-  return `<div class="card"><h3>Bourse</h3><div class="grid3">${M.map(([k,n])=>`<label class="fld">${n} (${k})<input data-f="money.${k}" type="number" min="0" value="${+c.money[k]||0}"></label>`).join('')}</div></div>
-  <div class="card"><h3>Équipement</h3>${c.inv.map(i=>`<div class="ed"><div class="grid3" style="grid-template-columns:minmax(0,2fr) 80px auto"><label class="fld">Objet<input data-f="inv.${i.id}.name" value="${esc(i.name)}"></label><label class="fld">Qté<input data-f="inv.${i.id}.qty" type="number" min="0" value="${+i.qty||0}"></label><button class="btn sm danger" data-a="deli" data-v="${i.id}" type="button" style="align-self:end">Retirer</button></div>
-    <div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:wrap;margin:6px 0"><select class="in" data-f="inv.${i.id}.kind" style="flex:0 0 auto"><option value="">Objet</option><option value="potion" ${i.kind==='potion'?'selected':''}>Potion (utilisable en combat)</option><option value="parchemin" ${i.kind==='parchemin'?'selected':''}>Parchemin de sort</option></select>
-      ${i.kind==='potion'?`<select class="in" data-f="inv.${i.id}.pot" style="flex:1;min-width:0">${Object.entries(POTS).map(([k,p])=>`<option value="${k}" ${(i.pot||'soins')===k?'selected':''}>${esc(p.n)} (${p.d})</option>`).join('')}</select>`:''}
-      ${i.kind==='parchemin'?`<input class="in" data-f="inv.${i.id}.spell" list="spellDL" value="${esc(i.spell||'')}" placeholder="Nom du sort" style="flex:1;min-width:0">${i.spell&&!sortFind(i.spell)?'<small style="color:#a33">sort inconnu</small>':''}`:''}</div>
-    <input class="in" data-f="inv.${i.id}.note" value="${esc(i.note)}" placeholder="Note"></div>`).join('')||'<p class="empty" style="margin:0">Ton sac est vide.</p>'}
-    <datalist id="spellDL">${(window.SORTS||[]).map(x=>`<option value="${esc(x[0])}">`).join('')}</datalist>
-    <div class="row" style="justify-content:flex-start;gap:6px;flex-wrap:wrap"><button class="btn" data-a="addi" type="button">+ Ajouter un objet</button><button class="btn" data-a="addpot" type="button">+ Potion de soins</button><button class="btn" data-a="addscr" type="button">+ Parchemin</button></div>
-    <p class="sub" style="margin:6px 0 0">Les potions et parchemins apparaissent dans tes actions de combat. À l’usage, la quantité baisse toute seule.</p></div>`;
+  return `${shopCard(c)}${dollHTML(c,D)}
+  <div class="card"><h3>Bourse <small style="font-weight:400;opacity:.7">${cpFmt(purse(c))}</small></h3><div class="grid3 purse">${M.map(([k,n])=>`<label class="fld">${n} (${k})<input data-f="money.${k}" type="number" min="0" value="${+c.money[k]||0}"></label>`).join('')}</div></div>
+  ${invListHTML(c)}`;
 }
 function tabJournal(c){
   if(!(joined()&&myChar()===c))return `<div class="card"><h3>Journal de l’aventure</h3><p class="sub" style="margin:0">Rejoins la table de ton MJ (onglet Combat) pour retrouver ici les PNJ rencontrés, les lieux découverts et le résumé de chaque session.</p></div>`;
@@ -937,9 +1059,16 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
     case 'dels':c.spells=c.spells.filter(s=>s.id!==v);break;
     case 'addr':c.custom.push({id:uid(),name:'Nouvelle ressource',max:1,rest:'long'});break;
     case 'delr':c.custom=c.custom.filter(r=>r.id!==v);delete c.resUsed['c_'+v];break;
-    case 'addi':c.inv.push({id:uid(),name:'',qty:1,note:''});break;
-    case 'addpot':c.inv.push({id:uid(),name:'',qty:1,note:'',kind:'potion',pot:'soins'});break;
-    case 'addscr':c.inv.push({id:uid(),name:'Parchemin',qty:1,note:'',kind:'parchemin',spell:''});break;
+    case 'addi':{const it={id:uid(),name:'',qty:1,note:''};c.inv.push(it);save();render();itemModal(c,it.id);return}
+    case 'shT':view.shT=v;break;
+    case 'eqslot':eqSlotModal(c,v);return;
+    case 'iopen':itemModal(c,v);return;
+    case 'wopen':weaponModal(c,v);return;
+    case 'addeq':{const it={id:uid(),name:'Nouvel équipement',qty:1,note:'',slot:'cou',w:''};c.inv.push(it);save();render();itemModal(c,it.id);return}
+    case 'sbuy':{const sh=shopNow();const it=sh&&(Array.isArray(sh.items)?sh.items:Object.values(sh.items||{})).find(x=>x.id===v);if(!it)return;if(purse(c)<it.p){toast('Pas assez d’argent');return}shopSend({op:'buy',iid:v});return}
+    case 'ssell':{let name='';if(v.startsWith('w:')){const w=(c.weapons||[]).find(x=>x.id===v.slice(2));name=w&&w.name}else{const it=(c.inv||[]).find(x=>x.id===v);name=it&&it.name}if(!name)return;shopSend({op:'sell',iid:v,name});toast('Proposé au marchand…');return}
+    case 'addpot':{const it={id:uid(),name:'Potion de soins',qty:1,note:'',kind:'potion',pot:'soins',w:.25};c.inv.push(it);save();render();itemModal(c,it.id);return}
+    case 'addscr':{const it={id:uid(),name:'Parchemin',qty:1,note:'',kind:'parchemin',spell:'',w:0};c.inv.push(it);save();render();itemModal(c,it.id);return}
     case 'deli':c.inv=c.inv.filter(i=>i.id!==v);break;
     case 'delc':{if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Confirmer : supprimer définitivement';return}DB.chars=DB.chars.filter(x=>x.id!==c.id);DB.cur=null;keep=false;break}
     case 'join':{const sid=$('#jSheet').value,ps=$('#jPseudo').value.trim();if(!ps){toast('Indique ton prénom pour le MJ');return}
@@ -1204,7 +1333,10 @@ function netConnect(){const N=net();CON.unsub.concat(CON.charUn).forEach(u=>{try
   softRefresh()}
 function listenChar(){const N=net();CON.charUn.forEach(u=>{try{u&&u()}catch(e){}});CON.charUn=[];if(!N||!CON.cid)return;
   CON.charUn.push(N.on(TP('live/'+CON.cid),L=>{if(L)applyLiveSheet(L)}));
-  CON.charUn.push(N.on(TP('rolls/'+CON.cid),R=>{CON.rolls=R||{};grantsIn(R||{});showRolls()}))}
+  CON.charUn.push(N.on(TP('rolls/'+CON.cid),R=>{CON.rolls=R||{};const sh=shopNow(),sid=sh?sh.id+'|'+sh.ts:'';
+    if(sh&&(!CON.shopId||CON.shopId.split('|')[0]!==sh.id)){toast(`🛒 ${sh.name} est ouvert ! Va dans l’onglet Sac`);try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(e){}}
+    if(!sh&&CON.shopId){CON.shopWait=false;toast('🛒 La boutique est fermée')}const ch=sid!==CON.shopId;CON.shopId=sid;
+    grantsIn(R||{});showRolls();if(ch)softShop()}))}
 function applyLiveSheet(L){const c=myChar();if(!c)return;
   const norm={hp:+L.hp||0,conds:(L.conds||[]).slice().sort(),death:{s:+(L.death&&L.death.s)||0,f:+(L.death&&L.death.f)||0},slots:L.slots||{},res:L.res||{}};
   if(JSON.stringify(norm)===CON.cache)return;
@@ -1263,10 +1395,46 @@ const MVPMSG={
 function mvpNote(c,st){try{navigator.vibrate&&navigator.vibrate([40,30,40])}catch(e){}
   const d=document.createElement('div');d.className='mvpn';d.innerHTML=`<b>🏅</b><div><strong>${esc((L=>L[Math.floor(Math.random()*L.length)])(MVPMSG[c.cls]||MVPMSG._))}</strong><small>${st.d||0} dégâts${st.k?` · ${st.k} ennemi${st.k>1?'s':''} vaincu${st.k>1?'s':''}`:''}${st.c?` · ${st.c} critique${st.c>1?'s':''}`:''}${st.h?` · ${st.h} PV soignés`:''}. Les autres ne le savent pas… à toi de fanfaronner !</small></div>`;
   document.body.appendChild(d);const end=()=>{d.classList.add('out');setTimeout(()=>d.remove(),400)};d.onclick=end;setTimeout(end,9000)}
+/* ---------- Boutique du marchand (ouverte par le MJ) ---------- */
+const CV={pp:1000,po:100,pe:50,pa:10,pc:1};
+const cpFmt=p=>{p=Math.max(0,Math.round(+p||0));const o=Math.floor(p/100),a=Math.floor(p%100/10),c=p%10;return [o?o.toLocaleString('fr-FR')+' po':'',a?a+' pa':'',c?c+' pc':''].filter(Boolean).join(' ')||'gratuit'};
+const purse=c=>Object.entries(CV).reduce((t,[k,v])=>t+Math.max(0,+(c.money||{})[k]||0)*v,0);
+function payCp(c,cost){const M=c.money||(c.money={}),tot=purse(c);if(tot<cost)return false;let rem=tot-cost;const N={};
+  ['pp','po','pe','pa','pc'].forEach(k=>{const t=Math.min(Math.max(0,+M[k]||0),Math.floor(rem/CV[k]));N[k]=t;rem-=t*CV[k]});
+  N.po+=Math.floor(rem/100);rem%=100;N.pa+=Math.floor(rem/10);N.pc+=rem%10;Object.assign(M,N);return true}
+function gainCp(c,g){const M=c.money||(c.money={});g=Math.max(0,Math.round(g));M.po=(+M.po||0)+Math.floor(g/100);M.pa=(+M.pa||0)+Math.floor(g%100/10);M.pc=(+M.pc||0)+g%10}
+const shopNow=()=>{const R=CON.rolls||{},s0=R.shop;return s0&&s0.status==='shop'?s0:null};
+function shopCard(c){const sh=shopNow();if(!sh||!(joined()&&myChar()===c))return '';const tot=purse(c),A=x=>Array.isArray(x)?x:Object.values(x||{}),I=A(sh.items),wait=!!CON.shopWait;
+  const icon=ico({g:'sac',a:'marteau',r:'bouclier',p:'potion',m:'etoile'}[sh.type]||'sac');
+  const sellL=(c.inv||[]).filter(i=>i.name&&(+i.qty||0)>0).map(i=>({id:i.id,n:i.name+(+i.qty>1?' ×'+i.qty:'')})).concat((c.weapons||[]).map(w=>({id:'w:'+w.id,n:w.name})));
+  return `<div class="card shopc"><h3>${icon} ${esc(sh.name)}</h3>${sh.who?`<p class="sub" style="margin:-4px 0 4px">Tenu par ${esc(sh.who)}</p>`:''}${sh.desc?`<p style="margin:0 0 6px;font-style:italic">${esc(sh.desc)}</p>`:''}
+    <div class="shpurse">Ta bourse : <b>${cpFmt(tot)}</b>${+sh.mod?` <small>${+sh.mod>0?'· prix en hausse':'· prix en baisse'}</small>`:''}</div>
+    <div class="shtabs"><button type="button" class="${view.shT!=='sell'?'on':''}" data-a="shT" data-v="buy">Acheter</button>${+sh.buy?`<button type="button" class="${view.shT==='sell'?'on':''}" data-a="shT" data-v="sell">Vendre</button>`:''}</div>
+    ${view.shT==='sell'&&+sh.buy?(sellL.length?`<div class="shl">${sellL.map(o=>`<div class="shr"><span>${esc(o.n)}</span><button class="btn sm" type="button" data-a="ssell" data-v="${esc(o.id)}" ${wait?'disabled':''}>Proposer</button></div>`).join('')}</div><p class="sub" style="margin:6px 0 0">Le marchand te fait une offre, tu acceptes ou non.</p>`:'<p class="sub">Rien à vendre dans ton sac.</p>')
+      :(I.length?`<div class="shl">${I.map(it=>{const no=tot<it.p;return `<div class="shr ${no?'no':''}"><span><b>${esc(it.n)}</b>${it.q>0?` <small>· ${it.q} en stock</small>`:''}</span><em>${cpFmt(it.p)}</em><button class="btn sm ${no?'':'primary'}" type="button" data-a="sbuy" data-v="${esc(it.id)}" ${no||wait?'disabled':''}>${no?'Trop cher':'Acheter'}</button></div>`}).join('')}</div>`:'<p class="sub">Le marchand n’a plus rien à vendre.</p>')}
+    ${wait?'<p class="sub" style="margin:6px 0 0">⏳ Le marchand s’occupe de toi…</p>':''}</div>`}
+function shopSend(o){const N=net(),sh=shopNow();if(!N||!CON.cid||!sh)return;CON.shopWait=true;clearTimeout(CON.shopT);CON.shopT=setTimeout(()=>{CON.shopWait=false;softShop()},9000);
+  N.set(TP('req/'+CON.cid),Object.assign({t:'shop',sid:sh.id,n:Date.now()},o)).catch(()=>{CON.shopWait=false;toast('Envoi impossible')});softShop()}
+function softShop(){if(view.tab==='sac'){const y=window.scrollY;render();window.scrollTo(0,y)}}
+function shopGrant(c,g){CON.shopWait=false;clearTimeout(CON.shopT);
+  if(g.kind==='shopno'){toast('🛒 '+(g.msg||'Refusé'));return true}
+  if(g.kind==='shopbuy'){const it=g.item||{},cost=+g.cost||0;if(!payCp(c,cost)){toast('Pas assez d’argent pour '+(it.n||'cet objet'));return true}
+    try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}
+    if(WEAPONS.some(w=>w[0]===it.n)){c.weapons.push(mkWeapon(it.n));toast(`${it.n} ajouté à tes armes (${cpFmt(cost)})`);return true}
+    {const ak=ARMNAME[wKey(it.n)];if(ak||wKey(it.n)==='bouclier'){c.inv.push({id:uid(),name:it.n,qty:1,note:'Acheté chez '+(g.shop||'un marchand'),slot:ak?'armure':'bouclier',arm:ak||undefined,w:ak?ARMW[ak]:3});toast(`${it.n} acheté : équipe-le dans ton inventaire`);return true}}
+    const kind=it.k==='potion'||it.k==='parchemin'?it.k:'',ex=(c.inv||[]).find(i=>i.name===it.n&&(i.kind||'')===kind);
+    if(ex)ex.qty=(+ex.qty||0)+1;else c.inv.push(Object.assign({id:uid(),name:it.n,qty:1,w:wOf(it.n)??'',note:'Acheté chez '+(g.shop||'un marchand')},kind?{kind}:{},kind==='potion'?{pot:it.x||'soins'}:{},kind==='parchemin'?{spell:it.x||''}:{}));
+    toast(`🛒 ${it.n} acheté (${cpFmt(cost)})`);return true}
+  if(g.kind==='shopsell'){const id=String(g.iid||'');let ok=false;
+    if(id.startsWith('w:')){const w=(c.weapons||[]).find(x=>x.id===id.slice(2));if(w){c.weapons=c.weapons.filter(x=>x!==w);ok=true}}
+    else{const it=(c.inv||[]).find(x=>x.id===id);if(it&&(+it.qty||0)>0){it.qty=(+it.qty||0)-1;if(it.qty<=0)c.inv=c.inv.filter(x=>x!==it);ok=true}}
+    if(ok){gainCp(c,+g.gain||0);toast(`💰 ${g.name||'Objet'} vendu : +${cpFmt(g.gain)}`)}else toast('Objet introuvable dans ton sac');return true}
+  return false}
 function grantsIn(R){const c=myChar();if(!c)return;xpFix(c);const N=net();CON.gdone=CON.gdone||new Set();let ch=false,xp=0,why=[],mvp=null;
   Object.entries(R).forEach(([k,g])=>{if(!g||g.status!=='grant'||CON.gdone.has(k))return;CON.gdone.add(k);ch=true;
     if(g.kind==='xp'){const n=Math.max(0,+g.n||0);c.xp=(+c.xp||0)+n;xp+=n;if(g.why)why.push(g.why)}
     if(g.kind==='mvp'){mvp=g.st||{}}
+    if(String(g.kind).startsWith('shop'))shopGrant(c,g);
     if(g.kind==='use'){const it=(c.inv||[]).find(i=>i.id===g.item);if(it){it.qty=Math.max(0,(+it.qty||0)-1);toast((it.kind==='potion'?'🧪 ':'📜 ')+((it.kind==='parchemin'?it.spell:'')||it.name||'Objet')+' utilisé');if(it.qty===0&&it.kind)c.inv=c.inv.filter(x=>x!==it)}}
     if(N)N.remove(TP(`rolls/${CON.cid}/${k}`)).catch(()=>{})});
   if(mvp)setTimeout(()=>mvpNote(c,mvp),xp?5600:300);

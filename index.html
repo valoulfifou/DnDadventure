@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='06/11-10h05';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='06/11-14h35';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -420,6 +420,10 @@ button{cursor:pointer}
 @media (min-width:960px){.mapwrap{max-height:calc(100vh - 150px)}}
 .board{position:relative;user-select:none;-webkit-user-select:none}
 .board .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.smlist{display:flex;flex-direction:column;gap:4px;margin:4px 0 8px}.smrow{display:grid;grid-template-columns:minmax(0,1fr) 84px 64px 34px;gap:6px;align-items:center}.smrow input{min-width:0;padding:7px 8px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);font:inherit;font-size:14px}
+.smlog{margin-top:8px;font-size:13px}.smlog summary{cursor:pointer;font-weight:600}.smlog div{padding:3px 0;border-top:1px solid var(--line)}.smlog time{opacity:.6;margin-right:6px}
+#shopChip{position:fixed;left:14px;bottom:14px;z-index:60;display:flex;border-radius:999px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.25)}#shopChip button{border:0;background:#2f6b2a;color:#fff;font:inherit;font-size:14px;padding:9px 14px;cursor:pointer}#shopChip button+button{background:#24521f;padding:9px 12px}
+#shopQ{position:fixed;right:14px;bottom:14px;z-index:300;display:flex;flex-direction:column;gap:8px;max-width:min(380px,calc(100vw - 28px))}#shopQ .sq{background:var(--surface);border:2px solid #2f6b2a;border-radius:12px;padding:10px 12px;box-shadow:0 8px 26px rgba(0,0,0,.3);font-size:14px}#shopQ .row{margin-top:8px;gap:6px}#shopQ input{flex:1;min-width:0;padding:7px 8px;border:1px solid var(--line-2);border-radius:8px;font:inherit}
 .evctx{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.evctx button{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:7px 12px;font:inherit;font-size:14px;cursor:pointer;color:var(--ink)}.evctx button.on{background:var(--umber,#4a3a2a);color:#f4efe4;border-color:transparent}
 .evcard{border:1px solid #d9c9a5;background:linear-gradient(#fbf6ea,#f3ead6);border-radius:12px;padding:14px 16px;margin:6px 0 8px;min-height:120px}
 .evcard .evh{display:flex;align-items:center;gap:10px;justify-content:space-between}.evcard .evh b{font-family:var(--f-display);font-weight:400;font-size:22px;color:#3a2a14}.evcard .evh span{color:#fff;font-size:12px;border-radius:999px;padding:2px 9px;white-space:nowrap}
@@ -1922,7 +1926,7 @@ function stabModal(h,t){const sp=(h.actions||[]).some(a=>/stabilisation|epargner
 function heal(t,n,force){if(!force&&n>0&&efHas(t,'noHeal')){log(`${esc(t.name)} ne peut pas récupérer de PV pour le moment.`);toast(t.name+' ne peut pas être soigné·e');return}if(pjDead(t)&&!force){log(`${esc(t.name)} est mort·e : un soin ne suffit plus (il faut un sort comme Retour à la vie).`);toast(t.name+' est mort·e : soin sans effet');return}n=Math.max(0,Math.round(n));const wasDown=t.side==='pj'&&t.hp<=0;t.hp=Math.min(t.hpMax,t.hp+n);if(t.hp>0){t.conds=t.conds.filter(k=>k!=='inconscient');t.death={s:0,f:0};if(wasDown)log(`<b>${esc(t.name)}</b> reprend conscience avec ${t.hp} PV (toujours à terre : se relever coûte la moitié de sa vitesse).`)}}
 
 /* ---------- Rendu ---------- */
-function render(){if(TVM){tvRender();return}ensureMaps();renderMapbar();$('#mapwrap').style.touchAction=ui.ed&&!['pan','pions'].includes(ui.ed.tool)?'none':'';const side=ui.sb||ui.st;document.body.classList.toggle('mode-ed',!!ui.ed&&!side);document.body.classList.toggle('mode-sb',!!ui.sb);document.body.classList.toggle('mode-st',!!ui.st);$('#tSb').classList.toggle('on',!!ui.sb);$('#tSb').setAttribute('aria-selected',!!ui.sb);$('#tSt').classList.toggle('on',!!ui.st);$('#tSt').setAttribute('aria-selected',!!ui.st);if(ui.sb)sbRender();if(ui.st&&!$('#stView').childElementCount)stRender();$('#tCombat').classList.toggle('on',!ui.ed&&!side);$('#tCrea').classList.toggle('on',!!ui.ed&&!side);$('#tCombat').setAttribute('aria-selected',!ui.ed&&!side);$('#tCrea').setAttribute('aria-selected',!!ui.ed&&!side);renderTop();renderInit();renderParty();renderBoard();renderBanner();renderPanel();renderLog();renderPicker()}
+function render(){if(TVM){tvRender();return}ensureMaps();try{shopChip()}catch(e){}renderMapbar();$('#mapwrap').style.touchAction=ui.ed&&!['pan','pions'].includes(ui.ed.tool)?'none':'';const side=ui.sb||ui.st;document.body.classList.toggle('mode-ed',!!ui.ed&&!side);document.body.classList.toggle('mode-sb',!!ui.sb);document.body.classList.toggle('mode-st',!!ui.st);$('#tSb').classList.toggle('on',!!ui.sb);$('#tSb').setAttribute('aria-selected',!!ui.sb);$('#tSt').classList.toggle('on',!!ui.st);$('#tSt').setAttribute('aria-selected',!!ui.st);if(ui.sb)sbRender();if(ui.st&&!$('#stView').childElementCount)stRender();$('#tCombat').classList.toggle('on',!ui.ed&&!side);$('#tCrea').classList.toggle('on',!!ui.ed&&!side);$('#tCombat').setAttribute('aria-selected',!ui.ed&&!side);$('#tCrea').setAttribute('aria-selected',!!ui.ed&&!side);renderTop();renderInit();renderParty();renderBoard();renderBanner();renderPanel();renderLog();renderPicker()}
 function renderTop(){{const b=$('#bXP');if(b){const n=(S.kills||[]).length;b.textContent=n?`🏆 XP (${n})`:'🏆 XP'}}undoBtns();{const t=!!S.testing&&S.testing===S.curMap&&!ui.ed;['#bReset','#bTestEnd'].forEach(q=>{const b=$(q);if(b)b.hidden=!t});document.body.classList.toggle('testing',t)}
   if(ui.ed){$('#round').textContent=ui.pick?'Mes cartes':'Création · '+((curMapE()||{}).name||'');return}
   $('#round').textContent=S.turn>=0?('Round '+S.round+' · tour de '+(cur()?.name||'—')):'Hors combat';
@@ -3007,7 +3011,7 @@ const SPX0={
 'Souhait':{u:'Souhait : le MJ tranche.'},
 'Tempête vengeresse':{c:['assourdi'],cd:M10,rs:0}
 };
-const nkS=t=>String(t||'').toLowerCase().replace(/[’']/g,"'").normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s*\((niv|tour|recharge|\d|a volonte)[^)]*\)\s*/g,' ').replace(/^sort\s*:\s*/,'').replace(/\s+/g,' ').trim();
+const nkS=t=>String(t||'').toLowerCase().replace(/[’']/g,"'").normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/^[^a-z0-9]+/,'').replace(/\s*\((niv|tour|recharge|parchemin|\d|a volonte)[^)]*\)\s*/g,' ').replace(/^sort\s*:\s*/,'').replace(/\s+/g,' ').trim();
 const SPX={};Object.entries(SPX0).forEach(([k,v])=>SPX[nkS(k)]=v);
 function spx(a){if(!a)return null;if(a.sx)return a.sx;if(!a.name||a.gr)return null;return SPX[nkS(a.name)]||null}
 const spRow=a=>{const n=nkS(a&&a.name);return (window.SORTS||[]).find(s=>nkS(s[0])===n)||null};
@@ -3630,7 +3634,7 @@ function concCheck(c,dc){quickSave(c,'CON',dc,'garder sa concentration',()=>{log
 // réactions défensives : Bouclier (sort) et Parade (monstre)
 function reactDefense(att,a,tgt,tot,AC){return reactDefense0(att,a,tgt,tot,AC)||cfCutting(att,a,tgt,tot,AC)}
 function reactDefense0(att,a,tgt,tot,AC){if(!tgt||tgt.isObj||!tgt.res||!tgt.res.reaction||tgt.hp<=0)return null;
-  const sh=(tgt.actions||[]).find(x=>/^bouclier(\s*\(|$)/i.test(x.name)&&x.kind!=='attaque');
+  const sh=(tgt.actions||[]).find(x=>/^(📜\s*)?bouclier(\s*\(|$)/i.test(x.name)&&x.kind!=='attaque');
   const shN=!sh&&/Réactions :[^.]*Bouclier/.test(tgt.note||'');
   const pt=`${att.name} te touche avec ${a.name} : ${tot} contre ta CA ${AC}.`;
   if(shN&&tot<AC+5)return {who:tgt,txt:`${tgt.name} peut lancer Bouclier (réaction, +5 CA jusqu’à son prochain tour) : l’attaque (${tot}) raterait.`,btn:'Lancer Bouclier',use:()=>{tgt.res.reaction=false;tgt.acB=5;log(`<b>${esc(tgt.name)}</b> lance Bouclier : +5 CA.`);sfxRelay('magie')}};
@@ -4861,7 +4865,7 @@ function stTocItems(){const m=$('#stView .stmain');if(!m)return [];const out=[];
     else{t=e.textContent;l=e.tagName==='H3'?2:3;if(!e.closest('.stchap'))l--}
     t=t.trim();if(t)out.push({e,t,l:Math.max(1,l),fo,hd:/^H[34]$/.test(e.tagName)})});return out}
 // la barre de navigation : recherche, cette page, scénario, sessions, PNJ, lieux
-function stTocBuild(){const T=$('#stToc');if(!T)return;const c=stCamp();if(!c)return;ui.stSec=ui.stSec||{scen:1,sess:1,npc:1,lieu:1,page:1};
+function stTocBuild(){const T=$('#stToc');if(!T)return;const c=stCamp();if(!c)return;ui.stSec=ui.stSec||{scen:1,sess:1,npc:1,lieu:1,page:1,shop:1};
   if(!T.dataset.ok){T.dataset.ok=1;T.innerHTML=`<div style="display:flex;align-items:center;gap:6px"><input class="sq" type="search" placeholder="🔍 Rechercher…" aria-label="Rechercher dans la campagne" enterkeyhint="search"><button type="button" class="x" aria-label="Masquer la navigation">✕</button></div><div class="tbody"></div>`;
     const inp=T.querySelector('.sq');let t0=0;inp.oninput=()=>{clearTimeout(t0);t0=setTimeout(stTocBuild,180)};T.querySelector('.x').onclick=stNavToggle;if(ui.stQ)inp.value=ui.stQ}
   const B=T.querySelector('.tbody'),qq=T.querySelector('.sq').value.trim();ui.stQ=qq;
@@ -4885,6 +4889,8 @@ function stTocBuild(){const T=$('#stToc');if(!T)return;const c=stCamp();if(!c)re
   if(stHasScen(c))h+=sec('scen','🎬','Ancien scénario',(c.scen||[]).length,sb,null);
   h+=sec('npc','👤','PNJ',(c.npcs||[]).length,(c.npcs||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(n=>btn(n.name,'l1',()=>stOpen('npc',n.id),ui.stN===n.id,`<span class="av" ${stPic(n)}>${n.img?'':stInit(n)}</span>`)).join(''),'Nouveau PNJ').replace('</div></details>',`<button type="button" class="add" data-g="${go.push(()=>npcGen(ui.stS?{sess:ui.stS}:ui.stL?{place:(stLieu()||{}).name||''}:{}))-1}">🎲 PNJ express</button><button type="button" class="add" data-g="${go.push(()=>evtGen(ui.stL?{ctx:evtGuess((stLieu()||{}).kind)}:{}))-1}">🎲 Événement aléatoire</button></div></details>`);
   h+=sec('lieu','📍','Lieux',(c.places||[]).length,(c.places||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).map(p=>btn(p.name,'l1',()=>stOpen('lieu',p.id),ui.stL===p.id,`<span class="av" ${stPic(p)}>${p.img?'':'📍'}</span>`)).join(''),'Nouveau lieu');
+  {const so=STD().shopOpen;h+=sec('shop','🛒','Marchands',(c.shops||[]).length,(c.shops||[]).map(m=>btn(m.name+(so&&so.m===m.id?' · ouverte':''),'l1',()=>shopEdit(m.id),so&&so.m===m.id,`<span class="av">${(SHOPT[m.type]||SHOPT.g)[0]}</span>`)).join('')
+    +`<button type="button" class="add" data-g="${go.push(()=>shopNew(false))-1}">+ Nouveau marchand</button><button type="button" class="add" data-g="${go.push(()=>shopNew(true))-1}">🎲 Marchand express</button>`,null)}
   h+=`<button type="button" class="add" data-g="${go.push(()=>stOpen('camp',null,'notes'))-1}" style="margin-top:8px;border:0;background:none;cursor:pointer;padding:6px 4px">📜 Notes & lore</button>`;
   B.innerHTML=h;
   B.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>go[+b.dataset.g]());
@@ -5211,6 +5217,104 @@ function evtEdit(c,ctx,back){const cur=((c.evts||{})[ctx])||'';
     <label class="fld">Événements<textarea id="evT" style="min-height:220px;font-family:var(--f-body);font-size:15px" placeholder="Le chat noir : un chat noir suit le groupe depuis l’auberge et miaule devant chaque piège.">${esc(cur)}</textarea></label>
     <div class="row"><button class="btn" id="mCancel" type="button">Retour</button><button class="btn primary" id="mOk" type="button">Enregistrer</button></div>`,el=>{
     el.querySelector('#mCancel').onclick=back;el.querySelector('#mOk').onclick=()=>{c.evts=c.evts||{};c.evts[ctx]=el.querySelector('#evT').value.trim();stSave();toast('Événements enregistrés');back()}})}
+/* ---------- Marchands ---------- */
+// Catalogue (prix du Manuel des joueurs, en pièces de cuivre) : [nom, prix, type, sorte, détail]
+// types : g général / voyage, a armes, r armures, p alchimie, m magie & outils
+const SHOPCAT=[
+['Torche',1,'g'],['Chandelle',1,'g'],['Rations (1 jour)',50,'g'],['Outre',20,'g'],['Sac à dos',200,'g'],['Sac de couchage',100,'g'],['Couverture',50,'g'],['Tente (2 personnes)',200,'g'],
+['Corde de chanvre (15 m)',100,'g'],['Corde en soie (15 m)',1000,'g'],['Grappin',200,'g'],['Pied-de-biche',200,'g'],['Pitons (10)',50,'g'],['Marteau',100,'g'],['Pelle',200,'g'],['Pioche de mineur',200,'g'],
+['Lanterne à capuchon',500,'g'],['Lanterne sourde',1000,'g'],['Huile (flasque)',10,'g'],['Boîte à amadou',50,'g'],['Miroir en acier',500,'g'],['Chaîne (3 m)',500,'g'],['Menottes',200,'g'],['Cadenas',1000,'g'],
+['Kit d’escalade',2500,'g'],['Matériel de pêche',100,'g'],['Billes (sac de 1 000)',100,'g'],['Chausse-trappes (sac de 20)',100,'g'],['Craie',1,'g'],['Savon',2,'g'],['Gamelle',20,'g'],['Encre (flacon)',1000,'g'],
+['Plume d’écriture',2,'g'],['Parchemin (feuille)',10,'g'],['Carte de la région',1000,'g'],['Longue-vue',100000,'g'],['Cheval de selle',7500,'g'],['Poney',3000,'g'],['Selle d’équitation',1000,'g'],['Chariot',3500,'g'],
+['Dague',200,'a'],['Bâton',20,'a'],['Gourdin',10,'a'],['Hachette',500,'a'],['Javeline',50,'a'],['Lance',100,'a'],['Marteau léger',200,'a'],['Masse d’armes',500,'a'],['Serpe',100,'a'],
+['Épée courte',1000,'a'],['Épée longue',1500,'a'],['Rapière',2500,'a'],['Cimeterre',2500,'a'],['Hache d’armes',1000,'a'],['Hache à deux mains',3000,'a'],['Épée à deux mains',5000,'a'],['Marteau de guerre',1500,'a'],
+['Morgenstern',1500,'a'],['Maillet d’armes',1000,'a'],['Fléau',1000,'a'],['Hallebarde',2000,'a'],['Pique',500,'a'],['Fouet',200,'a'],['Trident',500,'a'],
+['Arc court',2500,'a'],['Arc long',5000,'a'],['Arbalète légère',2500,'a'],['Arbalète lourde',5000,'a'],['Arbalète de poing',7500,'a'],['Fronde',10,'a'],['Fléchettes',5,'a'],
+['Flèches (20)',100,'a'],['Carreaux d’arbalète (20)',100,'a'],['Billes de fronde (20)',4,'a'],['Carquois',100,'a'],
+['Armure matelassée',500,'r'],['Armure de cuir',1000,'r'],['Armure de cuir clouté',4500,'r'],['Armure de peau',1000,'r'],['Chemise de mailles',5000,'r'],['Armure d’écailles',5000,'r'],['Cuirasse',40000,'r'],
+['Demi-plate',75000,'r'],['Broigne',3000,'r'],['Cotte de mailles',7500,'r'],['Clibanion',20000,'r'],['Harnois',150000,'r'],['Bouclier',1000,'r'],
+['Potion de soins',5000,'p','potion','soins'],['Potion de soins supérieurs',15000,'p','potion','sup'],['Antidote',5000,'p'],['Fiole d’acide',2500,'p'],['Feu grégeois (flasque)',5000,'p'],['Eau bénite (flasque)',2500,'p'],
+['Poison (fiole)',10000,'p'],['Kit de soins',500,'p'],['Kit d’herboriste',500,'p'],['Matériel d’alchimiste',5000,'p'],['Parfum (fiole)',500,'p'],
+['Parchemin : Soins',5000,'m','parchemin','Soins'],['Parchemin : Projectile magique',5000,'m','parchemin','Projectile magique'],['Parchemin : Bouclier',5000,'m','parchemin','Bouclier'],['Parchemin : Détection de la magie',5000,'m','parchemin','Détection de la magie'],
+['Parchemin : Mot de guérison',5000,'m','parchemin','Mot de guérison'],['Parchemin : Vague tonnante',5000,'m','parchemin','Vague tonnante'],['Parchemin : Arme spirituelle',15000,'m','parchemin','Arme spirituelle'],['Parchemin : Restauration partielle',15000,'m','parchemin','Restauration partielle'],
+['Sacoche à composantes',2500,'m'],['Focaliseur arcanique (orbe)',2000,'m'],['Symbole sacré (amulette)',500,'m'],['Bâton druidique',500,'m'],['Livre de sorts vierge',5000,'m'],
+['Luth',3500,'m'],['Flûte',200,'m'],['Lyre',3000,'m'],['Tambour',600,'m'],['Outils de voleur',2500,'m'],['Kit de déguisement',2500,'m'],['Kit de contrefaçon',1500,'m'],['Jeu de cartes',50,'m'],['Dés à jouer',10,'m']];
+const SHOPT={g:['🎒','Bazar général'],a:['⚔','Forgeron'],r:['🛡','Armurier'],p:['⚗','Apothicaire'],m:['✨','Boutique des arcanes']};
+const SHOPN={g:['Le Bazar de {n}','Au Sac sans fond','Chez {n}','Le Comptoir de {n}'],a:['La Forge de {n}','L’Enclume ardente','Les Lames de {n}'],r:['L’Armurerie de {n}','Le Bouclier d’argent','La Cotte de {n}'],p:['L’Alambic de {n}','Les Fioles de {n}','La Mandragore bleue'],m:['Les Arcanes de {n}','Le Grimoire de {n}','L’Étoile filante']};
+const cpFmt=p=>{p=Math.max(0,Math.round(+p||0));const o=Math.floor(p/100),a=Math.floor(p%100/10),c=p%10;return [o?o.toLocaleString('fr-FR')+' po':'',a?a+' pa':'',c?c+' pc':''].filter(Boolean).join(' ')||'gratuit'};
+const poOf=p=>String(Math.round(p)/100).replace('.',',');
+const cpParse=v=>{v=String(v||'').trim().replace(',','.').toLowerCase();if(!v)return 0;let t=0,m,re=/([\d.]+)\s*(po|pa|pc|pp|pe)?/g,any=false;while((m=re.exec(v))){any=true;const n=+m[1]||0;t+=n*({pp:1000,po:100,pe:50,pa:10,pc:1}[m[2]||'po'])}return any?Math.round(t):0};
+const SCRP=[25,50,150,300,500,1000,2500,5000,15000,25000];
+// « Parchemin : Boule de feu » → parchemin utilisable en combat, prix selon le niveau du sort
+function scrollOf(n){const m=/^parchemin\s*(?:de|:)?\s*:?\s*(.+)$/i.exec(String(n||'').trim());if(!m)return null;const f=nkS(m[1]),S0=(window.SORTS||[]).find(x=>nkS(x[0])===f);return S0?{spell:S0[0],lvl:+S0[1]||0,p:SCRP[+S0[1]||0]*100}:null}
+const catFind=n=>{const f=String(n||'').toLowerCase().trim();return SHOPCAT.find(x=>x[0].toLowerCase()===f)};
+function shopItem(x,q){return {id:'i'+uid(),n:x[0],p:x[1],q:q==null?-1:q,k:x[3]||'',x:x[4]||''}}
+function shopFill(m){const P=SHOPCAT.filter(x=>x[2]===m.type),N=Math.min(P.length,m.type==='m'?9:m.type==='p'?8:14),S=P.slice().sort(()=>Math.random()-.5).slice(0,N);
+  m.items=S.sort((a,b)=>SHOPCAT.indexOf(a)-SHOPCAT.indexOf(b)).map(x=>shopItem(x,x[1]>=5000||x[2]==='p'||x[2]==='m'?1+Math.floor(Math.random()*3):-1))}
+function shopNew(express){const c=stCamp();if(!c){toast('Ouvre d’abord une campagne');return}c.shops=c.shops||[];
+  const ty=express?pgPick(Object.keys(SHOPT)):'g',race=pgPick(Object.keys(PG.races)),g=Math.random()<.5?'f':'m',who=express?pgName(race,g):'';
+  const m={id:'m'+uid(),name:express?pgPick(SHOPN[ty]).replace('{n}',who.split(' ')[0]):'Nouveau marchand',type:ty,who:express?who+' ('+PG.races[race].toLowerCase()+')':'',place:(stLieu()||{}).name||'',desc:'',mod:0,buy:50,items:[],log:[]};
+  if(express)shopFill(m);c.shops.push(m);stSave();stTocBuild();shopEdit(m.id)}
+const shopCur=()=>{const o=STD().shopOpen;if(!o)return null;const c=(STD().camps||[]).find(x=>x.id===o.c);const m=c&&(c.shops||[]).find(x=>x.id===o.m);return m?{c,m}:null};
+const shopPrice=(m,it)=>Math.max(0,Math.round(it.p*(100+(+m.mod||0))/100));
+function shopPayload(m){return {status:'shop',id:m.id,name:m.name,who:m.who||'',desc:m.desc||'',type:m.type,buy:+m.buy||50,mod:+m.mod||0,ts:Date.now(),
+  items:(m.items||[]).filter(it=>it.n&&it.q!==0).map(it=>({id:it.id,n:it.n,p:shopPrice(m,it),q:it.q,k:it.k||'',x:it.x||''}))}}
+// envoie (ou retire) la boutique sur le téléphone de chaque joueuse connectée
+function shopPub(force){const N=net();if(!N||!NETS.tid||NETS.passive)return;const cur=shopCur();NETS.shopK=NETS.shopK||{};
+  S.chars.filter(c=>c.side==='pj'&&playerOf(c)).forEach(c=>{const P=cur?shopPayload(cur.m):null,k=P?JSON.stringify(Object.assign({},P,{ts:0})):'';if(!force&&NETS.shopK[c.id]===k)return;NETS.shopK[c.id]=k;
+    (P?N.set(TP(`rolls/${c.id}/shop`),P):N.remove(TP(`rolls/${c.id}/shop`))).catch(()=>{})});shopChip()}
+function shopOpen(m,on){const c=stCamp();STD().shopOpen=on?{c:c.id,m:m.id}:null;save();shopPub(true);toast(on?'🛒 Boutique ouverte sur les téléphones':'Boutique fermée');stTocBuild()}
+function shopChip(){let d=$('#shopChip');const cur=shopCur();if(!cur||TVM){d&&d.remove();return}const k=cur.m.id+'|'+cur.m.name;if(d&&d.dataset.k===k)return;if(!d){d=document.createElement('div');d.id='shopChip';document.body.appendChild(d)}d.dataset.k=k;
+  d.innerHTML=`<button type="button" data-sc="e">🛒 Boutique ouverte : <b>${esc(cur.m.name)}</b></button><button type="button" data-sc="x" aria-label="Fermer la boutique">✕</button>`;
+  d.querySelector('[data-sc="e"]').onclick=()=>{if(STD().cur!==cur.c.id){STD().cur=cur.c.id}shopEdit(cur.m.id)};d.querySelector('[data-sc="x"]').onclick=()=>shopOpen(cur.m,false)}
+function shopLog(m,t){(m.log||(m.log=[])).unshift({ts:Date.now(),t});m.log=m.log.slice(0,40);stSave()}
+// demandes des téléphones : achat / vente
+function shopReq(cid,r){const c=byId(cid),cur=shopCur(),N=net();if(!c||!N)return;const nm=esc(c.name);
+  const no=msg=>N.push(TP('rolls/'+cid),{kind:'shopno',msg,status:'grant',ts:Date.now()});
+  if(!cur||cur.m.id!==r.sid){no('La boutique est fermée.');return}const m=cur.m;
+  if(r.op==='buy'){const it=(m.items||[]).find(x=>x.id===r.iid);if(!it||it.q===0){no('Plus en stock !');shopPub(true);return}const p=shopPrice(m,it);
+    if(it.q>0)it.q--;N.push(TP('rolls/'+cid),{kind:'shopbuy',status:'grant',ts:Date.now(),cost:p,shop:m.name,item:{n:it.n,k:it.k||'',x:it.x||''}});
+    shopLog(m,`${c.name} achète ${it.n} (${cpFmt(p)})`);log(`🛒 <b>${nm}</b> achète ${esc(it.n)} chez ${esc(m.name)} (${cpFmt(p)}).`);toast(`🛒 ${c.name} achète ${it.n}`);sfx('coins');shopPub(true);shopRefresh();return}
+  if(r.op==='sell'){const name=String(r.name||'').trim();if(!name)return;const own=(m.items||[]).find(x=>x.n.toLowerCase()===name.toLowerCase()),cat=catFind(name),base=own?own.p:cat?cat[1]:null;
+    const offer=gain=>{if(!gain){no('Le marchand n’en veut pas.');return}phoneAsk(c,{title:m.name,txt:`Le marchand t’offre ${cpFmt(gain)} pour « ${name} ».`,opts:['Garder','Vendre']},i=>{if(!i){shopLog(m,`${c.name} garde ${name} (offre ${cpFmt(gain)} refusée)`);return}
+      N.push(TP('rolls/'+cid),{kind:'shopsell',status:'grant',ts:Date.now(),iid:r.iid,gain,shop:m.name,name});shopLog(m,`${c.name} vend ${name} (${cpFmt(gain)})`);log(`🛒 <b>${nm}</b> vend ${esc(name)} à ${esc(m.name)} (${cpFmt(gain)}).`);toast(`🛒 ${c.name} vend ${name}`);sfx('coins');shopRefresh()})};
+    if(base!=null){offer(Math.floor(base*(+m.buy||50)/100));return}
+    shopAskPrice(c,m,name,offer);return}}
+// objet inconnu : petite fenêtre non bloquante pour fixer le prix
+function shopAskPrice(c,m,name,offer){let box=$('#shopQ');if(!box){box=document.createElement('div');box.id='shopQ';document.body.appendChild(box)}
+  const d=document.createElement('div');d.className='sq';d.innerHTML=`<b>🛒 ${esc(c.name)}</b> veut vendre <b>« ${esc(name)} »</b> à ${esc(m.name)}.<div class="row"><input type="text" inputmode="decimal" placeholder="Prix, ex. 12 po ou 5 pa" aria-label="Prix proposé"><button class="btn sm primary" type="button">Proposer</button><button class="btn sm" type="button">Refuser</button></div>`;
+  box.appendChild(d);const [ok,ko]=d.querySelectorAll('button'),inp=d.querySelector('input');inp.focus();
+  ok.onclick=()=>{const g=cpParse(inp.value);if(!g){toast('Indique un prix');return}d.remove();offer(g)};ko.onclick=()=>{d.remove();offer(0)};inp.onkeydown=e=>{if(e.key==='Enter')ok.click()}}
+let shopRefresh=()=>{};
+function shopEdit(id){const c=stCamp(),m=c&&(c.shops||[]).find(x=>x.id===id);if(!m)return;m.items=m.items||[];
+  const isOpen=()=>{const o=STD().shopOpen;return !!(o&&o.m===m.id)};
+  const html=()=>`<h2>🛒 ${esc(m.name)}</h2>
+    <div class="grid2"><label class="fld">Nom de la boutique<input id="smN" value="${esc(m.name)}"></label><label class="fld">Type<select id="smT">${Object.entries(SHOPT).map(([k,v])=>`<option value="${k}" ${m.type===k?'selected':''}>${v[0]} ${v[1]}</option>`).join('')}</select></label>
+      <label class="fld">Tenu par<input id="smW" value="${esc(m.who||'')}" placeholder="Nom du marchand"></label><label class="fld">Lieu<input id="smL" value="${esc(m.place||'')}" list="smLL"><datalist id="smLL">${(c.places||[]).map(p=>`<option value="${esc(p.name)}">`).join('')}</datalist></label></div>
+    <label class="fld">Description (vue par les joueuses)<input id="smD" value="${esc(m.desc||'')}" placeholder="Une échoppe encombrée qui sent la cire et le cuir…"></label>
+    <div class="grid2"><label class="fld">Humeur des prix<select id="smM">${[[-30,'Bradés (−30 %)'],[-20,'Généreux (−20 %)'],[-10,'Sympa (−10 %)'],[0,'Prix normaux'],[10,'Un peu cher (+10 %)'],[25,'Cher (+25 %)'],[50,'Arnaqueur (+50 %)'],[100,'Pénurie (×2)']].map(([v,l])=>`<option value="${v}" ${(+m.mod||0)===v?'selected':''}>${l}</option>`).join('')}</select></label>
+      <label class="fld">Rachète les objets à<select id="smB">${[0,25,50,75,100].map(v=>`<option value="${v}" ${(+m.buy===v||(m.buy==null&&v===50))?'selected':''}>${v?v+' % du prix':'ne rachète rien'}</option>`).join('')}</select></label></div>
+    <h3 style="margin:12px 0 4px">Marchandises <small style="font-weight:400;opacity:.7">prix de base en po (0,5 = 5 pa) · stock vide = illimité</small></h3>
+    <div class="smlist">${m.items.map(it=>`<div class="smrow" data-i="${it.id}"><input data-k="n" value="${esc(it.n)}" aria-label="Objet"><input data-k="p" value="${poOf(it.p)}" inputmode="decimal" aria-label="Prix en po"><input data-k="q" value="${it.q<0?'':it.q}" inputmode="numeric" placeholder="∞" aria-label="Stock"><button type="button" class="stib" data-del="${it.id}" aria-label="Retirer">✕</button></div>`).join('')||'<p class="empty" style="margin:4px 0">Aucune marchandise.</p>'}</div>
+    <div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><input id="smAdd" list="smCat" placeholder="Catalogue, « Parchemin : Boule de feu », ou un objet à toi…" style="flex:1;min-width:200px"><datalist id="smCat">${SHOPCAT.map(x=>`<option value="${esc(x[0])}">${esc(cpFmt(x[1]))}</option>`).join('')}</datalist><button class="btn sm" id="smAddB" type="button">Ajouter</button><button class="btn sm" id="smFill" type="button">🎲 Remplir au hasard</button></div>
+    ${(m.log||[]).length?`<details class="smlog"><summary>Ventes et achats (${m.log.length})</summary>${m.log.map(l=>`<div><time>${new Date(l.ts).toLocaleString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</time> ${esc(l.t)}</div>`).join('')}</details>`:''}
+    <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:10px"><button class="btn danger sm" id="smDel" type="button">Supprimer</button>
+      <span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="mOk" type="button">Fermer</button><button class="btn primary" id="smOpen" type="button">${isOpen()?'■ Fermer la boutique':'🛒 Ouvrir la boutique aux joueuses'}</button></span></div>`;
+  const bind=el=>{const v=q=>el.querySelector(q),sv=()=>{stSave();if(isOpen())shopPub()};
+    v('#smN').oninput=e=>{m.name=e.target.value;sv();stTocBuild()};v('#smW').oninput=e=>{m.who=e.target.value;sv()};v('#smL').oninput=e=>{m.place=e.target.value;sv()};v('#smD').oninput=e=>{m.desc=e.target.value;sv()};
+    v('#smT').onchange=e=>{m.type=e.target.value;sv()};v('#smM').onchange=e=>{m.mod=+e.target.value;sv()};v('#smB').onchange=e=>{m.buy=+e.target.value;sv()};
+    el.querySelectorAll('.smrow input').forEach(i=>i.onchange=()=>{const it=m.items.find(x=>x.id===i.closest('.smrow').dataset.i);if(!it)return;const k=i.dataset.k;
+      if(k==='n'){it.n=i.value.trim();const ct=catFind(it.n),sc=!ct&&scrollOf(it.n);if(ct){it.k=ct[3]||'';it.x=ct[4]||''}else if(sc){it.k='parchemin';it.x=sc.spell}else{it.k='';it.x=''}}if(k==='p')it.p=cpParse(i.value);if(k==='q')it.q=i.value.trim()===''?-1:Math.max(0,parseInt(i.value)||0);sv()});
+    el.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{m.items=m.items.filter(x=>x.id!==b.dataset.del);sv();redraw()});
+    const add=()=>{const n=v('#smAdd').value.trim();if(!n)return;const ct=catFind(n),sc=!ct&&scrollOf(n);m.items.push(ct?shopItem(ct):sc?{id:'i'+uid(),n:'Parchemin : '+sc.spell,p:sc.p,q:1,k:'parchemin',x:sc.spell}:{id:'i'+uid(),n,p:100,q:1,k:'',x:''});sv();redraw();setTimeout(()=>{const r=$('#modalRoot .smrow:last-child [data-k="p"]');if(r&&!ct)r.focus()},50)};
+    v('#smAddB').onclick=add;v('#smAdd').onkeydown=e=>{if(e.key==='Enter')add()};
+    v('#smFill').onclick=()=>{if(m.items.length&&!confirm('Remplacer les marchandises actuelles ?'))return;shopFill(m);sv();redraw()};
+    v('#smDel').onclick=()=>{if(!confirm('Supprimer ce marchand ?'))return;if(isOpen())shopOpen(m,false);c.shops=c.shops.filter(x=>x!==m);stSave();close();stTocBuild()};
+    v('#mOk').onclick=()=>{shopRefresh=()=>{};close()};
+    v('#smOpen').onclick=()=>{shopOpen(m,!isOpen());v('#smOpen').textContent=isOpen()?'■ Fermer la boutique':'🛒 Ouvrir la boutique aux joueuses'}};
+  const redraw=()=>{const el=$('#modalRoot .modal');if(!el)return;const y=el.scrollTop;el.innerHTML=html();bind(el);el.scrollTop=y};
+  modal(html(),el=>{bind(el);shopRefresh=()=>{if($('#smN'))redraw()}})}
+
 function npcGen(opt){opt=opt||{};const c=stCamp();if(!c){toast('Ouvre d’abord une campagne');return}const O=npcGen.o||(npcGen.o={race:'',g:'',role:''});let R=pgRoll(O);
   const sel=(id,lbl,cur,L)=>`<label class="fld" style="flex:1;min-width:120px">${lbl}<select id="${id}"><option value="">Au hasard</option>${L.map(([v,t])=>`<option value="${v}" ${String(cur)===String(v)?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
   const line=(k,lbl)=>`<div class="pgl"><span class="pgk">${lbl}</span><span class="pgv" data-v="${k}"></span><button type="button" class="stib" data-re="${k}" aria-label="Relancer : ${lbl}">🎲</button></div>`;
@@ -5804,6 +5908,7 @@ function turnPublish(){const N=net();if(!N||!NETS.tid||TVM)return;const c=S.turn
   const j=JSON.stringify(t);if(j===PT.turnJ)return;PT.turnJ=j;N.set(TP('turn'),t).catch(()=>{PT.turnJ=''})}
 function reqListen(){const N=net();if(!N||!NETS.tid)return;
   NETS.unsub.push(N.on(TP('req'),v=>{Object.entries(v||{}).forEach(([cid,r])=>{if(!r||!r.n||r.n<=(PT.done[cid]||0))return;PT.done[cid]=r.n;
+    if(r.t==='shop'){N.remove(TP('req/'+cid)).catch(()=>{});if(Date.now()-r.n<180000&&!NETS.passive)try{shopReq(cid,r)}catch(e){console.error(e)}return}
     if(Date.now()-r.n>180000){N.remove(TP('req/'+cid)).catch(()=>{});return}PT.queue.push({cid,r})});reqRun()}))}
 function reqRun(){clearTimeout(PT.t);if(!PT.queue.length||NETS.passive)return;if($('#modalRoot').innerHTML||ui.ed){PT.t=setTimeout(reqRun,700);return}
   const {cid,r}=PT.queue.shift(),N=net();if(N)N.remove(TP('req/'+cid)).catch(()=>{});let c=byId(cid);if(r.who&&r.who!==cid){const p=byId(r.who);c=p&&p.petOf===cid?p:null}
@@ -6216,7 +6321,7 @@ function netStart(){if(TVM){tvNetStart();return}const N=net();NETS.unsub.forEach
 window.addEventListener('load',()=>{if(TVM||!window.FA_TOK)return;let n=0;const all=S.chars.concat(...(S.maps||[]).map(e=>e.foes||[]));all.forEach(c=>{if(c.side!=='pj'&&!c.img&&!c.sumOf){const b=foeBase(c);if(FA_TOK[b]){applyBestTok(c,b);n++}}});if(n){save();render()}});
 window.addEventListener('net-ready',netStart);
 function scheduleNet(now){clearTimeout(NETS.timer);NETS.timer=setTimeout(publishNet,now?0:250)}
-function publishNet(){const N=net();if(!N||!NETS.tid||NETS.passive)return;
+function publishNet(){const N=net();if(!N||!NETS.tid||NETS.passive)return;try{shopPub()}catch(e){}
   {const J=(S.journal||[]).filter(e=>e.vis).map(e=>({t:e.t||'',x:e.x||'',d:!!e.done,to:e.to||''})),jj=JSON.stringify(J);if(jj!==NETS.jourJ){NETS.jourJ=jj;N.update(TP('meta'),{journal:J}).catch(()=>{NETS.jourJ=''})}}
   {const P=storyPub(),pj=JSON.stringify(P);if(pj!==NETS.storyJ){NETS.storyJ=pj;N.update(TP('meta'),{story:P}).catch(()=>{NETS.storyJ=''})}
     const k=P&&P.wm&&P.wm.k;if(k&&NETS.wmK!==k){const d=IMGS.get(k);if(d){NETS.wmK=k;N.set(TP('wmap'),{k,d}).catch(()=>{NETS.wmK=''})}}}

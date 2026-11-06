@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='05/11-17h15';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='06/11-14h35';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -278,7 +278,7 @@ body.mode-st .top .round{visibility:hidden}
 .sttoc .tl button .av{display:inline-block;width:20px;height:20px;border-radius:50%;background:#3a2a14 center/cover;vertical-align:-5px;margin-right:6px;color:#f2e6c8;font:10px/20px var(--f-display);text-align:center}
 .sttoc .add{font:13px Georgia,serif;color:#8a5a20}
 .lieupic{font-size:30px;background-color:#2f4a3a!important}
-a.npcl.lieul{color:#2a5a3a}
+a.npcl.lieul{color:#2a5a3a} .stread a.npcl.evtl{color:#5a3f8a;text-decoration-style:solid;white-space:nowrap}
 .stchips .lieu i{background:#2f4a3a}
 
 .stfmt{flex-wrap:wrap;row-gap:4px}
@@ -420,6 +420,10 @@ button{cursor:pointer}
 @media (min-width:960px){.mapwrap{max-height:calc(100vh - 150px)}}
 .board{position:relative;user-select:none;-webkit-user-select:none}
 .board .bg{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.smlist{display:flex;flex-direction:column;gap:4px;margin:4px 0 8px}.smrow{display:grid;grid-template-columns:minmax(0,1fr) 84px 64px 34px;gap:6px;align-items:center}.smrow input{min-width:0;padding:7px 8px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);font:inherit;font-size:14px}
+.smlog{margin-top:8px;font-size:13px}.smlog summary{cursor:pointer;font-weight:600}.smlog div{padding:3px 0;border-top:1px solid var(--line)}.smlog time{opacity:.6;margin-right:6px}
+#shopChip{position:fixed;left:14px;bottom:14px;z-index:60;display:flex;border-radius:999px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.25)}#shopChip button{border:0;background:#2f6b2a;color:#fff;font:inherit;font-size:14px;padding:9px 14px;cursor:pointer}#shopChip button+button{background:#24521f;padding:9px 12px}
+#shopQ{position:fixed;right:14px;bottom:14px;z-index:300;display:flex;flex-direction:column;gap:8px;max-width:min(380px,calc(100vw - 28px))}#shopQ .sq{background:var(--surface);border:2px solid #2f6b2a;border-radius:12px;padding:10px 12px;box-shadow:0 8px 26px rgba(0,0,0,.3);font-size:14px}#shopQ .row{margin-top:8px;gap:6px}#shopQ input{flex:1;min-width:0;padding:7px 8px;border:1px solid var(--line-2);border-radius:8px;font:inherit}
 .evctx{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.evctx button{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:7px 12px;font:inherit;font-size:14px;cursor:pointer;color:var(--ink)}.evctx button.on{background:var(--umber,#4a3a2a);color:#f4efe4;border-color:transparent}
 .evcard{border:1px solid #d9c9a5;background:linear-gradient(#fbf6ea,#f3ead6);border-radius:12px;padding:14px 16px;margin:6px 0 8px;min-height:120px}
 .evcard .evh{display:flex;align-items:center;gap:10px;justify-content:space-between}.evcard .evh b{font-family:var(--f-display);font-weight:400;font-size:22px;color:#3a2a14}.evcard .evh span{color:#fff;font-size:12px;border-radius:999px;padding:2px 9px;white-space:nowrap}
@@ -4724,7 +4728,10 @@ var __values = (this && this.__values) || function(o) {
     function render() { if (TVM) {
         tvRender();
         return;
-    } ensureMaps(); renderMapbar(); $('#mapwrap').style.touchAction = ui.ed && !['pan', 'pions'].includes(ui.ed.tool) ? 'none' : ''; var side = ui.sb || ui.st; document.body.classList.toggle('mode-ed', !!ui.ed && !side); document.body.classList.toggle('mode-sb', !!ui.sb); document.body.classList.toggle('mode-st', !!ui.st); $('#tSb').classList.toggle('on', !!ui.sb); $('#tSb').setAttribute('aria-selected', !!ui.sb); $('#tSt').classList.toggle('on', !!ui.st); $('#tSt').setAttribute('aria-selected', !!ui.st); if (ui.sb)
+    } ensureMaps(); try {
+        shopChip();
+    }
+    catch (e) { } renderMapbar(); $('#mapwrap').style.touchAction = ui.ed && !['pan', 'pions'].includes(ui.ed.tool) ? 'none' : ''; var side = ui.sb || ui.st; document.body.classList.toggle('mode-ed', !!ui.ed && !side); document.body.classList.toggle('mode-sb', !!ui.sb); document.body.classList.toggle('mode-st', !!ui.st); $('#tSb').classList.toggle('on', !!ui.sb); $('#tSb').setAttribute('aria-selected', !!ui.sb); $('#tSt').classList.toggle('on', !!ui.st); $('#tSt').setAttribute('aria-selected', !!ui.st); if (ui.sb)
         sbRender(); if (ui.st && !$('#stView').childElementCount)
         stRender(); $('#tCombat').classList.toggle('on', !ui.ed && !side); $('#tCrea').classList.toggle('on', !!ui.ed && !side); $('#tCombat').setAttribute('aria-selected', !ui.ed && !side); $('#tCrea').setAttribute('aria-selected', !!ui.ed && !side); renderTop(); renderInit(); renderParty(); renderBoard(); renderBanner(); renderPanel(); renderLog(); renderPicker(); }
     function renderTop() {
@@ -6952,7 +6959,7 @@ var __values = (this && this.__values) || function(o) {
         'Souhait': { u: 'Souhait : le MJ tranche.' },
         'Tempête vengeresse': { c: ['assourdi'], cd: M10, rs: 0 }
     };
-    var nkS = function (t) { return String(t || '').toLowerCase().replace(/[’']/g, "'").normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s*\((niv|tour|recharge|\d|a volonte)[^)]*\)\s*/g, ' ').replace(/^sort\s*:\s*/, '').replace(/\s+/g, ' ').trim(); };
+    var nkS = function (t) { return String(t || '').toLowerCase().replace(/[’']/g, "'").normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/^[^a-z0-9]+/, '').replace(/\s*\((niv|tour|recharge|parchemin|\d|a volonte)[^)]*\)\s*/g, ' ').replace(/^sort\s*:\s*/, '').replace(/\s+/g, ' ').trim(); };
     var SPX = {};
     Object.entries(SPX0).forEach(function (_c) {
         var _e = __read(_c, 2), k = _e[0], v = _e[1];
@@ -9130,7 +9137,7 @@ var __values = (this && this.__values) || function(o) {
     function reactDefense0(att, a, tgt, tot, AC) {
         if (!tgt || tgt.isObj || !tgt.res || !tgt.res.reaction || tgt.hp <= 0)
             return null;
-        var sh = (tgt.actions || []).find(function (x) { return /^bouclier(\s*\(|$)/i.test(x.name) && x.kind !== 'attaque'; });
+        var sh = (tgt.actions || []).find(function (x) { return /^(📜\s*)?bouclier(\s*\(|$)/i.test(x.name) && x.kind !== 'attaque'; });
         var shN = !sh && /Réactions :[^.]*Bouclier/.test(tgt.note || '');
         var pt = "".concat(att.name, " te touche avec ").concat(a.name, " : ").concat(tot, " contre ta CA ").concat(AC, ".");
         if (shN && tot < AC + 5)
@@ -13403,7 +13410,7 @@ var __values = (this && this.__values) || function(o) {
         var c = stCamp();
         if (!c)
             return;
-        ui.stSec = ui.stSec || { scen: 1, sess: 1, npc: 1, lieu: 1, page: 1 };
+        ui.stSec = ui.stSec || { scen: 1, sess: 1, npc: 1, lieu: 1, page: 1, shop: 1 };
         if (!T.dataset.ok) {
             T.dataset.ok = 1;
             T.innerHTML = "<div style=\"display:flex;align-items:center;gap:6px\"><input class=\"sq\" type=\"search\" placeholder=\"\uD83D\uDD0D Rechercher\u2026\" aria-label=\"Rechercher dans la campagne\" enterkeyhint=\"search\"><button type=\"button\" class=\"x\" aria-label=\"Masquer la navigation\">\u2715</button></div><div class=\"tbody\"></div>";
@@ -13466,6 +13473,11 @@ var __values = (this && this.__values) || function(o) {
             h += sec('scen', '🎬', 'Ancien scénario', (c.scen || []).length, sb, null);
         h += sec('npc', '👤', 'PNJ', (c.npcs || []).length, (c.npcs || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); }).map(function (n) { return btn(n.name, 'l1', function () { return stOpen('npc', n.id); }, ui.stN === n.id, "<span class=\"av\" ".concat(stPic(n), ">").concat(n.img ? '' : stInit(n), "</span>")); }).join(''), 'Nouveau PNJ').replace('</div></details>', "<button type=\"button\" class=\"add\" data-g=\"".concat(go.push(function () { return npcGen(ui.stS ? { sess: ui.stS } : ui.stL ? { place: (stLieu() || {}).name || '' } : {}); }) - 1, "\">\uD83C\uDFB2 PNJ express</button><button type=\"button\" class=\"add\" data-g=\"").concat(go.push(function () { return evtGen(ui.stL ? { ctx: evtGuess((stLieu() || {}).kind) } : {}); }) - 1, "\">\uD83C\uDFB2 \u00C9v\u00E9nement al\u00E9atoire</button></div></details>"));
         h += sec('lieu', '📍', 'Lieux', (c.places || []).length, (c.places || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); }).map(function (p) { return btn(p.name, 'l1', function () { return stOpen('lieu', p.id); }, ui.stL === p.id, "<span class=\"av\" ".concat(stPic(p), ">").concat(p.img ? '' : '📍', "</span>")); }).join(''), 'Nouveau lieu');
+        {
+            var so_1 = STD().shopOpen;
+            h += sec('shop', '🛒', 'Marchands', (c.shops || []).length, (c.shops || []).map(function (m) { return btn(m.name + (so_1 && so_1.m === m.id ? ' · ouverte' : ''), 'l1', function () { return shopEdit(m.id); }, so_1 && so_1.m === m.id, "<span class=\"av\">".concat((SHOPT[m.type] || SHOPT.g)[0], "</span>")); }).join('')
+                + "<button type=\"button\" class=\"add\" data-g=\"".concat(go.push(function () { return shopNew(false); }) - 1, "\">+ Nouveau marchand</button><button type=\"button\" class=\"add\" data-g=\"").concat(go.push(function () { return shopNew(true); }) - 1, "\">\uD83C\uDFB2 Marchand express</button>"), null);
+        }
         h += "<button type=\"button\" class=\"add\" data-g=\"".concat(go.push(function () { return stOpen('camp', null, 'notes'); }) - 1, "\" style=\"margin-top:8px;border:0;background:none;cursor:pointer;padding:6px 4px\">\uD83D\uDCDC Notes & lore</button>");
         B.innerHTML = h;
         B.querySelectorAll('[data-g]').forEach(function (b) { return b.onclick = function () { return go[+b.dataset.g](); }; });
@@ -14287,6 +14299,267 @@ var __values = (this && this.__values) || function(o) {
             el.querySelector('#mOk').onclick = function () { c.evts = c.evts || {}; c.evts[ctx] = el.querySelector('#evT').value.trim(); stSave(); toast('Événements enregistrés'); back(); };
         });
     }
+    /* ---------- Marchands ---------- */
+    // Catalogue (prix du Manuel des joueurs, en pièces de cuivre) : [nom, prix, type, sorte, détail]
+    // types : g général / voyage, a armes, r armures, p alchimie, m magie & outils
+    var SHOPCAT = [
+        ['Torche', 1, 'g'], ['Chandelle', 1, 'g'], ['Rations (1 jour)', 50, 'g'], ['Outre', 20, 'g'], ['Sac à dos', 200, 'g'], ['Sac de couchage', 100, 'g'], ['Couverture', 50, 'g'], ['Tente (2 personnes)', 200, 'g'],
+        ['Corde de chanvre (15 m)', 100, 'g'], ['Corde en soie (15 m)', 1000, 'g'], ['Grappin', 200, 'g'], ['Pied-de-biche', 200, 'g'], ['Pitons (10)', 50, 'g'], ['Marteau', 100, 'g'], ['Pelle', 200, 'g'], ['Pioche de mineur', 200, 'g'],
+        ['Lanterne à capuchon', 500, 'g'], ['Lanterne sourde', 1000, 'g'], ['Huile (flasque)', 10, 'g'], ['Boîte à amadou', 50, 'g'], ['Miroir en acier', 500, 'g'], ['Chaîne (3 m)', 500, 'g'], ['Menottes', 200, 'g'], ['Cadenas', 1000, 'g'],
+        ['Kit d’escalade', 2500, 'g'], ['Matériel de pêche', 100, 'g'], ['Billes (sac de 1 000)', 100, 'g'], ['Chausse-trappes (sac de 20)', 100, 'g'], ['Craie', 1, 'g'], ['Savon', 2, 'g'], ['Gamelle', 20, 'g'], ['Encre (flacon)', 1000, 'g'],
+        ['Plume d’écriture', 2, 'g'], ['Parchemin (feuille)', 10, 'g'], ['Carte de la région', 1000, 'g'], ['Longue-vue', 100000, 'g'], ['Cheval de selle', 7500, 'g'], ['Poney', 3000, 'g'], ['Selle d’équitation', 1000, 'g'], ['Chariot', 3500, 'g'],
+        ['Dague', 200, 'a'], ['Bâton', 20, 'a'], ['Gourdin', 10, 'a'], ['Hachette', 500, 'a'], ['Javeline', 50, 'a'], ['Lance', 100, 'a'], ['Marteau léger', 200, 'a'], ['Masse d’armes', 500, 'a'], ['Serpe', 100, 'a'],
+        ['Épée courte', 1000, 'a'], ['Épée longue', 1500, 'a'], ['Rapière', 2500, 'a'], ['Cimeterre', 2500, 'a'], ['Hache d’armes', 1000, 'a'], ['Hache à deux mains', 3000, 'a'], ['Épée à deux mains', 5000, 'a'], ['Marteau de guerre', 1500, 'a'],
+        ['Morgenstern', 1500, 'a'], ['Maillet d’armes', 1000, 'a'], ['Fléau', 1000, 'a'], ['Hallebarde', 2000, 'a'], ['Pique', 500, 'a'], ['Fouet', 200, 'a'], ['Trident', 500, 'a'],
+        ['Arc court', 2500, 'a'], ['Arc long', 5000, 'a'], ['Arbalète légère', 2500, 'a'], ['Arbalète lourde', 5000, 'a'], ['Arbalète de poing', 7500, 'a'], ['Fronde', 10, 'a'], ['Fléchettes', 5, 'a'],
+        ['Flèches (20)', 100, 'a'], ['Carreaux d’arbalète (20)', 100, 'a'], ['Billes de fronde (20)', 4, 'a'], ['Carquois', 100, 'a'],
+        ['Armure matelassée', 500, 'r'], ['Armure de cuir', 1000, 'r'], ['Armure de cuir clouté', 4500, 'r'], ['Armure de peau', 1000, 'r'], ['Chemise de mailles', 5000, 'r'], ['Armure d’écailles', 5000, 'r'], ['Cuirasse', 40000, 'r'],
+        ['Demi-plate', 75000, 'r'], ['Broigne', 3000, 'r'], ['Cotte de mailles', 7500, 'r'], ['Clibanion', 20000, 'r'], ['Harnois', 150000, 'r'], ['Bouclier', 1000, 'r'],
+        ['Potion de soins', 5000, 'p', 'potion', 'soins'], ['Potion de soins supérieurs', 15000, 'p', 'potion', 'sup'], ['Antidote', 5000, 'p'], ['Fiole d’acide', 2500, 'p'], ['Feu grégeois (flasque)', 5000, 'p'], ['Eau bénite (flasque)', 2500, 'p'],
+        ['Poison (fiole)', 10000, 'p'], ['Kit de soins', 500, 'p'], ['Kit d’herboriste', 500, 'p'], ['Matériel d’alchimiste', 5000, 'p'], ['Parfum (fiole)', 500, 'p'],
+        ['Parchemin : Soins', 5000, 'm', 'parchemin', 'Soins'], ['Parchemin : Projectile magique', 5000, 'm', 'parchemin', 'Projectile magique'], ['Parchemin : Bouclier', 5000, 'm', 'parchemin', 'Bouclier'], ['Parchemin : Détection de la magie', 5000, 'm', 'parchemin', 'Détection de la magie'],
+        ['Parchemin : Mot de guérison', 5000, 'm', 'parchemin', 'Mot de guérison'], ['Parchemin : Vague tonnante', 5000, 'm', 'parchemin', 'Vague tonnante'], ['Parchemin : Arme spirituelle', 15000, 'm', 'parchemin', 'Arme spirituelle'], ['Parchemin : Restauration partielle', 15000, 'm', 'parchemin', 'Restauration partielle'],
+        ['Sacoche à composantes', 2500, 'm'], ['Focaliseur arcanique (orbe)', 2000, 'm'], ['Symbole sacré (amulette)', 500, 'm'], ['Bâton druidique', 500, 'm'], ['Livre de sorts vierge', 5000, 'm'],
+        ['Luth', 3500, 'm'], ['Flûte', 200, 'm'], ['Lyre', 3000, 'm'], ['Tambour', 600, 'm'], ['Outils de voleur', 2500, 'm'], ['Kit de déguisement', 2500, 'm'], ['Kit de contrefaçon', 1500, 'm'], ['Jeu de cartes', 50, 'm'], ['Dés à jouer', 10, 'm']
+    ];
+    var SHOPT = { g: ['🎒', 'Bazar général'], a: ['⚔', 'Forgeron'], r: ['🛡', 'Armurier'], p: ['⚗', 'Apothicaire'], m: ['✨', 'Boutique des arcanes'] };
+    var SHOPN = { g: ['Le Bazar de {n}', 'Au Sac sans fond', 'Chez {n}', 'Le Comptoir de {n}'], a: ['La Forge de {n}', 'L’Enclume ardente', 'Les Lames de {n}'], r: ['L’Armurerie de {n}', 'Le Bouclier d’argent', 'La Cotte de {n}'], p: ['L’Alambic de {n}', 'Les Fioles de {n}', 'La Mandragore bleue'], m: ['Les Arcanes de {n}', 'Le Grimoire de {n}', 'L’Étoile filante'] };
+    var cpFmt = function (p) { p = Math.max(0, Math.round(+p || 0)); var o = Math.floor(p / 100), a = Math.floor(p % 100 / 10), c = p % 10; return [o ? o.toLocaleString('fr-FR') + ' po' : '', a ? a + ' pa' : '', c ? c + ' pc' : ''].filter(Boolean).join(' ') || 'gratuit'; };
+    var poOf = function (p) { return String(Math.round(p) / 100).replace('.', ','); };
+    var cpParse = function (v) { v = String(v || '').trim().replace(',', '.').toLowerCase(); if (!v)
+        return 0; var t = 0, m, re = /([\d.]+)\s*(po|pa|pc|pp|pe)?/g, any = false; while ((m = re.exec(v))) {
+        any = true;
+        var n = +m[1] || 0;
+        t += n * ({ pp: 1000, po: 100, pe: 50, pa: 10, pc: 1 }[m[2] || 'po']);
+    } return any ? Math.round(t) : 0; };
+    var SCRP = [25, 50, 150, 300, 500, 1000, 2500, 5000, 15000, 25000];
+    // « Parchemin : Boule de feu » → parchemin utilisable en combat, prix selon le niveau du sort
+    function scrollOf(n) { var m = /^parchemin\s*(?:de|:)?\s*:?\s*(.+)$/i.exec(String(n || '').trim()); if (!m)
+        return null; var f = nkS(m[1]), S0 = (window.SORTS || []).find(function (x) { return nkS(x[0]) === f; }); return S0 ? { spell: S0[0], lvl: +S0[1] || 0, p: SCRP[+S0[1] || 0] * 100 } : null; }
+    var catFind = function (n) { var f = String(n || '').toLowerCase().trim(); return SHOPCAT.find(function (x) { return x[0].toLowerCase() === f; }); };
+    function shopItem(x, q) { return { id: 'i' + uid(), n: x[0], p: x[1], q: q == null ? -1 : q, k: x[3] || '', x: x[4] || '' }; }
+    function shopFill(m) {
+        var P = SHOPCAT.filter(function (x) { return x[2] === m.type; }), N = Math.min(P.length, m.type === 'm' ? 9 : m.type === 'p' ? 8 : 14), S = P.slice().sort(function () { return Math.random() - .5; }).slice(0, N);
+        m.items = S.sort(function (a, b) { return SHOPCAT.indexOf(a) - SHOPCAT.indexOf(b); }).map(function (x) { return shopItem(x, x[1] >= 5000 || x[2] === 'p' || x[2] === 'm' ? 1 + Math.floor(Math.random() * 3) : -1); });
+    }
+    function shopNew(express) {
+        var c = stCamp();
+        if (!c) {
+            toast('Ouvre d’abord une campagne');
+            return;
+        }
+        c.shops = c.shops || [];
+        var ty = express ? pgPick(Object.keys(SHOPT)) : 'g', race = pgPick(Object.keys(PG.races)), g = Math.random() < .5 ? 'f' : 'm', who = express ? pgName(race, g) : '';
+        var m = { id: 'm' + uid(), name: express ? pgPick(SHOPN[ty]).replace('{n}', who.split(' ')[0]) : 'Nouveau marchand', type: ty, who: express ? who + ' (' + PG.races[race].toLowerCase() + ')' : '', place: (stLieu() || {}).name || '', desc: '', mod: 0, buy: 50, items: [], log: [] };
+        if (express)
+            shopFill(m);
+        c.shops.push(m);
+        stSave();
+        stTocBuild();
+        shopEdit(m.id);
+    }
+    var shopCur = function () { var o = STD().shopOpen; if (!o)
+        return null; var c = (STD().camps || []).find(function (x) { return x.id === o.c; }); var m = c && (c.shops || []).find(function (x) { return x.id === o.m; }); return m ? { c: c, m: m } : null; };
+    var shopPrice = function (m, it) { return Math.max(0, Math.round(it.p * (100 + (+m.mod || 0)) / 100)); };
+    function shopPayload(m) {
+        return { status: 'shop', id: m.id, name: m.name, who: m.who || '', desc: m.desc || '', type: m.type, buy: +m.buy || 50, mod: +m.mod || 0, ts: Date.now(),
+            items: (m.items || []).filter(function (it) { return it.n && it.q !== 0; }).map(function (it) { return ({ id: it.id, n: it.n, p: shopPrice(m, it), q: it.q, k: it.k || '', x: it.x || '' }); }) };
+    }
+    // envoie (ou retire) la boutique sur le téléphone de chaque joueuse connectée
+    function shopPub(force) {
+        var N = net();
+        if (!N || !NETS.tid || NETS.passive)
+            return;
+        var cur = shopCur();
+        NETS.shopK = NETS.shopK || {};
+        S.chars.filter(function (c) { return c.side === 'pj' && playerOf(c); }).forEach(function (c) {
+            var P = cur ? shopPayload(cur.m) : null, k = P ? JSON.stringify(Object.assign({}, P, { ts: 0 })) : '';
+            if (!force && NETS.shopK[c.id] === k)
+                return;
+            NETS.shopK[c.id] = k;
+            (P ? N.set(TP("rolls/".concat(c.id, "/shop")), P) : N.remove(TP("rolls/".concat(c.id, "/shop")))).catch(function () { });
+        });
+        shopChip();
+    }
+    function shopOpen(m, on) { var c = stCamp(); STD().shopOpen = on ? { c: c.id, m: m.id } : null; save(); shopPub(true); toast(on ? '🛒 Boutique ouverte sur les téléphones' : 'Boutique fermée'); stTocBuild(); }
+    function shopChip() {
+        var d = $('#shopChip');
+        var cur = shopCur();
+        if (!cur || TVM) {
+            d && d.remove();
+            return;
+        }
+        var k = cur.m.id + '|' + cur.m.name;
+        if (d && d.dataset.k === k)
+            return;
+        if (!d) {
+            d = document.createElement('div');
+            d.id = 'shopChip';
+            document.body.appendChild(d);
+        }
+        d.dataset.k = k;
+        d.innerHTML = "<button type=\"button\" data-sc=\"e\">\uD83D\uDED2 Boutique ouverte : <b>".concat(esc(cur.m.name), "</b></button><button type=\"button\" data-sc=\"x\" aria-label=\"Fermer la boutique\">\u2715</button>");
+        d.querySelector('[data-sc="e"]').onclick = function () { if (STD().cur !== cur.c.id) {
+            STD().cur = cur.c.id;
+        } shopEdit(cur.m.id); };
+        d.querySelector('[data-sc="x"]').onclick = function () { return shopOpen(cur.m, false); };
+    }
+    function shopLog(m, t) { (m.log || (m.log = [])).unshift({ ts: Date.now(), t: t }); m.log = m.log.slice(0, 40); stSave(); }
+    // demandes des téléphones : achat / vente
+    function shopReq(cid, r) {
+        var c = byId(cid), cur = shopCur(), N = net();
+        if (!c || !N)
+            return;
+        var nm = esc(c.name);
+        var no = function (msg) { return N.push(TP('rolls/' + cid), { kind: 'shopno', msg: msg, status: 'grant', ts: Date.now() }); };
+        if (!cur || cur.m.id !== r.sid) {
+            no('La boutique est fermée.');
+            return;
+        }
+        var m = cur.m;
+        if (r.op === 'buy') {
+            var it = (m.items || []).find(function (x) { return x.id === r.iid; });
+            if (!it || it.q === 0) {
+                no('Plus en stock !');
+                shopPub(true);
+                return;
+            }
+            var p = shopPrice(m, it);
+            if (it.q > 0)
+                it.q--;
+            N.push(TP('rolls/' + cid), { kind: 'shopbuy', status: 'grant', ts: Date.now(), cost: p, shop: m.name, item: { n: it.n, k: it.k || '', x: it.x || '' } });
+            shopLog(m, "".concat(c.name, " ach\u00E8te ").concat(it.n, " (").concat(cpFmt(p), ")"));
+            log("\uD83D\uDED2 <b>".concat(nm, "</b> ach\u00E8te ").concat(esc(it.n), " chez ").concat(esc(m.name), " (").concat(cpFmt(p), ")."));
+            toast("\uD83D\uDED2 ".concat(c.name, " ach\u00E8te ").concat(it.n));
+            sfx('coins');
+            shopPub(true);
+            shopRefresh();
+            return;
+        }
+        if (r.op === 'sell') {
+            var name_1 = String(r.name || '').trim();
+            if (!name_1)
+                return;
+            var own = (m.items || []).find(function (x) { return x.n.toLowerCase() === name_1.toLowerCase(); }), cat = catFind(name_1), base = own ? own.p : cat ? cat[1] : null;
+            var offer = function (gain) {
+                if (!gain) {
+                    no('Le marchand n’en veut pas.');
+                    return;
+                }
+                phoneAsk(c, { title: m.name, txt: "Le marchand t\u2019offre ".concat(cpFmt(gain), " pour \u00AB ").concat(name_1, " \u00BB."), opts: ['Garder', 'Vendre'] }, function (i) {
+                    if (!i) {
+                        shopLog(m, "".concat(c.name, " garde ").concat(name_1, " (offre ").concat(cpFmt(gain), " refus\u00E9e)"));
+                        return;
+                    }
+                    N.push(TP('rolls/' + cid), { kind: 'shopsell', status: 'grant', ts: Date.now(), iid: r.iid, gain: gain, shop: m.name, name: name_1 });
+                    shopLog(m, "".concat(c.name, " vend ").concat(name_1, " (").concat(cpFmt(gain), ")"));
+                    log("\uD83D\uDED2 <b>".concat(nm, "</b> vend ").concat(esc(name_1), " \u00E0 ").concat(esc(m.name), " (").concat(cpFmt(gain), ")."));
+                    toast("\uD83D\uDED2 ".concat(c.name, " vend ").concat(name_1));
+                    sfx('coins');
+                    shopRefresh();
+                });
+            };
+            if (base != null) {
+                offer(Math.floor(base * (+m.buy || 50) / 100));
+                return;
+            }
+            shopAskPrice(c, m, name_1, offer);
+            return;
+        }
+    }
+    // objet inconnu : petite fenêtre non bloquante pour fixer le prix
+    function shopAskPrice(c, m, name, offer) {
+        var box = $('#shopQ');
+        if (!box) {
+            box = document.createElement('div');
+            box.id = 'shopQ';
+            document.body.appendChild(box);
+        }
+        var d = document.createElement('div');
+        d.className = 'sq';
+        d.innerHTML = "<b>\uD83D\uDED2 ".concat(esc(c.name), "</b> veut vendre <b>\u00AB ").concat(esc(name), " \u00BB</b> \u00E0 ").concat(esc(m.name), ".<div class=\"row\"><input type=\"text\" inputmode=\"decimal\" placeholder=\"Prix, ex. 12 po ou 5 pa\" aria-label=\"Prix propos\u00E9\"><button class=\"btn sm primary\" type=\"button\">Proposer</button><button class=\"btn sm\" type=\"button\">Refuser</button></div>");
+        box.appendChild(d);
+        var _c = __read(d.querySelectorAll('button'), 2), ok = _c[0], ko = _c[1], inp = d.querySelector('input');
+        inp.focus();
+        ok.onclick = function () { var g = cpParse(inp.value); if (!g) {
+            toast('Indique un prix');
+            return;
+        } d.remove(); offer(g); };
+        ko.onclick = function () { d.remove(); offer(0); };
+        inp.onkeydown = function (e) { if (e.key === 'Enter')
+            ok.click(); };
+    }
+    var shopRefresh = function () { };
+    function shopEdit(id) {
+        var c = stCamp(), m = c && (c.shops || []).find(function (x) { return x.id === id; });
+        if (!m)
+            return;
+        m.items = m.items || [];
+        var isOpen = function () { var o = STD().shopOpen; return !!(o && o.m === m.id); };
+        var html = function () { return "<h2>\uD83D\uDED2 ".concat(esc(m.name), "</h2>\n    <div class=\"grid2\"><label class=\"fld\">Nom de la boutique<input id=\"smN\" value=\"").concat(esc(m.name), "\"></label><label class=\"fld\">Type<select id=\"smT\">").concat(Object.entries(SHOPT).map(function (_c) {
+            var _e = __read(_c, 2), k = _e[0], v = _e[1];
+            return "<option value=\"".concat(k, "\" ").concat(m.type === k ? 'selected' : '', ">").concat(v[0], " ").concat(v[1], "</option>");
+        }).join(''), "</select></label>\n      <label class=\"fld\">Tenu par<input id=\"smW\" value=\"").concat(esc(m.who || ''), "\" placeholder=\"Nom du marchand\"></label><label class=\"fld\">Lieu<input id=\"smL\" value=\"").concat(esc(m.place || ''), "\" list=\"smLL\"><datalist id=\"smLL\">").concat((c.places || []).map(function (p) { return "<option value=\"".concat(esc(p.name), "\">"); }).join(''), "</datalist></label></div>\n    <label class=\"fld\">Description (vue par les joueuses)<input id=\"smD\" value=\"").concat(esc(m.desc || ''), "\" placeholder=\"Une \u00E9choppe encombr\u00E9e qui sent la cire et le cuir\u2026\"></label>\n    <div class=\"grid2\"><label class=\"fld\">Humeur des prix<select id=\"smM\">").concat([[-30, 'Bradés (−30 %)'], [-20, 'Généreux (−20 %)'], [-10, 'Sympa (−10 %)'], [0, 'Prix normaux'], [10, 'Un peu cher (+10 %)'], [25, 'Cher (+25 %)'], [50, 'Arnaqueur (+50 %)'], [100, 'Pénurie (×2)']].map(function (_c) {
+            var _e = __read(_c, 2), v = _e[0], l = _e[1];
+            return "<option value=\"".concat(v, "\" ").concat((+m.mod || 0) === v ? 'selected' : '', ">").concat(l, "</option>");
+        }).join(''), "</select></label>\n      <label class=\"fld\">Rach\u00E8te les objets \u00E0<select id=\"smB\">").concat([0, 25, 50, 75, 100].map(function (v) { return "<option value=\"".concat(v, "\" ").concat((+m.buy === v || (m.buy == null && v === 50)) ? 'selected' : '', ">").concat(v ? v + ' % du prix' : 'ne rachète rien', "</option>"); }).join(''), "</select></label></div>\n    <h3 style=\"margin:12px 0 4px\">Marchandises <small style=\"font-weight:400;opacity:.7\">prix de base en po (0,5 = 5 pa) \u00B7 stock vide = illimit\u00E9</small></h3>\n    <div class=\"smlist\">").concat(m.items.map(function (it) { return "<div class=\"smrow\" data-i=\"".concat(it.id, "\"><input data-k=\"n\" value=\"").concat(esc(it.n), "\" aria-label=\"Objet\"><input data-k=\"p\" value=\"").concat(poOf(it.p), "\" inputmode=\"decimal\" aria-label=\"Prix en po\"><input data-k=\"q\" value=\"").concat(it.q < 0 ? '' : it.q, "\" inputmode=\"numeric\" placeholder=\"\u221E\" aria-label=\"Stock\"><button type=\"button\" class=\"stib\" data-del=\"").concat(it.id, "\" aria-label=\"Retirer\">\u2715</button></div>"); }).join('') || '<p class="empty" style="margin:4px 0">Aucune marchandise.</p>', "</div>\n    <div class=\"row\" style=\"justify-content:flex-start;flex-wrap:wrap;gap:6px\"><input id=\"smAdd\" list=\"smCat\" placeholder=\"Catalogue, \u00AB Parchemin : Boule de feu \u00BB, ou un objet \u00E0 toi\u2026\" style=\"flex:1;min-width:200px\"><datalist id=\"smCat\">").concat(SHOPCAT.map(function (x) { return "<option value=\"".concat(esc(x[0]), "\">").concat(esc(cpFmt(x[1])), "</option>"); }).join(''), "</datalist><button class=\"btn sm\" id=\"smAddB\" type=\"button\">Ajouter</button><button class=\"btn sm\" id=\"smFill\" type=\"button\">\uD83C\uDFB2 Remplir au hasard</button></div>\n    ").concat((m.log || []).length ? "<details class=\"smlog\"><summary>Ventes et achats (".concat(m.log.length, ")</summary>").concat(m.log.map(function (l) { return "<div><time>".concat(new Date(l.ts).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), "</time> ").concat(esc(l.t), "</div>"); }).join(''), "</details>") : '', "\n    <div class=\"row\" style=\"justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:10px\"><button class=\"btn danger sm\" id=\"smDel\" type=\"button\">Supprimer</button>\n      <span style=\"display:flex;gap:8px;flex-wrap:wrap\"><button class=\"btn\" id=\"mOk\" type=\"button\">Fermer</button><button class=\"btn primary\" id=\"smOpen\" type=\"button\">").concat(isOpen() ? '■ Fermer la boutique' : '🛒 Ouvrir la boutique aux joueuses', "</button></span></div>"); };
+        var bind = function (el) {
+            var v = function (q) { return el.querySelector(q); }, sv = function () { stSave(); if (isOpen())
+                shopPub(); };
+            v('#smN').oninput = function (e) { m.name = e.target.value; sv(); stTocBuild(); };
+            v('#smW').oninput = function (e) { m.who = e.target.value; sv(); };
+            v('#smL').oninput = function (e) { m.place = e.target.value; sv(); };
+            v('#smD').oninput = function (e) { m.desc = e.target.value; sv(); };
+            v('#smT').onchange = function (e) { m.type = e.target.value; sv(); };
+            v('#smM').onchange = function (e) { m.mod = +e.target.value; sv(); };
+            v('#smB').onchange = function (e) { m.buy = +e.target.value; sv(); };
+            el.querySelectorAll('.smrow input').forEach(function (i) { return i.onchange = function () {
+                var it = m.items.find(function (x) { return x.id === i.closest('.smrow').dataset.i; });
+                if (!it)
+                    return;
+                var k = i.dataset.k;
+                if (k === 'n') {
+                    it.n = i.value.trim();
+                    var ct = catFind(it.n), sc = !ct && scrollOf(it.n);
+                    if (ct) {
+                        it.k = ct[3] || '';
+                        it.x = ct[4] || '';
+                    }
+                    else if (sc) {
+                        it.k = 'parchemin';
+                        it.x = sc.spell;
+                    }
+                    else {
+                        it.k = '';
+                        it.x = '';
+                    }
+                }
+                if (k === 'p')
+                    it.p = cpParse(i.value);
+                if (k === 'q')
+                    it.q = i.value.trim() === '' ? -1 : Math.max(0, parseInt(i.value) || 0);
+                sv();
+            }; });
+            el.querySelectorAll('[data-del]').forEach(function (b) { return b.onclick = function () { m.items = m.items.filter(function (x) { return x.id !== b.dataset.del; }); sv(); redraw(); }; });
+            var add = function () { var n = v('#smAdd').value.trim(); if (!n)
+                return; var ct = catFind(n), sc = !ct && scrollOf(n); m.items.push(ct ? shopItem(ct) : sc ? { id: 'i' + uid(), n: 'Parchemin : ' + sc.spell, p: sc.p, q: 1, k: 'parchemin', x: sc.spell } : { id: 'i' + uid(), n: n, p: 100, q: 1, k: '', x: '' }); sv(); redraw(); setTimeout(function () { var r = $('#modalRoot .smrow:last-child [data-k="p"]'); if (r && !ct)
+                r.focus(); }, 50); };
+            v('#smAddB').onclick = add;
+            v('#smAdd').onkeydown = function (e) { if (e.key === 'Enter')
+                add(); };
+            v('#smFill').onclick = function () { if (m.items.length && !confirm('Remplacer les marchandises actuelles ?'))
+                return; shopFill(m); sv(); redraw(); };
+            v('#smDel').onclick = function () { if (!confirm('Supprimer ce marchand ?'))
+                return; if (isOpen())
+                shopOpen(m, false); c.shops = c.shops.filter(function (x) { return x !== m; }); stSave(); close(); stTocBuild(); };
+            v('#mOk').onclick = function () { shopRefresh = function () { }; close(); };
+            v('#smOpen').onclick = function () { shopOpen(m, !isOpen()); v('#smOpen').textContent = isOpen() ? '■ Fermer la boutique' : '🛒 Ouvrir la boutique aux joueuses'; };
+        };
+        var redraw = function () { var el = $('#modalRoot .modal'); if (!el)
+            return; var y = el.scrollTop; el.innerHTML = html(); bind(el); el.scrollTop = y; };
+        modal(html(), function (el) { bind(el); shopRefresh = function () { if ($('#smN'))
+            redraw(); }; });
+    }
     function npcGen(opt) {
         opt = opt || {};
         var c = stCamp();
@@ -14609,24 +14882,56 @@ var __values = (this && this.__values) || function(o) {
     function stFromText(t) { return String(t || '').split('\n').map(function (l) { return l ? '<div>' + esc(l) + '</div>' : '<div><br></div>'; }).join(''); }
     function stLinkify(html, skip) {
         var L = stNames().filter(function (x) { return x[1] !== skip; });
-        if (!L.length)
-            return null;
-        var re;
-        try {
-            re = new RegExp('(^|[^\\p{L}\\p{N}_])(' + L.map(function (x) { return x[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|') + ')(?![\\p{L}\\p{N}_])', 'giu');
-        }
-        catch (e) {
-            return null;
-        }
+        var re = null;
+        if (L.length)
+            try {
+                re = new RegExp('(^|[^\\p{L}\\p{N}_])(' + L.map(function (x) { return x[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|') + ')(?![\\p{L}\\p{N}_])', 'giu');
+            }
+            catch (e) {
+                re = null;
+            }
         var map = {};
         L.forEach(function (x) { var k = x[0].toLowerCase(); if (!map[k])
             map[k] = x; });
         var d = document.createElement('div');
         d.innerHTML = html;
         var hit = 0;
+        /* « 🎲 Événement aléatoire possible · Route » → lien qui ouvre le tirage d’événements */
+        {
+            var EV_1 = /🎲\s*[ÉE]v[ée]nements? al[ée]atoires?(?:\s+possibles?)?(?:\s*[·:–—-]\s*(Route|Ville|Taverne|Nature|Donjon|Nuit au camp|Nuit))?/giu, CX_1 = { route: 'route', ville: 'ville', taverne: 'taverne', nature: 'nature', donjon: 'donjon', 'nuit au camp': 'nuit', nuit: 'nuit' };
+            var tw0 = document.createTreeWalker(d, NodeFilter.SHOW_TEXT), ns = [];
+            while (tw0.nextNode())
+                ns.push(tw0.currentNode);
+            ns.forEach(function (n) {
+                var t = n.nodeValue;
+                if (t.indexOf('🎲') < 0)
+                    return;
+                EV_1.lastIndex = 0;
+                var last = 0, m, frag = null;
+                while ((m = EV_1.exec(t))) {
+                    if (!frag)
+                        frag = document.createDocumentFragment();
+                    frag.appendChild(document.createTextNode(t.slice(last, m.index)));
+                    var a = document.createElement('a');
+                    a.className = 'npcl evtl';
+                    a.href = '#';
+                    a.dataset.evt = m[1] ? CX_1[m[1].toLowerCase()] || '' : '';
+                    a.title = 'Tirer un événement aléatoire';
+                    a.textContent = m[0];
+                    frag.appendChild(a);
+                    last = m.index + m[0].length;
+                    hit++;
+                }
+                if (frag) {
+                    frag.appendChild(document.createTextNode(t.slice(last)));
+                    n.parentNode.replaceChild(frag, n);
+                }
+            });
+        }
         var tw = document.createTreeWalker(d, NodeFilter.SHOW_TEXT), nodes = [];
         while (tw.nextNode())
-            nodes.push(tw.currentNode);
+            if (re && !(tw.currentNode.parentNode.closest && tw.currentNode.parentNode.closest('a.evtl')))
+                nodes.push(tw.currentNode);
         nodes.forEach(function (n) {
             var t = n.nodeValue;
             re.lastIndex = 0;
@@ -14709,7 +15014,12 @@ var __values = (this && this.__values) || function(o) {
                 rd.tabIndex = 0;
                 rd.dataset.fid = ed.dataset.fid;
                 ed.insertAdjacentElement('afterend', rd);
-                rd.addEventListener('click', function (e) { var a = e.target.closest('a.npcl'); if (a) {
+                rd.addEventListener('click', function (e) { var a = e.target.closest('a.npcl'); if (a && a.dataset.evt !== undefined) {
+                    e.preventDefault();
+                    sfx('dice');
+                    evtGen({ ctx: a.dataset.evt || undefined, sess: ui.stS || undefined });
+                    return;
+                } if (a) {
                     e.preventDefault();
                     stPeek(a.dataset.lieu ? 'lieu' : 'npc', a.dataset.lieu || a.dataset.npc);
                     return;
@@ -16459,6 +16769,17 @@ var __values = (this && this.__values) || function(o) {
                 if (!r || !r.n || r.n <= (PT.done[cid] || 0))
                     return;
                 PT.done[cid] = r.n;
+                if (r.t === 'shop') {
+                    N.remove(TP('req/' + cid)).catch(function () { });
+                    if (Date.now() - r.n < 180000 && !NETS.passive)
+                        try {
+                            shopReq(cid, r);
+                        }
+                        catch (e) {
+                            console.error(e);
+                        }
+                    return;
+                }
                 if (Date.now() - r.n > 180000) {
                     N.remove(TP('req/' + cid)).catch(function () { });
                     return;
@@ -17721,6 +18042,10 @@ var __values = (this && this.__values) || function(o) {
         var N = net();
         if (!N || !NETS.tid || NETS.passive)
             return;
+        try {
+            shopPub();
+        }
+        catch (e) { }
         {
             var J = (S.journal || []).filter(function (e) { return e.vis; }).map(function (e) { return ({ t: e.t || '', x: e.x || '', d: !!e.done, to: e.to || '' }); }), jj = JSON.stringify(J);
             if (jj !== NETS.jourJ) {
