@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<script>window.APP_V='10/11-13h30';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
+<script>window.APP_V='10/11-14h40';(function(){if(/[?&]tv=/.test(location.search))return;function chk(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==window.APP_V){var k='upd-'+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1')}catch(e){}var u=new URL(location.href);u.searchParams.set('v',Date.now().toString(36));location.replace(u.toString())}}).catch(function(){})}catch(e){}}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk()})})()</script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 
 <meta charset="utf-8">
@@ -296,7 +296,9 @@ a.npcl.lieul{color:#2a5a3a} .stread a.npcl.shopl{color:#2f6b2a} .stread a.npcl.s
 .sttoc .cast button{appearance:none;display:inline-flex;align-items:center;gap:5px;border:1px solid #d9c9a5;background:#fffdf7;border-radius:999px;padding:2px 9px 2px 2px;font:12.5px Georgia,serif;color:#3a2a14;cursor:pointer}
 .sttoc .cast button.lieu{color:#2a5a3a}
 .sttoc .cast .av{display:inline-block;width:22px;height:22px;border-radius:50%;background:#3a2a14 center/cover;color:#f2e6c8;font:10px/22px var(--f-display);text-align:center}
-.stpeek{position:fixed;inset:0;z-index:80;background:rgba(20,14,6,.35);display:flex;justify-content:flex-end}
+.stpeek{position:fixed;inset:0;z-index:80;background:transparent;display:flex;justify-content:flex-end;pointer-events:none}
+.stpeek>div{pointer-events:auto}
+@media (max-width:760px){.stpeek{background:rgba(20,14,6,.35);pointer-events:auto}}
 .stpeek>div{width:min(420px,92vw);height:100%;overflow:auto;background:#fbf6ea;box-shadow:-6px 0 24px rgba(0,0,0,.3);padding:16px 18px 30px;animation:stpk .2s ease}
 @keyframes stpk{from{transform:translateX(40px);opacity:.4}to{transform:none;opacity:1}}
 .stpeek .ph{display:flex;gap:12px;align-items:center;margin-bottom:10px}
@@ -4994,7 +4996,8 @@ function stPeek(ty,id){const c=stCamp();if(!c)return;const o=ty==='lieu'?(c.plac
   d.querySelector('[data-full]').onclick=()=>{shut();stOpen(ty,id)};
   {const mt=d.querySelector('[data-met]');if(mt)mt.onclick=()=>{o.met=!o.met;stSave();scheduleNet();mt.textContent=o.met?(ty==='npc'?'👁 Rencontré ✓':'👁 Découvert ✓'):(ty==='npc'?'👁 Marquer comme rencontré':'👁 Marquer comme découvert');toast(o.met?'👁 '+o.name+' apparaît chez les joueuses':o.name+' est caché aux joueuses')}}
   const mb=d.querySelector('[data-map]');if(mb)mb.onclick=()=>{shut();stOpen('npc',id);setTimeout(()=>{const b=$('#npMap');if(b)b.click()},80)};
-  document.querySelectorAll('.stpeek').forEach(x=>x.remove());document.body.appendChild(d)}
+  document.querySelectorAll('.stpeek').forEach(x=>x.remove());document.body.appendChild(d);
+  const esk=e=>{if(e.key==='Escape'&&document.body.contains(d)){shut();document.removeEventListener('keydown',esk)}};document.addEventListener('keydown',esk)}
 /* ---------- Capacités de classe : ressources, actions, passifs ---------- */
 const cfLeft=(c,k)=>{const v=c&&c.cres&&c.cres[k];return v?Math.max(0,+v[0]-(+v[1]||0)):0};
 const cfIncap=c=>['neutralisé','paralysé','étourdi','inconscient','pétrifié'].some(k=>has(c,k));
